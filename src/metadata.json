@@ -1,0 +1,9 @@
+{
+  "name": "Revolutionary Clock",
+  "description": "Shows a decimal clock and revolutionary calendar",
+  "uuid": "revolutionary@jbellue.github.io",
+  "shell-version": [
+    "49"
+  ],
+  "gettext-domain": "revolutionary-clock"
+}

@@ -1,0 +1,1577 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-14 22:25+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.8\n"
+
+# Month names
+#: revdate.js:25
+msgid "Vendémiaire"
+msgstr ""
+
+#: revdate.js:25
+msgid "Brumaire"
+msgstr ""
+
+#: revdate.js:25
+msgid "Frimaire"
+msgstr ""
+
+#: revdate.js:26
+msgid "Nivôse"
+msgstr ""
+
+#: revdate.js:26
+msgid "Pluviôse"
+msgstr ""
+
+#: revdate.js:26
+msgid "Ventôse"
+msgstr ""
+
+#: revdate.js:27
+msgid "Germinal"
+msgstr ""
+
+#: revdate.js:27
+msgid "Floréal"
+msgstr ""
+
+#: revdate.js:27
+msgid "Prairial"
+msgstr ""
+
+#: revdate.js:28
+msgid "Messidor"
+msgstr ""
+
+#: revdate.js:28
+msgid "Thermidor"
+msgstr ""
+
+#: revdate.js:28
+msgid "Fructidor"
+msgstr ""
+
+#: revdate.js:29
+msgid "Sansculottides"
+msgstr ""
+
+# Days
+#: revdate.js:38
+msgid "Raisin"
+msgstr ""
+
+#: revdate.js:38
+msgid "Safran"
+msgstr ""
+
+#: revdate.js:38
+msgid "Châtaigne"
+msgstr ""
+
+#: revdate.js:38
+msgid "Colchique"
+msgstr ""
+
+#: revdate.js:38
+msgid "Cheval"
+msgstr ""
+
+#: revdate.js:38
+msgid "Balsamine"
+msgstr ""
+
+#: revdate.js:38
+msgid "Carotte"
+msgstr ""
+
+#: revdate.js:38
+msgid "Amaranthe"
+msgstr ""
+
+#: revdate.js:38
+msgid "Panais"
+msgstr ""
+
+#: revdate.js:38
+msgid "Cuve"
+msgstr ""
+
+#: revdate.js:39
+msgid "Pomme de terre"
+msgstr ""
+
+#: revdate.js:39
+msgid "Immortelle"
+msgstr ""
+
+#: revdate.js:39
+msgid "Potiron"
+msgstr ""
+
+#: revdate.js:39
+msgid "Réséda"
+msgstr ""
+
+#: revdate.js:39
+msgid "Âne"
+msgstr ""
+
+#: revdate.js:39
+msgid "Belle de nuit"
+msgstr ""
+
+#: revdate.js:39
+msgid "Citrouille"
+msgstr ""
+
+#: revdate.js:39
+msgid "Sarrasin"
+msgstr ""
+
+#: revdate.js:39
+msgid "Tournesol"
+msgstr ""
+
+#: revdate.js:39
+msgid "Pressoir"
+msgstr ""
+
+#: revdate.js:40
+msgid "Chanvre"
+msgstr ""
+
+#: revdate.js:40
+msgid "Pêche"
+msgstr ""
+
+#: revdate.js:40
+msgid "Navet"
+msgstr ""
+
+#: revdate.js:40
+msgid "Amaryllis"
+msgstr ""
+
+#: revdate.js:40
+msgid "Bœuf"
+msgstr ""
+
+#: revdate.js:40
+msgid "Aubergine"
+msgstr ""
+
+#: revdate.js:40
+msgid "Piment"
+msgstr ""
+
+#: revdate.js:40
+msgid "Tomate"
+msgstr ""
+
+#: revdate.js:40
+msgid "Orge"
+msgstr ""
+
+#: revdate.js:40
+msgid "Tonneau"
+msgstr ""
+
+#: revdate.js:41
+msgid "Pomme"
+msgstr ""
+
+#: revdate.js:41
+msgid "Céleri"
+msgstr ""
+
+#: revdate.js:41
+msgid "Poire"
+msgstr ""
+
+#: revdate.js:41
+msgid "Betterave"
+msgstr ""
+
+#: revdate.js:41
+msgid "Oie"
+msgstr ""
+
+#: revdate.js:41
+msgid "Héliotrope"
+msgstr ""
+
+#: revdate.js:41
+msgid "Figue"
+msgstr ""
+
+#: revdate.js:41
+msgid "Scorsonère"
+msgstr ""
+
+#: revdate.js:41
+msgid "Alisier"
+msgstr ""
+
+#: revdate.js:41
+msgid "Charrue"
+msgstr ""
+
+#: revdate.js:42
+msgid "Salsifis"
+msgstr ""
+
+#: revdate.js:42
+msgid "Mâcre"
+msgstr ""
+
+#: revdate.js:42
+msgid "Topinambour"
+msgstr ""
+
+#: revdate.js:42
+msgid "Endive"
+msgstr ""
+
+#: revdate.js:42
+msgid "Dindon"
+msgstr ""
+
+#: revdate.js:42
+msgid "Chervis"
+msgstr ""
+
+#: revdate.js:42
+msgid "Cresson"
+msgstr ""
+
+#: revdate.js:42
+msgid "Dentelaire"
+msgstr ""
+
+#: revdate.js:42
+msgid "Grenade"
+msgstr ""
+
+#: revdate.js:42
+msgid "Herse"
+msgstr ""
+
+#: revdate.js:43
+msgid "Bacchante"
+msgstr ""
+
+#: revdate.js:43
+msgid "Azerole"
+msgstr ""
+
+#: revdate.js:43
+msgid "Garance"
+msgstr ""
+
+#: revdate.js:43
+msgid "Orange"
+msgstr ""
+
+#: revdate.js:43
+msgid "Faisan"
+msgstr ""
+
+#: revdate.js:43
+msgid "Pistache"
+msgstr ""
+
+#: revdate.js:43
+msgid "Macjonc"
+msgstr ""
+
+#: revdate.js:43
+msgid "Coing"
+msgstr ""
+
+#: revdate.js:43
+msgid "Cormier"
+msgstr ""
+
+#: revdate.js:43
+msgid "Rouleau"
+msgstr ""
+
+#: revdate.js:44
+msgid "Raiponce"
+msgstr ""
+
+#: revdate.js:44
+msgid "Turneps"
+msgstr ""
+
+#: revdate.js:44
+msgid "Chicorée"
+msgstr ""
+
+#: revdate.js:44
+msgid "Nèfle"
+msgstr ""
+
+#: revdate.js:44
+msgid "Cochon"
+msgstr ""
+
+#: revdate.js:44
+msgid "Mâche"
+msgstr ""
+
+#: revdate.js:44
+msgid "Chou-fleur"
+msgstr ""
+
+#: revdate.js:44
+msgid "Miel"
+msgstr ""
+
+#: revdate.js:44
+msgid "Genièvre"
+msgstr ""
+
+#: revdate.js:44
+msgid "Pioche"
+msgstr ""
+
+#: revdate.js:45
+msgid "Cire"
+msgstr ""
+
+#: revdate.js:45
+msgid "Raifort"
+msgstr ""
+
+#: revdate.js:45
+msgid "Cèdre"
+msgstr ""
+
+#: revdate.js:45
+msgid "Sapin"
+msgstr ""
+
+#: revdate.js:45
+msgid "Chevreuil"
+msgstr ""
+
+#: revdate.js:45
+msgid "Ajonc"
+msgstr ""
+
+#: revdate.js:45
+msgid "Cyprès"
+msgstr ""
+
+#: revdate.js:45
+msgid "Lierre"
+msgstr ""
+
+#: revdate.js:45
+msgid "Sabine"
+msgstr ""
+
+#: revdate.js:45
+msgid "Hoyau"
+msgstr ""
+
+#: revdate.js:46
+msgid "Érable à sucre"
+msgstr ""
+
+#: revdate.js:46
+msgid "Bruyère"
+msgstr ""
+
+#: revdate.js:46
+msgid "Roseau"
+msgstr ""
+
+#: revdate.js:46
+msgid "Oseille"
+msgstr ""
+
+#: revdate.js:46
+msgid "Grillon"
+msgstr ""
+
+#: revdate.js:46
+msgid "Pignon"
+msgstr ""
+
+#: revdate.js:46
+msgid "Liège"
+msgstr ""
+
+#: revdate.js:46
+msgid "Truffe"
+msgstr ""
+
+#: revdate.js:46
+msgid "Olive"
+msgstr ""
+
+#: revdate.js:46
+msgid "Pelle"
+msgstr ""
+
+#: revdate.js:47
+msgid "Tourbe"
+msgstr ""
+
+#: revdate.js:47
+msgid "Houille"
+msgstr ""
+
+#: revdate.js:47
+msgid "Bitume"
+msgstr ""
+
+#: revdate.js:47
+msgid "Soufre"
+msgstr ""
+
+#: revdate.js:47
+msgid "Chien"
+msgstr ""
+
+#: revdate.js:47
+msgid "Lave"
+msgstr ""
+
+#: revdate.js:47
+msgid "Terre végétale"
+msgstr ""
+
+#: revdate.js:47
+msgid "Fumier"
+msgstr ""
+
+#: revdate.js:47
+msgid "Salpêtre"
+msgstr ""
+
+#: revdate.js:47
+msgid "Fléau"
+msgstr ""
+
+#: revdate.js:48
+msgid "Granit"
+msgstr ""
+
+#: revdate.js:48
+msgid "Argile"
+msgstr ""
+
+#: revdate.js:48
+msgid "Ardoise"
+msgstr ""
+
+#: revdate.js:48
+msgid "Grès"
+msgstr ""
+
+#: revdate.js:48
+msgid "Lapin"
+msgstr ""
+
+#: revdate.js:48
+msgid "Silex"
+msgstr ""
+
+#: revdate.js:48
+msgid "Marne"
+msgstr ""
+
+#: revdate.js:48
+msgid "Pierre à chaux"
+msgstr ""
+
+#: revdate.js:48
+msgid "Marbre"
+msgstr ""
+
+#: revdate.js:48
+msgid "Van"
+msgstr ""
+
+#: revdate.js:49
+msgid "Pierre à plâtre"
+msgstr ""
+
+#: revdate.js:49
+msgid "Sel"
+msgstr ""
+
+#: revdate.js:49
+msgid "Fer"
+msgstr ""
+
+#: revdate.js:49
+msgid "Cuivre"
+msgstr ""
+
+#: revdate.js:49
+msgid "Chat"
+msgstr ""
+
+#: revdate.js:49
+msgid "Étain"
+msgstr ""
+
+#: revdate.js:49
+msgid "Plomb"
+msgstr ""
+
+#: revdate.js:49
+msgid "Zinc"
+msgstr ""
+
+#: revdate.js:49
+msgid "Mercure"
+msgstr ""
+
+#: revdate.js:49
+msgid "Crible"
+msgstr ""
+
+#: revdate.js:50
+msgid "Lauréole"
+msgstr ""
+
+#: revdate.js:50
+msgid "Mousse"
+msgstr ""
+
+#: revdate.js:50
+msgid "Fragon"
+msgstr ""
+
+#: revdate.js:50
+msgid "Perce-neige"
+msgstr ""
+
+#: revdate.js:50
+msgid "Taureau"
+msgstr ""
+
+#: revdate.js:50
+msgid "Laurier-thym"
+msgstr ""
+
+#: revdate.js:50
+msgid "Amadouvier"
+msgstr ""
+
+#: revdate.js:50
+msgid "Mézéréon"
+msgstr ""
+
+#: revdate.js:50
+msgid "Peuplier"
+msgstr ""
+
+#: revdate.js:50
+msgid "Coignée"
+msgstr ""
+
+#: revdate.js:51
+msgid "Ellébore"
+msgstr ""
+
+#: revdate.js:51
+msgid "Brocoli"
+msgstr ""
+
+#: revdate.js:51
+msgid "Laurier"
+msgstr ""
+
+#: revdate.js:51
+msgid "Avelinier"
+msgstr ""
+
+#: revdate.js:51
+msgid "Vache"
+msgstr ""
+
+#: revdate.js:51
+msgid "Buis"
+msgstr ""
+
+#: revdate.js:51
+msgid "Lichen"
+msgstr ""
+
+#: revdate.js:51
+msgid "If"
+msgstr ""
+
+#: revdate.js:51
+msgid "Pulmonaire"
+msgstr ""
+
+#: revdate.js:51
+msgid "Serpette"
+msgstr ""
+
+#: revdate.js:52
+msgid "Thlaspi"
+msgstr ""
+
+#: revdate.js:52
+msgid "Thimelé"
+msgstr ""
+
+#: revdate.js:52
+msgid "Chiendent"
+msgstr ""
+
+#: revdate.js:52
+msgid "Trainasse"
+msgstr ""
+
+#: revdate.js:52
+msgid "Lièvre"
+msgstr ""
+
+#: revdate.js:52
+msgid "Guède"
+msgstr ""
+
+#: revdate.js:52
+msgid "Noisetier"
+msgstr ""
+
+#: revdate.js:52
+msgid "Cyclamen"
+msgstr ""
+
+#: revdate.js:52
+msgid "Chélidoine"
+msgstr ""
+
+#: revdate.js:52
+msgid "Traîneau"
+msgstr ""
+
+#: revdate.js:53
+msgid "Tussilage"
+msgstr ""
+
+#: revdate.js:53
+msgid "Cornouiller"
+msgstr ""
+
+#: revdate.js:53
+msgid "Violier"
+msgstr ""
+
+#: revdate.js:53
+msgid "Troène"
+msgstr ""
+
+#: revdate.js:53
+msgid "Bouc"
+msgstr ""
+
+#: revdate.js:53
+msgid "Asaret"
+msgstr ""
+
+#: revdate.js:53
+msgid "Alaterne"
+msgstr ""
+
+#: revdate.js:53
+msgid "Violette"
+msgstr ""
+
+#: revdate.js:53
+msgid "Marceau"
+msgstr ""
+
+#: revdate.js:53
+msgid "Bêche"
+msgstr ""
+
+#: revdate.js:54
+msgid "Narcisse"
+msgstr ""
+
+#: revdate.js:54
+msgid "Orme"
+msgstr ""
+
+#: revdate.js:54
+msgid "Fumeterre"
+msgstr ""
+
+#: revdate.js:54
+msgid "Vélar"
+msgstr ""
+
+#: revdate.js:54
+msgid "Chèvre"
+msgstr ""
+
+#: revdate.js:54
+msgid "Épinard"
+msgstr ""
+
+#: revdate.js:54
+msgid "Doronic"
+msgstr ""
+
+#: revdate.js:54
+msgid "Mouron"
+msgstr ""
+
+#: revdate.js:54
+msgid "Cerfeuil"
+msgstr ""
+
+#: revdate.js:54
+msgid "Cordeau"
+msgstr ""
+
+#: revdate.js:55
+msgid "Mandragore"
+msgstr ""
+
+#: revdate.js:55
+msgid "Persil"
+msgstr ""
+
+#: revdate.js:55
+msgid "Cochléaria"
+msgstr ""
+
+#: revdate.js:55
+msgid "Pâquerette"
+msgstr ""
+
+#: revdate.js:55
+msgid "Thon"
+msgstr ""
+
+#: revdate.js:55
+msgid "Pissenlit"
+msgstr ""
+
+#: revdate.js:55
+msgid "Sylvie"
+msgstr ""
+
+#: revdate.js:55
+msgid "Capillaire"
+msgstr ""
+
+#: revdate.js:55
+msgid "Frêne"
+msgstr ""
+
+#: revdate.js:55
+msgid "Plantoir"
+msgstr ""
+
+#: revdate.js:56
+msgid "Primevère"
+msgstr ""
+
+#: revdate.js:56
+msgid "Platane"
+msgstr ""
+
+#: revdate.js:56
+msgid "Asperge"
+msgstr ""
+
+#: revdate.js:56
+msgid "Tulipe"
+msgstr ""
+
+#: revdate.js:56
+msgid "Poule"
+msgstr ""
+
+#: revdate.js:56
+msgid "Bette"
+msgstr ""
+
+#: revdate.js:56
+msgid "Bouleau"
+msgstr ""
+
+#: revdate.js:56
+msgid "Jonquille"
+msgstr ""
+
+#: revdate.js:56
+msgid "Aulne"
+msgstr ""
+
+#: revdate.js:56
+msgid "Couvoir"
+msgstr ""
+
+#: revdate.js:57
+msgid "Pervenche"
+msgstr ""
+
+#: revdate.js:57
+msgid "Charme"
+msgstr ""
+
+#: revdate.js:57
+msgid "Morille"
+msgstr ""
+
+#: revdate.js:57
+msgid "Hêtre"
+msgstr ""
+
+#: revdate.js:57
+msgid "Abeille"
+msgstr ""
+
+#: revdate.js:57
+msgid "Laitue"
+msgstr ""
+
+#: revdate.js:57
+msgid "Mélèze"
+msgstr ""
+
+#: revdate.js:57
+msgid "Ciguë"
+msgstr ""
+
+#: revdate.js:57
+msgid "Radis"
+msgstr ""
+
+#: revdate.js:57
+msgid "Ruche"
+msgstr ""
+
+#: revdate.js:58
+msgid "Gainier"
+msgstr ""
+
+#: revdate.js:58
+msgid "Romaine"
+msgstr ""
+
+#: revdate.js:58
+msgid "Marronnier"
+msgstr ""
+
+#: revdate.js:58
+msgid "Roquette"
+msgstr ""
+
+#: revdate.js:58
+msgid "Pigeon"
+msgstr ""
+
+#: revdate.js:58
+msgid "Lilas"
+msgstr ""
+
+#: revdate.js:58
+msgid "Anémone"
+msgstr ""
+
+#: revdate.js:58
+msgid "Pensée"
+msgstr ""
+
+#: revdate.js:58
+msgid "Myrtille"
+msgstr ""
+
+#: revdate.js:58
+msgid "Greffoir"
+msgstr ""
+
+#: revdate.js:59
+msgid "Rose"
+msgstr ""
+
+#: revdate.js:59
+msgid "Chêne"
+msgstr ""
+
+#: revdate.js:59
+msgid "Fougère"
+msgstr ""
+
+#: revdate.js:59
+msgid "Aubépine"
+msgstr ""
+
+#: revdate.js:59
+msgid "Rossignol"
+msgstr ""
+
+#: revdate.js:59
+msgid "Ancolie"
+msgstr ""
+
+#: revdate.js:59
+msgid "Muguet"
+msgstr ""
+
+#: revdate.js:59
+msgid "Champignon"
+msgstr ""
+
+#: revdate.js:59
+msgid "Hyacinthe"
+msgstr ""
+
+#: revdate.js:59
+msgid "Râteau"
+msgstr ""
+
+#: revdate.js:60
+msgid "Rhubarbe"
+msgstr ""
+
+#: revdate.js:60
+msgid "Sainfoin"
+msgstr ""
+
+#: revdate.js:60
+msgid "Bâton d'or"
+msgstr ""
+
+#: revdate.js:60
+msgid "Chamerisier"
+msgstr ""
+
+#: revdate.js:60
+msgid "Ver à soie"
+msgstr ""
+
+#: revdate.js:60
+msgid "Consoude"
+msgstr ""
+
+#: revdate.js:60
+msgid "Pimprenelle"
+msgstr ""
+
+#: revdate.js:60
+msgid "Corbeille d'or"
+msgstr ""
+
+#: revdate.js:60
+msgid "Arroche"
+msgstr ""
+
+#: revdate.js:60
+msgid "Sarcloir"
+msgstr ""
+
+#: revdate.js:61
+msgid "Statice"
+msgstr ""
+
+#: revdate.js:61
+msgid "Fritillaire"
+msgstr ""
+
+#: revdate.js:61
+msgid "Bourrache"
+msgstr ""
+
+#: revdate.js:61
+msgid "Valériane"
+msgstr ""
+
+#: revdate.js:61
+msgid "Carpe"
+msgstr ""
+
+#: revdate.js:61
+msgid "Fusain"
+msgstr ""
+
+#: revdate.js:61
+msgid "Civette"
+msgstr ""
+
+#: revdate.js:61
+msgid "Buglosse"
+msgstr ""
+
+#: revdate.js:61
+msgid "Sénevé"
+msgstr ""
+
+#: revdate.js:61
+msgid "Houlette"
+msgstr ""
+
+#: revdate.js:62
+msgid "Luzerne"
+msgstr ""
+
+#: revdate.js:62
+msgid "Hémérocalle"
+msgstr ""
+
+#: revdate.js:62
+msgid "Trèfle"
+msgstr ""
+
+#: revdate.js:62
+msgid "Angélique"
+msgstr ""
+
+#: revdate.js:62
+msgid "Canard"
+msgstr ""
+
+#: revdate.js:62
+msgid "Mélisse"
+msgstr ""
+
+#: revdate.js:62
+msgid "Fromental"
+msgstr ""
+
+#: revdate.js:62
+msgid "Martagon"
+msgstr ""
+
+#: revdate.js:62
+msgid "Serpolet"
+msgstr ""
+
+#: revdate.js:62
+msgid "Faux"
+msgstr ""
+
+#: revdate.js:63
+msgid "Fraise"
+msgstr ""
+
+#: revdate.js:63
+msgid "Bétoine"
+msgstr ""
+
+#: revdate.js:63
+msgid "Pois"
+msgstr ""
+
+#: revdate.js:63
+msgid "Acacia"
+msgstr ""
+
+#: revdate.js:63
+msgid "Caille"
+msgstr ""
+
+#: revdate.js:63
+msgid "Œillet"
+msgstr ""
+
+#: revdate.js:63
+msgid "Sureau"
+msgstr ""
+
+#: revdate.js:63
+msgid "Pavot"
+msgstr ""
+
+#: revdate.js:63
+msgid "Tilleul"
+msgstr ""
+
+#: revdate.js:63
+msgid "Fourche"
+msgstr ""
+
+#: revdate.js:64
+msgid "Barbeau"
+msgstr ""
+
+#: revdate.js:64
+msgid "Camomille"
+msgstr ""
+
+#: revdate.js:64
+msgid "Chèvrefeuille"
+msgstr ""
+
+#: revdate.js:64
+msgid "Caille-lait"
+msgstr ""
+
+#: revdate.js:64
+msgid "Tanche"
+msgstr ""
+
+#: revdate.js:64
+msgid "Jasmin"
+msgstr ""
+
+#: revdate.js:64
+msgid "Verveine"
+msgstr ""
+
+#: revdate.js:64
+msgid "Thym"
+msgstr ""
+
+#: revdate.js:64
+msgid "Pivoine"
+msgstr ""
+
+#: revdate.js:64
+msgid "Chariot"
+msgstr ""
+
+#: revdate.js:65
+msgid "Seigle"
+msgstr ""
+
+#: revdate.js:65
+msgid "Avoine"
+msgstr ""
+
+#: revdate.js:65
+msgid "Oignon"
+msgstr ""
+
+#: revdate.js:65
+msgid "Véronique"
+msgstr ""
+
+#: revdate.js:65
+msgid "Mulet"
+msgstr ""
+
+#: revdate.js:65
+msgid "Romarin"
+msgstr ""
+
+#: revdate.js:65
+msgid "Concombre"
+msgstr ""
+
+#: revdate.js:65
+msgid "Échalote"
+msgstr ""
+
+#: revdate.js:65
+msgid "Absinthe"
+msgstr ""
+
+#: revdate.js:65
+msgid "Faucille"
+msgstr ""
+
+#: revdate.js:66
+msgid "Coriandre"
+msgstr ""
+
+#: revdate.js:66
+msgid "Artichaut"
+msgstr ""
+
+#: revdate.js:66
+msgid "Girofle"
+msgstr ""
+
+#: revdate.js:66
+msgid "Lavande"
+msgstr ""
+
+#: revdate.js:66
+msgid "Chamois"
+msgstr ""
+
+#: revdate.js:66
+msgid "Tabac"
+msgstr ""
+
+#: revdate.js:66
+msgid "Groseille"
+msgstr ""
+
+#: revdate.js:66
+msgid "Gesse"
+msgstr ""
+
+#: revdate.js:66
+msgid "Cerise"
+msgstr ""
+
+#: revdate.js:66
+msgid "Parc"
+msgstr ""
+
+#: revdate.js:67
+msgid "Menthe"
+msgstr ""
+
+#: revdate.js:67
+msgid "Cumin"
+msgstr ""
+
+#: revdate.js:67
+msgid "Haricot"
+msgstr ""
+
+#: revdate.js:67
+msgid "Orcanète"
+msgstr ""
+
+#: revdate.js:67
+msgid "Pintade"
+msgstr ""
+
+#: revdate.js:67
+msgid "Sauge"
+msgstr ""
+
+#: revdate.js:67
+msgid "Ail"
+msgstr ""
+
+#: revdate.js:67
+msgid "Vesce"
+msgstr ""
+
+#: revdate.js:67
+msgid "Blé"
+msgstr ""
+
+#: revdate.js:67
+msgid "Chalémie"
+msgstr ""
+
+#: revdate.js:68
+msgid "Épeautre"
+msgstr ""
+
+#: revdate.js:68
+msgid "Bouillon blanc"
+msgstr ""
+
+#: revdate.js:68
+msgid "Melon"
+msgstr ""
+
+#: revdate.js:68
+msgid "Ivraie"
+msgstr ""
+
+#: revdate.js:68
+msgid "Bélier"
+msgstr ""
+
+#: revdate.js:68
+msgid "Prêle"
+msgstr ""
+
+#: revdate.js:68
+msgid "Armoise"
+msgstr ""
+
+#: revdate.js:68
+msgid "Carthame"
+msgstr ""
+
+#: revdate.js:68
+msgid "Mûre"
+msgstr ""
+
+#: revdate.js:68
+msgid "Arrosoir"
+msgstr ""
+
+#: revdate.js:69
+msgid "Panic"
+msgstr ""
+
+#: revdate.js:69
+msgid "Salicorne"
+msgstr ""
+
+#: revdate.js:69
+msgid "Abricot"
+msgstr ""
+
+#: revdate.js:69
+msgid "Basilic"
+msgstr ""
+
+#: revdate.js:69
+msgid "Brebis"
+msgstr ""
+
+#: revdate.js:69
+msgid "Guimauve"
+msgstr ""
+
+#: revdate.js:69
+msgid "Lin"
+msgstr ""
+
+#: revdate.js:69
+msgid "Amande"
+msgstr ""
+
+#: revdate.js:69
+msgid "Gentiane"
+msgstr ""
+
+#: revdate.js:69
+msgid "Écluse"
+msgstr ""
+
+#: revdate.js:70
+msgid "Carline"
+msgstr ""
+
+#: revdate.js:70
+msgid "Câprier"
+msgstr ""
+
+#: revdate.js:70
+msgid "Lentille"
+msgstr ""
+
+#: revdate.js:70
+msgid "Aunée"
+msgstr ""
+
+#: revdate.js:70
+msgid "Loutre"
+msgstr ""
+
+#: revdate.js:70
+msgid "Myrte"
+msgstr ""
+
+#: revdate.js:70
+msgid "Colza"
+msgstr ""
+
+#: revdate.js:70
+msgid "Lupin"
+msgstr ""
+
+#: revdate.js:70
+msgid "Coton"
+msgstr ""
+
+#: revdate.js:70
+msgid "Moulin"
+msgstr ""
+
+#: revdate.js:71
+msgid "Prune"
+msgstr ""
+
+#: revdate.js:71
+msgid "Millet"
+msgstr ""
+
+#: revdate.js:71
+msgid "Lycoperdon"
+msgstr ""
+
+#: revdate.js:71
+msgid "Escourgeon"
+msgstr ""
+
+#: revdate.js:71
+msgid "Saumon"
+msgstr ""
+
+#: revdate.js:71
+msgid "Tubéreuse"
+msgstr ""
+
+#: revdate.js:71
+msgid "Sucrion"
+msgstr ""
+
+#: revdate.js:71
+msgid "Apocyn"
+msgstr ""
+
+#: revdate.js:71
+msgid "Réglisse"
+msgstr ""
+
+#: revdate.js:71
+msgid "Échelle"
+msgstr ""
+
+#: revdate.js:72
+msgid "Pastèque"
+msgstr ""
+
+#: revdate.js:72
+msgid "Fenouil"
+msgstr ""
+
+#: revdate.js:72
+msgid "Épine vinette"
+msgstr ""
+
+#: revdate.js:72
+msgid "Noix"
+msgstr ""
+
+#: revdate.js:72
+msgid "Truite"
+msgstr ""
+
+#: revdate.js:72
+msgid "Citron"
+msgstr ""
+
+#: revdate.js:72
+msgid "Cardère"
+msgstr ""
+
+#: revdate.js:72
+msgid "Nerprun"
+msgstr ""
+
+#: revdate.js:72
+msgid "Tagette"
+msgstr ""
+
+#: revdate.js:72
+msgid "Hotte"
+msgstr ""
+
+#: revdate.js:73
+msgid "Églantier"
+msgstr ""
+
+#: revdate.js:73
+msgid "Noisette"
+msgstr ""
+
+#: revdate.js:73
+msgid "Houblon"
+msgstr ""
+
+#: revdate.js:73
+msgid "Sorgho"
+msgstr ""
+
+#: revdate.js:73
+msgid "Écrevisse"
+msgstr ""
+
+#: revdate.js:73
+msgid "Bigarade"
+msgstr ""
+
+#: revdate.js:73
+msgid "Verge d'or"
+msgstr ""
+
+#: revdate.js:73
+msgid "Maïs"
+msgstr ""
+
+#: revdate.js:73
+msgid "Marron"
+msgstr ""
+
+#: revdate.js:73
+msgid "Panier"
+msgstr ""
+
+#: revdate.js:74
+msgid "la Vertu"
+msgstr ""
+
+#: revdate.js:74
+msgid "Génie"
+msgstr ""
+
+#: revdate.js:74
+msgid "Travail"
+msgstr ""
+
+#: revdate.js:74
+msgid "l'Opinion"
+msgstr ""
+
+#: revdate.js:74
+msgid "Récompenses"
+msgstr ""
+
+#: revdate.js:74
+msgid "la Révolution"
+msgstr ""
+
+# Days of the week
+#: revdate.js:83
+msgid "Décadi"
+msgstr ""
+
+#: revdate.js:83
+msgid "Primidi"
+msgstr ""
+
+#: revdate.js:83
+msgid "Duodi"
+msgstr ""
+
+#: revdate.js:83
+msgid "Tridi"
+msgstr ""
+
+#: revdate.js:83
+msgid "Quartidi"
+msgstr ""
+
+#: revdate.js:84
+msgid "Quintidi"
+msgstr ""
+
+#: revdate.js:84
+msgid "Sextidi"
+msgstr ""
+
+#: revdate.js:84
+msgid "Septidi"
+msgstr ""
+
+#: revdate.js:84
+msgid "Octidi"
+msgstr ""
+
+#: revdate.js:84
+msgid "Nonidi"
+msgstr ""
