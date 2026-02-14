@@ -16,7 +16,7 @@ reinstall: uninstall install
 .PHONY: package
 package:
 	mkdir -p dist
-	cd src && gnome-extensions pack --force --out-dir=../dist
+	cd src && gnome-extensions pack --force --podir=po --out-dir=../dist
 
 .PHONY: test
 test:
