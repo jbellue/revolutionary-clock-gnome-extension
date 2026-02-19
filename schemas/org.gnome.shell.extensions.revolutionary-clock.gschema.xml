@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.gnome.shell.extensions.revolutionary-clock" path="/org/gnome/shell/extensions/revolutionary-clock/">
+    <key name="locale" type="s">
+      <default>"system"</default>
+      <summary>Locale for calendar names</summary>
+      <description>
+        The locale to use for translating month names, day names, and weekdays.
+        Options: "fr" (French), "en" (English), or "system" (use system locale)
+      </description>
+    </key>
+    <key name="clock-emoji" type="s">
+      <default>"🇫🇷"</default>
+      <summary>Emoji displayed around the clock</summary>
+      <description>
+        The emoji to display on both sides of the clock time.
+        Use empty string to disable emoji.
+      </description>
+    </key>
+  </schema>
+</schemalist>

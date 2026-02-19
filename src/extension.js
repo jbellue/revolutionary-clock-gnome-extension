@@ -20,6 +20,7 @@ import GObject from 'gi://GObject';
 import St from 'gi://St';
 import GLib from 'gi://GLib';
 import Clutter from 'gi://Clutter';
+import Gio from 'gi://Gio';
 
 import {Extension, gettext as _} from 'resource:///org/gnome/shell/extensions/extension.js';
 import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
@@ -28,11 +29,14 @@ import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 
 import {getRepublicanClock, getRepublicanDate, setTranslationFunction} from './revdate.js';
+import {setupLocale, translate} from './translations.js';
 
 const RevolutionaryClock = GObject.registerClass(
 class RevolutionaryClock extends PanelMenu.Button {
-    _init() {
+    _init(settings) {
         super._init(0.5, 'Revolutionary Clock', false);
+        
+        this._settings = settings;
 
         this._label = new St.Label({
             text: '',
@@ -59,11 +63,38 @@ class RevolutionaryClock extends PanelMenu.Button {
                 this._updateDateMenuItem();
             }
         });
+
+        // Listen for emoji changes
+        this._settingsChangedId = this._settings.connect('changed::clock-emoji', () => {
+            this._update();
+        });
     }
 
     _updateDateMenuItem() {
         const date = getRepublicanDate(new Date());
-        this._dateMenuItem.label.text = `${date.dayOfWeek} ${date.dayOfMonth} ${date.monthName} (${date.dayName})`;
+        
+        // Handle day as string or object {name, link}
+        let dayText = date.dayName;
+        let dayLink = null;
+        
+        if (typeof date.dayName === 'object' && date.dayName !== null) {
+            dayText = date.dayName.name || date.dayName;
+            dayLink = date.dayName.link;
+        }
+        
+        this._dateMenuItem.label.text = `${date.dayOfWeek} ${date.dayOfMonth} ${date.monthName} (${dayText})`;
+        
+        // Add click handler if there's a link
+        if (this._dayLinkHandler) {
+            this._dateMenuItem.disconnect(this._dayLinkHandler);
+            this._dayLinkHandler = null;
+        }
+        
+        if (dayLink) {
+            this._dayLinkHandler = this._dateMenuItem.connect('activate', () => {
+                Gio.AppInfo.launch_default_for_uri(dayLink, null);
+            });
+        }
     }
 
     _update() {
@@ -82,9 +113,14 @@ class RevolutionaryClock extends PanelMenu.Button {
         const pad2 = n => String(Math.floor(n)).padStart(2, '0');
 
         const clock = getRepublicanClock(new Date());
+        const emoji = this._settings.get_string('clock-emoji');
 
-        // Show only hours and minutes (no seconds)
-        return `🇫🇷 ${pad2(clock.hours)}:${pad2(clock.minutes)} 🇫🇷`;
+        const timeStr = `${pad2(clock.hours)}:${pad2(clock.minutes)}`;
+        if (emoji) {
+            return `${emoji} ${timeStr} ${emoji}`;
+        } else {
+            return timeStr;
+        }
     }
 
     destroy() {
@@ -92,21 +128,48 @@ class RevolutionaryClock extends PanelMenu.Button {
             GLib.Source.remove(this._timeout);
             this._timeout = 0;
         }
+        if (this._settingsChangedId) {
+            this._settings.disconnect(this._settingsChangedId);
+            this._settingsChangedId = null;
+        }
         super.destroy();
     }
 });
 
 export default class RevolutionaryClockExtension extends Extension {
     enable() {
-        // Set up translation function for revdate.js
-        setTranslationFunction(this.gettext.bind(this));
+        this._settings = this.getSettings();
 
-        this._revolutionaryClock = new RevolutionaryClock();
-        Main.panel.addToStatusArea(this.uuid, this._revolutionaryClock);
+        // Set up translation function for revdate.js
+        this._updateTranslationFunction().then(() => {
+            // Listen for locale changes
+            this._localeChangedId = this._settings.connect('changed::locale', () => {
+                this._updateTranslationFunction().then(() => {
+                    if (this._revolutionaryClock) {
+                        this._revolutionaryClock._update();
+                        this._revolutionaryClock._updateDateMenuItem();
+                    }
+                });
+            });
+
+            this._revolutionaryClock = new RevolutionaryClock(this._settings);
+            Main.panel.addToStatusArea(this.uuid, this._revolutionaryClock);
+        });
+    }
+
+    async _updateTranslationFunction() {
+        const locale = this._settings.get_string('locale');
+        await setupLocale(locale, this.dir);
+        setTranslationFunction(translate);
     }
 
     disable() {
+        if (this._localeChangedId) {
+            this._settings.disconnect(this._localeChangedId);
+            this._localeChangedId = null;
+        }
         this._revolutionaryClock.destroy();
         this._revolutionaryClock = null;
+        this._settings = null;
     }
 }
