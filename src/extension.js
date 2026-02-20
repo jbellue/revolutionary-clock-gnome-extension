@@ -125,16 +125,17 @@ class RevolutionaryClock extends PanelMenu.Button {
 
         const hasDayButton = this._dateDayLinkButton.get_parent() === this._dateMenuItem;
 
+        let labelText = `${date.dayOfWeek} ${date.dayOfMonth} ${date.monthName}`;
         if (includeDayName) {
             if (!hasDayButton)
                 this._dateMenuItem.add_child(this._dateDayLinkButton);
-            this._dateDayLinkButton.label = `(${dayText})`;
+            this._dateDayLinkButton.label = dayText;
+            labelText += ' - ';
         } else {
             if (hasDayButton)
                 this._dateMenuItem.remove_child(this._dateDayLinkButton);
         }
-
-        this._dateLabel.text = `${date.dayOfWeek} ${date.dayOfMonth} ${date.monthName}`;
+        this._dateLabel.text = labelText;
         
         // Reset any existing handlers
         if (this._dayLinkHandler) {
