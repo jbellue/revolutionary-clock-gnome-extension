@@ -21,6 +21,7 @@ import St from 'gi://St';
 import GLib from 'gi://GLib';
 import Clutter from 'gi://Clutter';
 import Gio from 'gi://Gio';
+import Meta from 'gi://Meta';
 
 import {Extension, gettext as _} from 'resource:///org/gnome/shell/extensions/extension.js';
 import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
@@ -37,6 +38,8 @@ class RevolutionaryClock extends PanelMenu.Button {
         super._init(0.5, 'Revolutionary Clock', false);
         
         this._settings = settings;
+        this._pointerCursor = this._resolveCursor(['POINTING_HAND', 'POINTER', 'HAND']);
+        this._defaultCursor = this._resolveCursor(['DEFAULT', 'ARROW']);
 
         this._label = new St.Label({
             text: '',
@@ -53,7 +56,24 @@ class RevolutionaryClock extends PanelMenu.Button {
         this._startTimer();
 
         // Create the date menu item
-        this._dateMenuItem = new PopupMenu.PopupMenuItem('');
+        this._dateMenuItem = new PopupMenu.PopupBaseMenuItem({
+            reactive: false,
+            can_focus: false,
+        });
+        this._datePrefixLabel = new St.Label({
+            y_align: Clutter.ActorAlign.CENTER,
+        });
+        this._dateDayLinkButton = new St.Button({
+            style: 'padding: 0; min-height: 0;',
+            x_align: Clutter.ActorAlign.START,
+            y_align: Clutter.ActorAlign.CENTER,
+        });
+        this._dateSuffixLabel = new St.Label({
+            y_align: Clutter.ActorAlign.CENTER,
+        });
+        this._dateMenuItem.add_child(this._datePrefixLabel);
+        this._dateMenuItem.add_child(this._dateDayLinkButton);
+        this._dateMenuItem.add_child(this._dateSuffixLabel);
         this._updateDateMenuItem();
         this.menu.addMenuItem(this._dateMenuItem);
 
@@ -70,6 +90,27 @@ class RevolutionaryClock extends PanelMenu.Button {
         });
     }
 
+    _resolveCursor(names) {
+        if (!Meta?.Cursor)
+            return null;
+
+        for (const name of names) {
+            if (!(name in Meta.Cursor))
+                continue;
+
+            const cursor = Meta.Cursor[name];
+            if (typeof cursor !== 'number')
+                continue;
+
+            if ('INVALID' in Meta.Cursor && cursor === Meta.Cursor.INVALID)
+                continue;
+
+            return cursor;
+        }
+
+        return null;
+    }
+
     _updateDateMenuItem() {
         const date = getRepublicanDate(new Date());
         
@@ -82,18 +123,52 @@ class RevolutionaryClock extends PanelMenu.Button {
             dayLink = date.dayName.link;
         }
         
-        this._dateMenuItem.label.text = `${date.dayOfWeek} ${date.dayOfMonth} ${date.monthName} (${dayText})`;
+        this._datePrefixLabel.text = `${date.dayOfWeek} ${date.dayOfMonth} ${date.monthName} (`;
+        this._dateDayLinkButton.label = dayText;
+        this._dateSuffixLabel.text = ')';
         
         // Add click handler if there's a link
         if (this._dayLinkHandler) {
-            this._dateMenuItem.disconnect(this._dayLinkHandler);
+            this._dateDayLinkButton.disconnect(this._dayLinkHandler);
             this._dayLinkHandler = null;
         }
+        if (this._dayHoverEnterHandler) {
+            this._dateDayLinkButton.disconnect(this._dayHoverEnterHandler);
+            this._dayHoverEnterHandler = null;
+        }
+        if (this._dayHoverLeaveHandler) {
+            this._dateDayLinkButton.disconnect(this._dayHoverLeaveHandler);
+            this._dayHoverLeaveHandler = null;
+        }
+
         
         if (dayLink) {
-            this._dayLinkHandler = this._dateMenuItem.connect('activate', () => {
+            this._dayLinkHandler = this._dateDayLinkButton.connect('clicked', () => {
                 Gio.AppInfo.launch_default_for_uri(dayLink, null);
             });
+
+            if (this._pointerCursor !== null && this._defaultCursor !== null && global.display?.set_cursor) {
+                this._dayHoverEnterHandler = this._dateDayLinkButton.connect('enter-event', () => {
+                    global.display.set_cursor(this._pointerCursor);
+                    return Clutter.EVENT_PROPAGATE;
+                });
+                this._dayHoverLeaveHandler = this._dateDayLinkButton.connect('leave-event', () => {
+                    global.display.set_cursor(this._defaultCursor);
+                    return Clutter.EVENT_PROPAGATE;
+                });
+            }
+
+            this._dateDayLinkButton.style = 'padding: 0; min-height: 0; text-decoration: underline;';
+            this._dateDayLinkButton.reactive = true;
+            this._dateDayLinkButton.can_focus = true;
+            this._dateDayLinkButton.track_hover = true;
+        } else {
+            if (this._defaultCursor !== null && global.display?.set_cursor)
+                global.display.set_cursor(this._defaultCursor);
+            this._dateDayLinkButton.style = 'padding: 0; min-height: 0;';
+            this._dateDayLinkButton.reactive = false;
+            this._dateDayLinkButton.can_focus = false;
+            this._dateDayLinkButton.track_hover = false;
         }
     }
 
@@ -128,6 +203,20 @@ class RevolutionaryClock extends PanelMenu.Button {
             GLib.Source.remove(this._timeout);
             this._timeout = 0;
         }
+        if (this._dayLinkHandler) {
+            this._dateDayLinkButton.disconnect(this._dayLinkHandler);
+            this._dayLinkHandler = null;
+        }
+        if (this._dayHoverEnterHandler) {
+            this._dateDayLinkButton.disconnect(this._dayHoverEnterHandler);
+            this._dayHoverEnterHandler = null;
+        }
+        if (this._dayHoverLeaveHandler) {
+            this._dateDayLinkButton.disconnect(this._dayHoverLeaveHandler);
+            this._dayHoverLeaveHandler = null;
+        }
+        if (this._defaultCursor !== null && global.display?.set_cursor)
+            global.display.set_cursor(this._defaultCursor);
         if (this._settingsChangedId) {
             this._settings.disconnect(this._settingsChangedId);
             this._settingsChangedId = null;
