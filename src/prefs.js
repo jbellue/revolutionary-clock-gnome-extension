@@ -17,9 +17,66 @@
  */
 
 import Adw from 'gi://Adw';
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
 import Gtk from 'gi://Gtk';
 
 import {ExtensionPreferences} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
+
+function getAvailableLocales(extensionPath) {
+    const locales = [];
+    const candidateDirs = ['locales', 'locale'];
+
+    let localeDirPath = null;
+    let localeDir = null;
+    for (const dirName of candidateDirs) {
+        const dirPath = GLib.build_filenamev([extensionPath, dirName]);
+        const dirFile = Gio.File.new_for_path(dirPath);
+        if (dirFile.query_exists(null)) {
+            localeDirPath = dirPath;
+            localeDir = dirFile;
+            break;
+        }
+    }
+
+    if (!localeDir)
+        return locales;
+
+    try {
+        const enumerator = localeDir.enumerate_children(
+            'standard::name,standard::type',
+            Gio.FileQueryInfoFlags.NONE,
+            null
+        );
+
+        let info;
+        while ((info = enumerator.next_file(null)) !== null) {
+            if (info.get_file_type() !== Gio.FileType.REGULAR)
+                continue;
+
+            const fileName = info.get_name();
+            if (!fileName.endsWith('.js'))
+                continue;
+
+            const localeCode = fileName.slice(0, -3);
+            if (localeCode)
+                locales.push(localeCode);
+        }
+
+        enumerator.close(null);
+    } catch (e) {
+        console.warn(`[Revolutionary Clock] Could not list locales in ${localeDirPath}: ${e.message}`);
+    }
+
+    locales.sort();
+    return locales;
+}
+
+function getLocaleLabel(localeCode) {
+    if (localeCode === 'system')
+        return 'System Default';
+    return localeCode;
+}
 
 export default class RevolutionaryClockPreferences extends ExtensionPreferences {
     fillPreferencesWindow(window) {
@@ -43,30 +100,19 @@ export default class RevolutionaryClockPreferences extends ExtensionPreferences 
         });
 
         const localeModel = new Gtk.StringList();
-        localeModel.append('French');
-        localeModel.append('English');
-        localeModel.append('System Default');
+        const localeValues = [...getAvailableLocales(this.path), 'system'];
+        localeValues.forEach(localeCode => {
+            localeModel.append(getLocaleLabel(localeCode));
+        });
         localeRow.model = localeModel;
 
-        // Map settings values to combo box indices
         const localeValue = settings.get_string('locale');
-        if (localeValue === 'fr') {
-            localeRow.selected = 0;
-        } else if (localeValue === 'en') {
-            localeRow.selected = 1;
-        } else {
-            localeRow.selected = 2;
-        }
+        const selectedIndex = localeValues.indexOf(localeValue);
+        localeRow.selected = selectedIndex >= 0 ? selectedIndex : localeValues.indexOf('system');
 
         localeRow.connect('notify::selected', (widget) => {
             const selected = widget.selected;
-            if (selected === 0) {
-                settings.set_string('locale', 'fr');
-            } else if (selected === 1) {
-                settings.set_string('locale', 'en');
-            } else {
-                settings.set_string('locale', 'system');
-            }
+            settings.set_string('locale', localeValues[selected] || 'system');
         });
 
         group.add(localeRow);
