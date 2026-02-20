@@ -83,6 +83,18 @@ export default class RevolutionaryClockPreferences extends ExtensionPreferences 
 
         group.add(emojiRow);
 
+        const includeDayNameRow = new Adw.SwitchRow({
+            title: 'Include Day Name',
+            subtitle: 'Show the day name in the date menu',
+            active: settings.get_boolean('include-day-name'),
+        });
+
+        includeDayNameRow.connect('notify::active', (widget) => {
+            settings.set_boolean('include-day-name', widget.active);
+        });
+
+        group.add(includeDayNameRow);
+
         // Add some example emojis as a hint
         const hintLabel = new Gtk.Label({
             label: 'Examples: 🇫🇷 ⚜️ 🗼 🥖 (leave empty to disable)',

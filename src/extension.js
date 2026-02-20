@@ -60,7 +60,7 @@ class RevolutionaryClock extends PanelMenu.Button {
             reactive: false,
             can_focus: false,
         });
-        this._datePrefixLabel = new St.Label({
+        this._dateLabel = new St.Label({
             y_align: Clutter.ActorAlign.CENTER,
         });
         this._dateDayLinkButton = new St.Button({
@@ -68,14 +68,14 @@ class RevolutionaryClock extends PanelMenu.Button {
             x_align: Clutter.ActorAlign.START,
             y_align: Clutter.ActorAlign.CENTER,
         });
-        this._dateSuffixLabel = new St.Label({
-            y_align: Clutter.ActorAlign.CENTER,
-        });
-        this._dateMenuItem.add_child(this._datePrefixLabel);
-        this._dateMenuItem.add_child(this._dateDayLinkButton);
-        this._dateMenuItem.add_child(this._dateSuffixLabel);
+        this._dateMenuItem.add_child(this._dateLabel);
         this._updateDateMenuItem();
         this.menu.addMenuItem(this._dateMenuItem);
+        
+        // Listen for setting changes
+        this._includeDayNameChangedId = this._settings.connect('changed::include-day-name', () => {
+            this._updateDateMenuItem();
+        });
 
         // Update date when menu opens
         this.menu.connect('open-state-changed', (_, isOpen) => {
@@ -97,7 +97,6 @@ class RevolutionaryClock extends PanelMenu.Button {
         for (const name of names) {
             if (!(name in Meta.Cursor))
                 continue;
-
             const cursor = Meta.Cursor[name];
             if (typeof cursor !== 'number')
                 continue;
@@ -113,6 +112,7 @@ class RevolutionaryClock extends PanelMenu.Button {
 
     _updateDateMenuItem() {
         const date = getRepublicanDate(new Date());
+        const includeDayName = this._settings.get_boolean('include-day-name');
         
         // Handle day as string or object {name, link}
         let dayText = date.dayName;
@@ -122,12 +122,21 @@ class RevolutionaryClock extends PanelMenu.Button {
             dayText = date.dayName.name || date.dayName;
             dayLink = date.dayName.link;
         }
+
+        const hasDayButton = this._dateDayLinkButton.get_parent() === this._dateMenuItem;
+
+        if (includeDayName) {
+            if (!hasDayButton)
+                this._dateMenuItem.add_child(this._dateDayLinkButton);
+            this._dateDayLinkButton.label = `(${dayText})`;
+        } else {
+            if (hasDayButton)
+                this._dateMenuItem.remove_child(this._dateDayLinkButton);
+        }
+
+        this._dateLabel.text = `${date.dayOfWeek} ${date.dayOfMonth} ${date.monthName}`;
         
-        this._datePrefixLabel.text = `${date.dayOfWeek} ${date.dayOfMonth} ${date.monthName} (`;
-        this._dateDayLinkButton.label = dayText;
-        this._dateSuffixLabel.text = ')';
-        
-        // Add click handler if there's a link
+        // Reset any existing handlers
         if (this._dayLinkHandler) {
             this._dateDayLinkButton.disconnect(this._dayLinkHandler);
             this._dayLinkHandler = null;
@@ -142,7 +151,7 @@ class RevolutionaryClock extends PanelMenu.Button {
         }
 
         
-        if (dayLink) {
+        if (includeDayName && dayLink) {
             this._dayLinkHandler = this._dateDayLinkButton.connect('clicked', () => {
                 Gio.AppInfo.launch_default_for_uri(dayLink, null);
             });
@@ -220,6 +229,10 @@ class RevolutionaryClock extends PanelMenu.Button {
         if (this._settingsChangedId) {
             this._settings.disconnect(this._settingsChangedId);
             this._settingsChangedId = null;
+        }
+        if (this._includeDayNameChangedId) {
+            this._settings.disconnect(this._includeDayNameChangedId);
+            this._includeDayNameChangedId = null;
         }
         super.destroy();
     }

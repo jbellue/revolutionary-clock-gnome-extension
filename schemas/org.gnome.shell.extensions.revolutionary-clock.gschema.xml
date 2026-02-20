@@ -17,5 +17,12 @@
         Use empty string to disable emoji.
       </description>
     </key>
+    <key name="include-day-name" type="b">
+      <default>true</default>
+      <summary>Include day name in the date menu</summary>
+      <description>
+        Whether to show the revolutionary day name in the menu date line.
+      </description>
+    </key>
   </schema>
 </schemalist>
