@@ -17,6 +17,20 @@
         Use empty string to disable emoji.
       </description>
     </key>
+    <key name="emoji-before-clock" type="b">
+      <default>true</default>
+      <summary>Show emoji before the clock</summary>
+      <description>
+        Whether to show the configured emoji before the clock time.
+      </description>
+    </key>
+    <key name="emoji-after-clock" type="b">
+      <default>true</default>
+      <summary>Show emoji after the clock</summary>
+      <description>
+        Whether to show the configured emoji after the clock time.
+      </description>
+    </key>
     <key name="include-day-name" type="b">
       <default>true</default>
       <summary>Include day name in the date menu</summary>

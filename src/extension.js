@@ -109,6 +109,12 @@ class RevolutionaryClock extends PanelMenu.Button {
         this._settingsChangedId = this._settings.connect('changed::clock-emoji', () => {
             this._update();
         });
+        this._emojiBeforeChangedId = this._settings.connect('changed::emoji-before-clock', () => {
+            this._update();
+        });
+        this._emojiAfterChangedId = this._settings.connect('changed::emoji-after-clock', () => {
+            this._update();
+        });
     }
 
     _resolveCursor(names) {
@@ -231,13 +237,21 @@ class RevolutionaryClock extends PanelMenu.Button {
 
         const clock = getRepublicanClock(new Date());
         const emoji = this._settings.get_string('clock-emoji');
+        const emojiBefore = this._settings.get_boolean('emoji-before-clock');
+        const emojiAfter = this._settings.get_boolean('emoji-after-clock');
 
         const timeStr = `${pad2(clock.hours)}:${pad2(clock.minutes)}`;
-        if (emoji) {
-            return `${emoji} ${timeStr} ${emoji}`;
-        } else {
+        if (!emoji)
             return timeStr;
-        }
+
+        const parts = [];
+        if (emojiBefore)
+            parts.push(emoji);
+        parts.push(timeStr);
+        if (emojiAfter)
+            parts.push(emoji);
+
+        return parts.join(' ');
     }
 
     destroy() {
@@ -262,6 +276,14 @@ class RevolutionaryClock extends PanelMenu.Button {
         if (this._settingsChangedId) {
             this._settings.disconnect(this._settingsChangedId);
             this._settingsChangedId = null;
+        }
+        if (this._emojiBeforeChangedId) {
+            this._settings.disconnect(this._emojiBeforeChangedId);
+            this._emojiBeforeChangedId = null;
+        }
+        if (this._emojiAfterChangedId) {
+            this._settings.disconnect(this._emojiAfterChangedId);
+            this._emojiAfterChangedId = null;
         }
         if (this._includeDayNameChangedId) {
             this._settings.disconnect(this._includeDayNameChangedId);

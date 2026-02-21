@@ -124,6 +124,26 @@ export default class RevolutionaryClockPreferences extends ExtensionPreferences 
         group.add(localeRow);
 
         // Clock emoji entry
+        const emojiBeforeClockRow = new Adw.SwitchRow({
+            title: 'Emoji Before Clock',
+            subtitle: 'Show emoji before the time',
+            active: settings.get_boolean('emoji-before-clock'),
+        });
+        emojiBeforeClockRow.connect('notify::active', (widget) => {
+            settings.set_boolean('emoji-before-clock', widget.active);
+        });
+        group.add(emojiBeforeClockRow);
+
+        const emojiAfterClockRow = new Adw.SwitchRow({
+            title: 'Emoji After Clock',
+            subtitle: 'Show emoji after the time',
+            active: settings.get_boolean('emoji-after-clock'),
+        });
+        emojiAfterClockRow.connect('notify::active', (widget) => {
+            settings.set_boolean('emoji-after-clock', widget.active);
+        });
+        group.add(emojiAfterClockRow);
+
         const emojiRow = new Adw.EntryRow({
             title: 'Clock Emoji',
             text: settings.get_string('clock-emoji'),
@@ -132,7 +152,6 @@ export default class RevolutionaryClockPreferences extends ExtensionPreferences 
         emojiRow.connect('changed', (widget) => {
             settings.set_string('clock-emoji', widget.text);
         });
-
         group.add(emojiRow);
 
         const includeDayNameRow = new Adw.SwitchRow({
@@ -159,16 +178,5 @@ export default class RevolutionaryClockPreferences extends ExtensionPreferences 
 
         symbolsGroup.add(includeDayNameRow);
         symbolsGroup.add(includeDayNameLinkRow);
-
-        // Add some example emojis as a hint
-        const hintLabel = new Gtk.Label({
-            label: 'Examples: 🇫🇷 ⚜️ 🗼 🥖 (leave empty to disable)',
-            wrap: true,
-            xalign: 0,
-            margin_start: 12,
-            margin_top: 6,
-            margin_bottom: 12,
-        });
-        group.add(hintLabel);
     }
 }
