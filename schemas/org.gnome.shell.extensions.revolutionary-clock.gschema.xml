@@ -9,26 +9,26 @@
         Options: "fr" (French), "en" (English), or "system" (use system locale)
       </description>
     </key>
-    <key name="clock-emoji" type="s">
+    <key name="clock-decoration" type="s">
       <default>"🇫🇷"</default>
-      <summary>Emoji displayed around the clock</summary>
+      <summary>Text displayed around the clock</summary>
       <description>
-        The emoji to display on both sides of the clock time.
-        Use empty string to disable emoji.
+        The decoration text to display on both sides of the clock time.
+        Use empty string to disable clock decoration.
       </description>
     </key>
-    <key name="emoji-before-clock" type="b">
+    <key name="decoration-before-clock" type="b">
       <default>true</default>
-      <summary>Show emoji before the clock</summary>
+      <summary>Show decoration before the clock</summary>
       <description>
-        Whether to show the configured emoji before the clock time.
+        Whether to show the configured clock decoration before the clock time.
       </description>
     </key>
-    <key name="emoji-after-clock" type="b">
+    <key name="decoration-after-clock" type="b">
       <default>true</default>
-      <summary>Show emoji after the clock</summary>
+      <summary>Show decoration after the clock</summary>
       <description>
-        Whether to show the configured emoji after the clock time.
+        Whether to show the configured clock decoration after the clock time.
       </description>
     </key>
     <key name="include-day-name" type="b">

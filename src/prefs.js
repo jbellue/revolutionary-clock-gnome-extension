@@ -123,34 +123,34 @@ export default class RevolutionaryClockPreferences extends ExtensionPreferences 
 
         localeGroup.add(localeRow);
 
-        // Clock emoji entry
-        const emojiBeforeClockRow = new Adw.SwitchRow({
+        // Clock decoration entry
+        const decorationBeforeClockRow = new Adw.SwitchRow({
             title: 'Include the Text Before the Clock',
-            active: settings.get_boolean('emoji-before-clock'),
+            active: settings.get_boolean('decoration-before-clock'),
         });
-        emojiBeforeClockRow.connect('notify::active', (widget) => {
-            settings.set_boolean('emoji-before-clock', widget.active);
+        decorationBeforeClockRow.connect('notify::active', (widget) => {
+            settings.set_boolean('decoration-before-clock', widget.active);
         });
-        clockGroup.add(emojiBeforeClockRow);
+        clockGroup.add(decorationBeforeClockRow);
 
-        const emojiAfterClockRow = new Adw.SwitchRow({
+        const decorationAfterClockRow = new Adw.SwitchRow({
             title: 'Include the Text After the Clock',
-            active: settings.get_boolean('emoji-after-clock'),
+            active: settings.get_boolean('decoration-after-clock'),
         });
-        emojiAfterClockRow.connect('notify::active', (widget) => {
-            settings.set_boolean('emoji-after-clock', widget.active);
+        decorationAfterClockRow.connect('notify::active', (widget) => {
+            settings.set_boolean('decoration-after-clock', widget.active);
         });
-        clockGroup.add(emojiAfterClockRow);
+        clockGroup.add(decorationAfterClockRow);
 
-        const emojiRow = new Adw.EntryRow({
-            title: 'Clock Emoji',
-            text: settings.get_string('clock-emoji'),
+        const clockDecorationRow = new Adw.EntryRow({
+            title: 'Clock Decoration',
+            text: settings.get_string('clock-decoration'),
         });
 
-        emojiRow.connect('changed', (widget) => {
-            settings.set_string('clock-emoji', widget.text);
+        clockDecorationRow.connect('changed', (widget) => {
+            settings.set_string('clock-decoration', widget.text);
         });
-        clockGroup.add(emojiRow);
+        clockGroup.add(clockDecorationRow);
 
         const includeDayNameRow = new Adw.SwitchRow({
             title: 'Include Day Name',

@@ -105,14 +105,14 @@ class RevolutionaryClock extends PanelMenu.Button {
             }
         });
 
-        // Listen for emoji changes
-        this._settingsChangedId = this._settings.connect('changed::clock-emoji', () => {
+        // Listen for clock decoration changes
+        this._settingsChangedId = this._settings.connect('changed::clock-decoration', () => {
             this._update();
         });
-        this._emojiBeforeChangedId = this._settings.connect('changed::emoji-before-clock', () => {
+        this._decorationBeforeChangedId = this._settings.connect('changed::decoration-before-clock', () => {
             this._update();
         });
-        this._emojiAfterChangedId = this._settings.connect('changed::emoji-after-clock', () => {
+        this._decorationAfterChangedId = this._settings.connect('changed::decoration-after-clock', () => {
             this._update();
         });
     }
@@ -236,20 +236,20 @@ class RevolutionaryClock extends PanelMenu.Button {
         const pad2 = n => String(Math.floor(n)).padStart(2, '0');
 
         const clock = getRepublicanClock(new Date());
-        const emoji = this._settings.get_string('clock-emoji');
-        const emojiBefore = this._settings.get_boolean('emoji-before-clock');
-        const emojiAfter = this._settings.get_boolean('emoji-after-clock');
+        const clockDecoration = this._settings.get_string('clock-decoration');
+        const decorationBefore = this._settings.get_boolean('decoration-before-clock');
+        const decorationAfter = this._settings.get_boolean('decoration-after-clock');
 
         const timeStr = `${pad2(clock.hours)}:${pad2(clock.minutes)}`;
-        if (!emoji)
+        if (!clockDecoration)
             return timeStr;
 
         const parts = [];
-        if (emojiBefore)
-            parts.push(emoji);
+        if (decorationBefore)
+            parts.push(clockDecoration);
         parts.push(timeStr);
-        if (emojiAfter)
-            parts.push(emoji);
+        if (decorationAfter)
+            parts.push(clockDecoration);
 
         return parts.join(' ');
     }
@@ -277,13 +277,13 @@ class RevolutionaryClock extends PanelMenu.Button {
             this._settings.disconnect(this._settingsChangedId);
             this._settingsChangedId = null;
         }
-        if (this._emojiBeforeChangedId) {
-            this._settings.disconnect(this._emojiBeforeChangedId);
-            this._emojiBeforeChangedId = null;
+        if (this._decorationBeforeChangedId) {
+            this._settings.disconnect(this._decorationBeforeChangedId);
+            this._decorationBeforeChangedId = null;
         }
-        if (this._emojiAfterChangedId) {
-            this._settings.disconnect(this._emojiAfterChangedId);
-            this._emojiAfterChangedId = null;
+        if (this._decorationAfterChangedId) {
+            this._settings.disconnect(this._decorationAfterChangedId);
+            this._decorationAfterChangedId = null;
         }
         if (this._includeDayNameChangedId) {
             this._settings.disconnect(this._includeDayNameChangedId);

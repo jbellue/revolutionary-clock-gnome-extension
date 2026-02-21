@@ -6,6 +6,4 @@ When a day has a link, clicking on the date in the menu will open the Wikipedia 
 
 TODO:
 - verify the i18n
-- better control of the emoji flag
-- add toggles to show/hide year day (and link)
 - fix the whitespace when the link isn't shown
