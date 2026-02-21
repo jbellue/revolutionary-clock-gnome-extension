@@ -76,6 +76,9 @@ class RevolutionaryClock extends PanelMenu.Button {
         this._includeDayNameChangedId = this._settings.connect('changed::include-day-name', () => {
             this._updateDateMenuItem();
         });
+        this._includeDayNameLinkChangedId = this._settings.connect('changed::include-day-name-link', () => {
+            this._updateDateMenuItem();
+        });
 
         // Update date when menu opens
         this.menu.connect('open-state-changed', (_, isOpen) => {
@@ -113,6 +116,7 @@ class RevolutionaryClock extends PanelMenu.Button {
     _updateDateMenuItem() {
         const date = getRepublicanDate(new Date());
         const includeDayName = this._settings.get_boolean('include-day-name');
+        const includeDayNameLink = this._settings.get_boolean('include-day-name-link');
         
         // Handle day as string or object {name, link}
         let dayText = date.dayName;
@@ -124,16 +128,26 @@ class RevolutionaryClock extends PanelMenu.Button {
         }
 
         const hasDayButton = this._dateDayLinkButton.get_parent() === this._dateMenuItem;
+        const hasDayText = typeof dayText === 'string' && dayText.length > 0;
+        const hasDayLink = includeDayNameLink && hasDayText && typeof dayLink === 'string' && dayLink.length > 0;
 
         let labelText = `${date.dayOfWeek} ${date.dayOfMonth} ${date.monthName}`;
-        if (includeDayName) {
-            if (!hasDayButton)
-                this._dateMenuItem.add_child(this._dateDayLinkButton);
-            this._dateDayLinkButton.label = dayText;
+        if (includeDayName && hasDayText) {
             labelText += ' - ';
+            if (hasDayLink) {
+                if (!hasDayButton)
+                    this._dateMenuItem.add_child(this._dateDayLinkButton);
+                this._dateDayLinkButton.label = dayText;
+            } else {
+                if (hasDayButton)
+                    this._dateMenuItem.remove_child(this._dateDayLinkButton);
+                this._dateDayLinkButton.label = '';
+                labelText += dayText;
+            }
         } else {
             if (hasDayButton)
                 this._dateMenuItem.remove_child(this._dateDayLinkButton);
+            this._dateDayLinkButton.label = '';
         }
         this._dateLabel.text = labelText;
         
@@ -152,7 +166,7 @@ class RevolutionaryClock extends PanelMenu.Button {
         }
 
         
-        if (includeDayName && dayLink) {
+        if (includeDayName && hasDayLink) {
             this._dayLinkHandler = this._dateDayLinkButton.connect('clicked', () => {
                 Gio.AppInfo.launch_default_for_uri(dayLink, null);
             });
@@ -234,6 +248,10 @@ class RevolutionaryClock extends PanelMenu.Button {
         if (this._includeDayNameChangedId) {
             this._settings.disconnect(this._includeDayNameChangedId);
             this._includeDayNameChangedId = null;
+        }
+        if (this._includeDayNameLinkChangedId) {
+            this._settings.disconnect(this._includeDayNameLinkChangedId);
+            this._includeDayNameLinkChangedId = null;
         }
         super.destroy();
     }

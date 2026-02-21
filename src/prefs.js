@@ -93,6 +93,12 @@ export default class RevolutionaryClockPreferences extends ExtensionPreferences 
         });
         page.add(group);
 
+        const symbolsGroup = new Adw.PreferencesGroup({
+            title: 'Symbols',
+            description: 'Configure optional day name symbols',
+        });
+        page.add(symbolsGroup);
+
         // Locale selection
         const localeRow = new Adw.ComboRow({
             title: 'Locale',
@@ -135,11 +141,24 @@ export default class RevolutionaryClockPreferences extends ExtensionPreferences 
             active: settings.get_boolean('include-day-name'),
         });
 
-        includeDayNameRow.connect('notify::active', (widget) => {
-            settings.set_boolean('include-day-name', widget.active);
+        const includeDayNameLinkRow = new Adw.SwitchRow({
+            title: 'Day Name Link',
+            subtitle: 'Make day name clickable when link data is available',
+            active: settings.get_boolean('include-day-name-link'),
+            sensitive: settings.get_boolean('include-day-name'),
         });
 
-        group.add(includeDayNameRow);
+        includeDayNameRow.connect('notify::active', (widget) => {
+            settings.set_boolean('include-day-name', widget.active);
+            includeDayNameLinkRow.sensitive = widget.active;
+        });
+
+        includeDayNameLinkRow.connect('notify::active', (widget) => {
+            settings.set_boolean('include-day-name-link', widget.active);
+        });
+
+        symbolsGroup.add(includeDayNameRow);
+        symbolsGroup.add(includeDayNameLinkRow);
 
         // Add some example emojis as a hint
         const hintLabel = new Gtk.Label({

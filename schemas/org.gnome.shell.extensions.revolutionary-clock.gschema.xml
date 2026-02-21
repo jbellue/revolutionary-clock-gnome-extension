@@ -24,5 +24,12 @@
         Whether to show the revolutionary day name in the menu date line.
       </description>
     </key>
+    <key name="include-day-name-link" type="b">
+      <default>true</default>
+      <summary>Make day name clickable when possible</summary>
+      <description>
+        Whether to render the revolutionary day name as a clickable link when link data is available.
+      </description>
+    </key>
   </schema>
 </schemalist>
