@@ -86,22 +86,22 @@ export default class RevolutionaryClockPreferences extends ExtensionPreferences 
         const page = new Adw.PreferencesPage();
         window.add(page);
 
-        // Create a preference group for appearance
-        const group = new Adw.PreferencesGroup({
-            title: 'Appearance',
-            description: 'Customize the revolutionary clock appearance',
-        });
-        page.add(group);
+        const localeGroup = new Adw.PreferencesGroup();
+        page.add(localeGroup);
 
-        const symbolsGroup = new Adw.PreferencesGroup({
-            title: 'Symbols',
-            description: 'Configure optional day name symbols',
+        const clockGroup = new Adw.PreferencesGroup({
+            title: 'Customizing the Clock',
         });
-        page.add(symbolsGroup);
+        page.add(clockGroup);
+
+        const dateGroup = new Adw.PreferencesGroup({
+            title: 'Customizing the Date',
+        });
+        page.add(dateGroup);
 
         // Locale selection
         const localeRow = new Adw.ComboRow({
-            title: 'Locale',
+            title: 'Calendar Language',
             subtitle: 'Language for calendar names',
         });
 
@@ -121,28 +121,26 @@ export default class RevolutionaryClockPreferences extends ExtensionPreferences 
             settings.set_string('locale', localeValues[selected] || 'system');
         });
 
-        group.add(localeRow);
+        localeGroup.add(localeRow);
 
         // Clock emoji entry
         const emojiBeforeClockRow = new Adw.SwitchRow({
-            title: 'Emoji Before Clock',
-            subtitle: 'Show emoji before the time',
+            title: 'Include the Text Before the Clock',
             active: settings.get_boolean('emoji-before-clock'),
         });
         emojiBeforeClockRow.connect('notify::active', (widget) => {
             settings.set_boolean('emoji-before-clock', widget.active);
         });
-        group.add(emojiBeforeClockRow);
+        clockGroup.add(emojiBeforeClockRow);
 
         const emojiAfterClockRow = new Adw.SwitchRow({
-            title: 'Emoji After Clock',
-            subtitle: 'Show emoji after the time',
+            title: 'Include the Text After the Clock',
             active: settings.get_boolean('emoji-after-clock'),
         });
         emojiAfterClockRow.connect('notify::active', (widget) => {
             settings.set_boolean('emoji-after-clock', widget.active);
         });
-        group.add(emojiAfterClockRow);
+        clockGroup.add(emojiAfterClockRow);
 
         const emojiRow = new Adw.EntryRow({
             title: 'Clock Emoji',
@@ -152,7 +150,7 @@ export default class RevolutionaryClockPreferences extends ExtensionPreferences 
         emojiRow.connect('changed', (widget) => {
             settings.set_string('clock-emoji', widget.text);
         });
-        group.add(emojiRow);
+        clockGroup.add(emojiRow);
 
         const includeDayNameRow = new Adw.SwitchRow({
             title: 'Include Day Name',
@@ -176,7 +174,7 @@ export default class RevolutionaryClockPreferences extends ExtensionPreferences 
             settings.set_boolean('include-day-name-link', widget.active);
         });
 
-        symbolsGroup.add(includeDayNameRow);
-        symbolsGroup.add(includeDayNameLinkRow);
+        dateGroup.add(includeDayNameRow);
+        dateGroup.add(includeDayNameLinkRow);
     }
 }
