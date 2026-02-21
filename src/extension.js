@@ -64,10 +64,26 @@ class RevolutionaryClock extends PanelMenu.Button {
             y_align: Clutter.ActorAlign.CENTER,
         });
         this._dateDayLinkButton = new St.Button({
+            style_class: 'button',
             style: 'padding: 0; min-height: 0;',
             x_align: Clutter.ActorAlign.START,
             y_align: Clutter.ActorAlign.CENTER,
         });
+        this._dateDayLinkContent = new St.BoxLayout({
+            y_align: Clutter.ActorAlign.CENTER,
+            style: 'spacing: 6px;',
+        });
+        this._dateDayLinkIcon = new St.Icon({
+            icon_name: 'system-search-symbolic',
+            style_class: 'popup-menu-icon',
+            y_align: Clutter.ActorAlign.CENTER,
+        });
+        this._dateDayLinkLabel = new St.Label({
+            y_align: Clutter.ActorAlign.CENTER,
+        });
+        this._dateDayLinkContent.add_child(this._dateDayLinkIcon);
+        this._dateDayLinkContent.add_child(this._dateDayLinkLabel);
+        this._dateDayLinkButton.set_child(this._dateDayLinkContent);
         this._dateMenuItem.add_child(this._dateLabel);
         this._updateDateMenuItem();
         this.menu.addMenuItem(this._dateMenuItem);
@@ -137,17 +153,17 @@ class RevolutionaryClock extends PanelMenu.Button {
             if (hasDayLink) {
                 if (!hasDayButton)
                     this._dateMenuItem.add_child(this._dateDayLinkButton);
-                this._dateDayLinkButton.label = dayText;
+                this._dateDayLinkLabel.text = dayText;
             } else {
                 if (hasDayButton)
                     this._dateMenuItem.remove_child(this._dateDayLinkButton);
-                this._dateDayLinkButton.label = '';
+                this._dateDayLinkLabel.text = '';
                 labelText += dayText;
             }
         } else {
             if (hasDayButton)
                 this._dateMenuItem.remove_child(this._dateDayLinkButton);
-            this._dateDayLinkButton.label = '';
+            this._dateDayLinkLabel.text = '';
         }
         this._dateLabel.text = labelText;
         
@@ -182,7 +198,7 @@ class RevolutionaryClock extends PanelMenu.Button {
                 });
             }
 
-            this._dateDayLinkButton.style = 'padding: 0; min-height: 0; text-decoration: underline;';
+            this._dateDayLinkButton.style = 'padding: 2px 8px; min-height: 0;';
             this._dateDayLinkButton.reactive = true;
             this._dateDayLinkButton.can_focus = true;
             this._dateDayLinkButton.track_hover = true;
