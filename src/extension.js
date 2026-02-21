@@ -157,7 +157,7 @@ class RevolutionaryClock extends PanelMenu.Button {
 
         let labelText = `${date.dayOfWeek} ${date.dayOfMonth} ${date.monthName}`;
         if (includeDayName && hasDayText) {
-            labelText += ' - ';
+            labelText += ' — ';
             if (hasDayLink) {
                 if (!hasDayButton)
                     this._dateMenuItem.add_child(this._dateDayLinkButton);
