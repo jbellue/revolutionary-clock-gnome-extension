@@ -57,9 +57,11 @@ class RevolutionaryClock extends PanelMenu.Button {
 
         // Create the date menu item
         this._dateMenuItem = new PopupMenu.PopupBaseMenuItem({
-            reactive: false,
+            reactive: true,
+            activate: false,
             can_focus: false,
         });
+        this._dateMenuItem.track_hover = false;
         this._dateLabel = new St.Label({
             y_align: Clutter.ActorAlign.CENTER,
         });
@@ -133,7 +135,7 @@ class RevolutionaryClock extends PanelMenu.Button {
         const date = getRepublicanDate(new Date());
         const includeDayName = this._settings.get_boolean('include-day-name');
         const includeDayNameLink = this._settings.get_boolean('include-day-name-link');
-        
+            
         // Handle day as string or object {name, link}
         let dayText = date.dayName;
         let dayLink = null;
@@ -291,6 +293,8 @@ export default class RevolutionaryClockExtension extends Extension {
 
             this._revolutionaryClock = new RevolutionaryClock(this._settings);
             Main.panel.addToStatusArea(this.uuid, this._revolutionaryClock);
+        }).catch(e => {
+            console.error(`[Revolutionary Clock] Failed to enable extension: ${e.message}`);
         });
     }
 
@@ -305,8 +309,10 @@ export default class RevolutionaryClockExtension extends Extension {
             this._settings.disconnect(this._localeChangedId);
             this._localeChangedId = null;
         }
-        this._revolutionaryClock.destroy();
-        this._revolutionaryClock = null;
+        if (this._revolutionaryClock) {
+            this._revolutionaryClock.destroy();
+            this._revolutionaryClock = null;
+        }
         this._settings = null;
     }
 }

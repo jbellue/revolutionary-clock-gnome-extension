@@ -169,8 +169,6 @@ export default class RevolutionaryClockPreferences extends ExtensionPreferences 
             margin_top: 6,
             margin_bottom: 12,
         });
-        hintLabel.add_css_class('dim-label');
-        hintLabel.add_css_class('caption');
         group.add(hintLabel);
     }
 }
