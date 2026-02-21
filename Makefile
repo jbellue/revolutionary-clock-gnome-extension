@@ -28,3 +28,7 @@ package:
 .PHONY: test
 test:
 	npm test
+
+.PHONE: dbus
+dbus:
+	dbus-run-session gnome-shell --devkit --wayland
