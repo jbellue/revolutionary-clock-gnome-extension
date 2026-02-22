@@ -7,4 +7,3 @@ When a day has a link, clicking on the date in the menu will open the Wikipedia 
 TODO:
 - verify the i18n
 - fix the styling
-- update the calendar at midnight
