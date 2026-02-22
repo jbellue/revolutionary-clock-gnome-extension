@@ -67,7 +67,7 @@ class RevolutionaryClock extends PanelMenu.Button {
             vertical: false,
             x_expand: false,
             y_align: Clutter.ActorAlign.CENTER,
-            style: 'spacing: 0;',
+            style_class: 'revolutionary-clock-date-container',
         });
 
         // Label for the date
@@ -80,15 +80,14 @@ class RevolutionaryClock extends PanelMenu.Button {
 
         // --- Day name link button ---
         this._dateDayLinkButton = new St.Button({
-            style_class: 'button',
-            style: 'padding: 0; min-height: 0;',
+            style_class: 'button revolutionary-clock-day-link-button',
             x_align: Clutter.ActorAlign.START,
             y_align: Clutter.ActorAlign.CENTER,
         });
 
         this._dateDayLinkContent = new St.BoxLayout({
             y_align: Clutter.ActorAlign.CENTER,
-            style: 'spacing: 6px;',
+            style_class: 'revolutionary-clock-day-link-content',
         });
         this._dateDayLinkIcon = new St.Icon({
             icon_name: 'system-search-symbolic',
@@ -198,7 +197,6 @@ class RevolutionaryClock extends PanelMenu.Button {
             });
         }
 
-        this._dateDayLinkButton.style = 'padding: 2px 8px; min-height: 0;';
         this._dateDayLinkButton.reactive = true;
         this._dateDayLinkButton.can_focus = true;
         this._dateDayLinkButton.track_hover = true;
