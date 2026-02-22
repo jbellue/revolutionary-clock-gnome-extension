@@ -11,28 +11,9 @@
     min-width: 0;
 }
 
-.revolutionary-clock-menu-popup .popup-menu-content {
-    min-width: 0;
-}
-
-/* Remove extra horizontal padding from the date row */
-.revolutionary-clock-date-item {
-    padding-left: 0;
-    padding-right: 0;
-}
-
-/* Date container: no spacing between date label and link button */
-.revolutionary-clock-date-container {
-    spacing: 0;
-}
-
 /* Day name link button */
 .revolutionary-clock-day-link-button {
     padding: 2px 8px;
     min-height: 0;
-}
-
-/* Icon + label row inside the day name link button */
-.revolutionary-clock-day-link-content {
-    spacing: 6px;
+    margin-left: 1em;
 }

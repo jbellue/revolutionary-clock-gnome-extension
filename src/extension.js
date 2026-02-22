@@ -58,7 +58,6 @@ class RevolutionaryClock extends PanelMenu.Button {
             reactive: true,
             activate: false,
             can_focus: false,
-            style_class: 'revolutionary-clock-date-item',
         });
         this._dateMenuItem.track_hover = false;
 
@@ -67,7 +66,6 @@ class RevolutionaryClock extends PanelMenu.Button {
             vertical: false,
             x_expand: false,
             y_align: Clutter.ActorAlign.CENTER,
-            style_class: 'revolutionary-clock-date-container',
         });
 
         // Label for the date
@@ -87,7 +85,6 @@ class RevolutionaryClock extends PanelMenu.Button {
 
         this._dateDayLinkContent = new St.BoxLayout({
             y_align: Clutter.ActorAlign.CENTER,
-            style_class: 'revolutionary-clock-day-link-content',
         });
         this._dateDayLinkIcon = new St.Icon({
             icon_name: 'system-search-symbolic',
