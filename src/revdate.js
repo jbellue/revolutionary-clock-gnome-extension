@@ -101,6 +101,24 @@ function getAutumnEquinoxDate(year) {
 }
 
 /**
+ * Convert an integer to Roman numerals
+ * @param {number} num - Positive integer to convert
+ * @returns {string} Roman numeral string
+ */
+export function toRomanNumerals(num) {
+    const values  = [1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1];
+    const symbols = ['M', 'CM', 'D', 'CD', 'C', 'XC', 'L', 'XL', 'X', 'IX', 'V', 'IV', 'I'];
+    let result = '';
+    for (let i = 0; i < values.length; i++) {
+        while (num >= values[i]) {
+            result += symbols[i];
+            num -= values[i];
+        }
+    }
+    return result;
+}
+
+/**
  * Get Republican decimal time from a standard Date object
  * Returns the decimal clock (10 hours/day, 100 minutes/hour, 100 seconds/minute)
  */
@@ -163,6 +181,7 @@ export function getRepublicanDate(date) {
     
     return {
         years: republicanYear,
+        yearsRoman: toRomanNumerals(republicanYear),
         dayOfMonth,
         monthName,
         dayName,

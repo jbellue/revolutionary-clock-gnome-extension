@@ -164,6 +164,13 @@ export default class RevolutionaryClockPreferences extends ExtensionPreferences 
             active: settings.get_boolean('include-date-year'),
         });
 
+        const yearAsRomanNumeralsRow = new Adw.SwitchRow({
+            title: 'Year as Roman Numerals',
+            subtitle: 'Display the year in Roman numerals (e.g. CCXXXIV)',
+            active: settings.get_boolean('year-as-roman-numerals'),
+            sensitive: settings.get_boolean('include-date-year'),
+        });
+
         const includeDayNameLinkRow = new Adw.SwitchRow({
             title: 'Day Name Link',
             subtitle: 'Make day name clickable when link data is available',
@@ -178,6 +185,11 @@ export default class RevolutionaryClockPreferences extends ExtensionPreferences 
 
         includeYearRow.connect('notify::active', (widget) => {
             settings.set_boolean('include-date-year', widget.active);
+            yearAsRomanNumeralsRow.sensitive = widget.active;
+        });
+
+        yearAsRomanNumeralsRow.connect('notify::active', (widget) => {
+            settings.set_boolean('year-as-roman-numerals', widget.active);
         });
 
         includeDayNameLinkRow.connect('notify::active', (widget) => {
@@ -185,6 +197,7 @@ export default class RevolutionaryClockPreferences extends ExtensionPreferences 
         });
 
         dateGroup.add(includeYearRow);
+        dateGroup.add(yearAsRomanNumeralsRow);
         dateGroup.add(includeDayNameRow);
         dateGroup.add(includeDayNameLinkRow);
     }

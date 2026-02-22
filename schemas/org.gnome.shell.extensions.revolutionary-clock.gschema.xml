@@ -52,5 +52,12 @@
         Whether to render the revolutionary day name as a clickable link when link data is available.
       </description>
     </key>
+    <key name="year-as-roman-numerals" type="b">
+      <default>false</default>
+      <summary>Display year as Roman numerals</summary>
+      <description>
+        Whether to display the Republican year in Roman numerals (e.g. CCXXXIV) instead of Arabic numerals.
+      </description>
+    </key>
   </schema>
 </schemalist>

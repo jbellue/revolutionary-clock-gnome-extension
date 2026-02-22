@@ -121,6 +121,9 @@ class RevolutionaryClock extends PanelMenu.Button {
         this._includeYearChangedId = this._settings.connect('changed::include-date-year', () => {
             this._updateDateMenuItem();
         });
+        this._yearAsRomanNumeralsChangedId = this._settings.connect('changed::year-as-roman-numerals', () => {
+            this._updateDateMenuItem();
+        });
         this.menu.connect('open-state-changed', (_, isOpen) => {
             if (isOpen)
                 this._updateDateMenuItem();
@@ -152,9 +155,10 @@ class RevolutionaryClock extends PanelMenu.Button {
         const includeDayName = this._settings.get_boolean('include-day-name');
         const includeDayNameLink = this._settings.get_boolean('include-day-name-link');
         const includeYear = this._settings.get_boolean('include-date-year');
+        const yearAsRoman = this._settings.get_boolean('year-as-roman-numerals');
 
         // Format date label
-        const yearText = includeYear ? ` ${date.years}` : '';
+        const yearText = includeYear ? ` ${yearAsRoman ? date.yearsRoman : date.years}` : '';
 
         const dayText = date.dayName?.name || date.dayName || '';
         const dayLink = date.dayName?.link || null;
@@ -266,6 +270,7 @@ class RevolutionaryClock extends PanelMenu.Button {
             '_includeDayNameChangedId',
             '_includeDayNameLinkChangedId',
             '_includeYearChangedId',
+            '_yearAsRomanNumeralsChangedId',
         ];
         for (const idName of ids) {
             if (this[idName]) {
