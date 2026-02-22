@@ -23,6 +23,9 @@ import Gtk from 'gi://Gtk';
 
 import {ExtensionPreferences} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 
+const Gettext = imports.gettext;
+const _ = Gettext.domain('revolutionary-clock').gettext;
+
 function getAvailableLocales(extensionPath) {
     const locales = [];
     const candidateDirs = ['locales', 'locale'];
@@ -72,9 +75,9 @@ function getAvailableLocales(extensionPath) {
     return locales;
 }
 
-function getLocaleLabel(localeCode) {
+function getLocaleLabel(localeCode, _) {
     if (localeCode === 'system')
-        return 'System Default';
+        return _('System Default');
     return localeCode;
 }
 
@@ -90,25 +93,25 @@ export default class RevolutionaryClockPreferences extends ExtensionPreferences 
         page.add(localeGroup);
 
         const clockGroup = new Adw.PreferencesGroup({
-            title: 'Customizing the Clock',
+            title: _('Customizing the Clock'),
         });
         page.add(clockGroup);
 
         const dateGroup = new Adw.PreferencesGroup({
-            title: 'Customizing the Date',
+            title: _('Customizing the Date'),
         });
         page.add(dateGroup);
 
         // Locale selection
         const localeRow = new Adw.ComboRow({
-            title: 'Calendar Language',
-            subtitle: 'Language for calendar names',
+            title: _('Calendar Language'),
+            subtitle: _('Language for calendar names'),
         });
 
         const localeModel = new Gtk.StringList();
         const localeValues = [...getAvailableLocales(this.path), 'system'];
         localeValues.forEach(localeCode => {
-            localeModel.append(getLocaleLabel(localeCode));
+            localeModel.append(getLocaleLabel(localeCode, _));
         });
         localeRow.model = localeModel;
 
@@ -125,7 +128,7 @@ export default class RevolutionaryClockPreferences extends ExtensionPreferences 
 
         // Clock decoration entry
         const decorationBeforeClockRow = new Adw.SwitchRow({
-            title: 'Include the Text Before the Clock',
+            title: _('Include the Text Before the Clock'),
             active: settings.get_boolean('decoration-before-clock'),
         });
         decorationBeforeClockRow.connect('notify::active', (widget) => {
@@ -134,7 +137,7 @@ export default class RevolutionaryClockPreferences extends ExtensionPreferences 
         clockGroup.add(decorationBeforeClockRow);
 
         const decorationAfterClockRow = new Adw.SwitchRow({
-            title: 'Include the Text After the Clock',
+            title: _('Include the Text After the Clock'),
             active: settings.get_boolean('decoration-after-clock'),
         });
         decorationAfterClockRow.connect('notify::active', (widget) => {
@@ -143,7 +146,7 @@ export default class RevolutionaryClockPreferences extends ExtensionPreferences 
         clockGroup.add(decorationAfterClockRow);
 
         const clockDecorationRow = new Adw.EntryRow({
-            title: 'Clock Decoration',
+            title: _('Clock Decoration'),
             text: settings.get_string('clock-decoration'),
         });
 
@@ -153,27 +156,27 @@ export default class RevolutionaryClockPreferences extends ExtensionPreferences 
         clockGroup.add(clockDecorationRow);
 
         const includeDayNameRow = new Adw.SwitchRow({
-            title: 'Include Day Name',
-            subtitle: 'Show the day name in the date menu',
+            title: _('Include Day Name'),
+            subtitle: _('Show the day name in the date menu'),
             active: settings.get_boolean('include-day-name'),
         });
 
         const includeYearRow = new Adw.SwitchRow({
-            title: 'Include Year',
-            subtitle: 'Show the year in the date menu',
+            title: _('Include Year'),
+            subtitle: _('Show the year in the date menu'),
             active: settings.get_boolean('include-date-year'),
         });
 
         const yearAsRomanNumeralsRow = new Adw.SwitchRow({
-            title: 'Year as Roman Numerals',
-            subtitle: 'Display the year in Roman numerals (e.g. CCXXXIV)',
+            title: _('Year as Roman Numerals'),
+            subtitle: _('Display the year in Roman numerals (e.g. CCXXXIV)'),
             active: settings.get_boolean('year-as-roman-numerals'),
             sensitive: settings.get_boolean('include-date-year'),
         });
 
         const includeDayNameLinkRow = new Adw.SwitchRow({
-            title: 'Day Name Link',
-            subtitle: 'Make day name clickable when link data is available',
+            title: _('Day Name Link'),
+            subtitle: _('Make day name clickable when link data is available'),
             active: settings.get_boolean('include-day-name-link'),
             sensitive: settings.get_boolean('include-day-name'),
         });

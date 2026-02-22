@@ -1,0 +1,81 @@
+# Spanish translation of revolutionary-clock
+# Copyright (C) 2024
+# This file is distributed under the same license as the revolutionary-clock package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: revolutionary-clock\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-22 23:36+0100\n"
+"PO-Revision-Date: 2026-02-22 00:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: Spanish\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: src/prefs.js:81
+msgid "System Default"
+msgstr "Predeterminado del sistema"
+
+#: src/prefs.js:97
+msgid "Customizing the Clock"
+msgstr "Personalizar el reloj"
+
+#: src/prefs.js:102
+msgid "Customizing the Date"
+msgstr "Personalizar la fecha"
+
+#: src/prefs.js:108
+msgid "Calendar Language"
+msgstr "Idioma del calendario"
+
+#: src/prefs.js:109
+msgid "Language for calendar names"
+msgstr "Idioma para los nombres del calendario"
+
+#: src/prefs.js:132
+msgid "Include the Text Before the Clock"
+msgstr "Incluir el texto antes del reloj"
+
+#: src/prefs.js:141
+msgid "Include the Text After the Clock"
+msgstr "Incluir el texto después del reloj"
+
+#: src/prefs.js:150
+msgid "Clock Decoration"
+msgstr "Decoración del reloj"
+
+#: src/prefs.js:160
+msgid "Include Day Name"
+msgstr "Incluir el nombre del día"
+
+#: src/prefs.js:161
+msgid "Show the day name in the date menu"
+msgstr "Mostrar el nombre del día en el menú de fecha"
+
+#: src/prefs.js:166
+msgid "Include Year"
+msgstr "Incluir el año"
+
+#: src/prefs.js:167
+msgid "Show the year in the date menu"
+msgstr "Mostrar el año en el menú de fecha"
+
+#: src/prefs.js:172
+msgid "Year as Roman Numerals"
+msgstr "Año en numerales romanos"
+
+#: src/prefs.js:173
+msgid "Display the year in Roman numerals (e.g. CCXXXIV)"
+msgstr "Mostrar el año en numerales romanos (ej. CCXXXIV)"
+
+#: src/prefs.js:179
+msgid "Day Name Link"
+msgstr "Enlace del nombre del día"
+
+#: src/prefs.js:180
+msgid "Make day name clickable when link data is available"
+msgstr "Hacer el nombre del día clicable cuando hay enlace disponible"
