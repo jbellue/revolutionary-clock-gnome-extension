@@ -38,6 +38,13 @@
         Whether to show the revolutionary day name in the menu date line.
       </description>
     </key>
+    <key name="include-date-year" type="b">
+      <default>true</default>
+      <summary>Include year in the date menu</summary>
+      <description>
+        Whether to show the revolutionary year in the menu date line.
+      </description>
+    </key>
     <key name="include-day-name-link" type="b">
       <default>true</default>
       <summary>Make day name clickable when possible</summary>

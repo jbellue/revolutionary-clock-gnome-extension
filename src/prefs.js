@@ -158,6 +158,12 @@ export default class RevolutionaryClockPreferences extends ExtensionPreferences 
             active: settings.get_boolean('include-day-name'),
         });
 
+        const includeYearRow = new Adw.SwitchRow({
+            title: 'Include Year',
+            subtitle: 'Show the year in the date menu',
+            active: settings.get_boolean('include-date-year'),
+        });
+
         const includeDayNameLinkRow = new Adw.SwitchRow({
             title: 'Day Name Link',
             subtitle: 'Make day name clickable when link data is available',
@@ -170,10 +176,15 @@ export default class RevolutionaryClockPreferences extends ExtensionPreferences 
             includeDayNameLinkRow.sensitive = widget.active;
         });
 
+        includeYearRow.connect('notify::active', (widget) => {
+            settings.set_boolean('include-date-year', widget.active);
+        });
+
         includeDayNameLinkRow.connect('notify::active', (widget) => {
             settings.set_boolean('include-day-name-link', widget.active);
         });
 
+        dateGroup.add(includeYearRow);
         dateGroup.add(includeDayNameRow);
         dateGroup.add(includeDayNameLinkRow);
     }

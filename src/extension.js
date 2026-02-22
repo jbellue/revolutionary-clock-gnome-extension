@@ -118,6 +118,9 @@ class RevolutionaryClock extends PanelMenu.Button {
         this._includeDayNameLinkChangedId = this._settings.connect('changed::include-day-name-link', () => {
             this._updateDateMenuItem();
         });
+        this._includeYearChangedId = this._settings.connect('changed::include-date-year', () => {
+            this._updateDateMenuItem();
+        });
         this.menu.connect('open-state-changed', (_, isOpen) => {
             if (isOpen)
                 this._updateDateMenuItem();
@@ -148,13 +151,17 @@ class RevolutionaryClock extends PanelMenu.Button {
         const date = getRepublicanDate(new Date());
         const includeDayName = this._settings.get_boolean('include-day-name');
         const includeDayNameLink = this._settings.get_boolean('include-day-name-link');
+        const includeYear = this._settings.get_boolean('include-date-year');
+
+        // Format date label
+        const yearText = includeYear ? ` ${date.years}` : '';
 
         const dayText = date.dayName?.name || date.dayName || '';
         const dayLink = date.dayName?.link || null;
         const showDayText = includeDayName && dayText;
         const showLink = showDayText && includeDayNameLink && dayLink;
 
-        this._dateLabel.text = `${date.dayOfWeek} ${date.dayOfMonth} ${date.monthName}`;
+        this._dateLabel.text = `${date.dayOfWeek} ${date.dayOfMonth} ${date.monthName}${yearText}`;
         if (showDayText && !showLink)
             this._dateLabel.text += ` — ${dayText}`;
 
@@ -257,7 +264,8 @@ class RevolutionaryClock extends PanelMenu.Button {
             '_decorationBeforeChangedId',
             '_decorationAfterChangedId',
             '_includeDayNameChangedId',
-            '_includeDayNameLinkChangedId'
+            '_includeDayNameLinkChangedId',
+            '_includeYearChangedId',
         ];
         for (const idName of ids) {
             if (this[idName]) {
