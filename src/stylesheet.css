@@ -1,5 +1,9 @@
 /* Revolutionary Clock extension stylesheet */
 
+.panel-label {
+    padding: 0 0.45em;
+}
+
 /* The popup BoxPointer (menu.actor) normally gets a min-width from the
    shell theme (e.g. ".popup-menu { min-width: Xem }"). Override it so
    the clock menu shrink-wraps to its content. */
