@@ -4,7 +4,7 @@ INSTALL_DIR = $(HOME)/.local/share/gnome-shell/extensions/$(EXTENSION_ID)
 .PHONY: install
 install:
 	mkdir -p $(INSTALL_DIR)
-	cp src/*.js src/*.json $(INSTALL_DIR)/
+	cp src/*.js src/*.json src/*.css $(INSTALL_DIR)/
 	cp -r src/locale $(INSTALL_DIR)/
 	mkdir -p $(INSTALL_DIR)/schemas
 	cp schemas/*.xml $(INSTALL_DIR)/schemas/
@@ -32,3 +32,6 @@ test:
 .PHONE: dbus
 dbus:
 	dbus-run-session gnome-shell --devkit --wayland
+
+.PHONY: dev
+dev: reinstall dbus

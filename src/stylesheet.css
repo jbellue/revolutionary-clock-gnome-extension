@@ -1,0 +1,18 @@
+/* Revolutionary Clock extension stylesheet */
+
+/* The popup BoxPointer (menu.actor) normally gets a min-width from the
+   shell theme (e.g. ".popup-menu { min-width: Xem }"). Override it so
+   the clock menu shrink-wraps to its content. */
+.revolutionary-clock-menu-popup {
+    min-width: 0;
+}
+
+.revolutionary-clock-menu-popup .popup-menu-content {
+    min-width: 0;
+}
+
+/* Remove extra horizontal padding from the date row */
+.revolutionary-clock-date-item {
+    padding-left: 0;
+    padding-right: 0;
+}

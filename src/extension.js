@@ -23,54 +23,69 @@ import Clutter from 'gi://Clutter';
 import Gio from 'gi://Gio';
 import Meta from 'gi://Meta';
 
-import {Extension, gettext as _} from 'resource:///org/gnome/shell/extensions/extension.js';
+import { Extension, gettext as _ } from 'resource:///org/gnome/shell/extensions/extension.js';
 import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
 import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
-
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 
-import {getRepublicanClock, getRepublicanDate, setTranslationFunction} from './revdate.js';
-import {setupLocale, translate} from './translations.js';
+import { getRepublicanClock, getRepublicanDate, setTranslationFunction } from './revdate.js';
+import { setupLocale, translate } from './translations.js';
+
 
 const RevolutionaryClock = GObject.registerClass(
 class RevolutionaryClock extends PanelMenu.Button {
     _init(settings) {
         super._init(0.5, 'Revolutionary Clock', false);
-        
+
         this._settings = settings;
         this._pointerCursor = this._resolveCursor(['POINTING_HAND', 'POINTER', 'HAND']);
         this._defaultCursor = this._resolveCursor(['DEFAULT', 'ARROW']);
 
-        this._label = new St.Label({
+        this._clockLabel = new St.Label({
             text: '',
             style_class: 'panel-label',
             y_align: Clutter.ActorAlign.CENTER,
             y_expand: true,
         });
+        this.add_child(this._clockLabel);
 
-        this.add_child(this._label);
+        this._clockTimeout = 0;
+        this._updateClockLabel();
+        this._startClockTimer();
 
-        // initialise the timer so we know if we need to clean it up later
-        this._timeout = 0;
-        this._update();
-        this._startTimer();
-
-        // Create the date menu item
+        // --- Create date menu item now ---
         this._dateMenuItem = new PopupMenu.PopupBaseMenuItem({
             reactive: true,
             activate: false,
             can_focus: false,
+            style_class: 'revolutionary-clock-date-item',
         });
         this._dateMenuItem.track_hover = false;
+
+        // Container to eliminate spacing issues
+        this._dateContainer = new St.BoxLayout({
+            vertical: false,
+            x_expand: false,
+            y_align: Clutter.ActorAlign.CENTER,
+            style: 'spacing: 0;',
+        });
+
+        // Label for the date
         this._dateLabel = new St.Label({
             y_align: Clutter.ActorAlign.CENTER,
+            x_align: Clutter.ActorAlign.START,
+            x_expand: false,
         });
+        this._dateContainer.add_child(this._dateLabel);
+
+        // --- Day name link button ---
         this._dateDayLinkButton = new St.Button({
             style_class: 'button',
             style: 'padding: 0; min-height: 0;',
             x_align: Clutter.ActorAlign.START,
             y_align: Clutter.ActorAlign.CENTER,
         });
+
         this._dateDayLinkContent = new St.BoxLayout({
             y_align: Clutter.ActorAlign.CENTER,
             style: 'spacing: 6px;',
@@ -83,38 +98,34 @@ class RevolutionaryClock extends PanelMenu.Button {
         this._dateDayLinkLabel = new St.Label({
             y_align: Clutter.ActorAlign.CENTER,
         });
+
         this._dateDayLinkContent.add_child(this._dateDayLinkIcon);
         this._dateDayLinkContent.add_child(this._dateDayLinkLabel);
         this._dateDayLinkButton.set_child(this._dateDayLinkContent);
-        this._dateMenuItem.add_child(this._dateLabel);
-        this._updateDateMenuItem();
+
+        // Add container to menu item, then to menu
+        this._dateMenuItem.add_child(this._dateContainer);
         this.menu.addMenuItem(this._dateMenuItem);
-        
-        // Listen for setting changes
+        this.menu.actor.add_style_class_name('revolutionary-clock-menu-popup');
+
+        // Now safe to update the date
+        this._updateDateMenuItem();
+
+        // --- setting signals ---
         this._includeDayNameChangedId = this._settings.connect('changed::include-day-name', () => {
             this._updateDateMenuItem();
         });
         this._includeDayNameLinkChangedId = this._settings.connect('changed::include-day-name-link', () => {
             this._updateDateMenuItem();
         });
-
-        // Update date when menu opens
         this.menu.connect('open-state-changed', (_, isOpen) => {
-            if (isOpen) {
+            if (isOpen)
                 this._updateDateMenuItem();
-            }
         });
 
-        // Listen for clock decoration changes
-        this._settingsChangedId = this._settings.connect('changed::clock-decoration', () => {
-            this._update();
-        });
-        this._decorationBeforeChangedId = this._settings.connect('changed::decoration-before-clock', () => {
-            this._update();
-        });
-        this._decorationAfterChangedId = this._settings.connect('changed::decoration-after-clock', () => {
-            this._update();
-        });
+        this._settingsChangedId = this._settings.connect('changed::clock-decoration', () => this._updateClockLabel());
+        this._decorationBeforeChangedId = this._settings.connect('changed::decoration-before-clock', () => this._updateClockLabel());
+        this._decorationAfterChangedId = this._settings.connect('changed::decoration-after-clock', () => this._updateClockLabel());
     }
 
     _resolveCursor(names) {
@@ -122,60 +133,67 @@ class RevolutionaryClock extends PanelMenu.Button {
             return null;
 
         for (const name of names) {
-            if (!(name in Meta.Cursor))
-                continue;
-            const cursor = Meta.Cursor[name];
-            if (typeof cursor !== 'number')
-                continue;
-
-            if ('INVALID' in Meta.Cursor && cursor === Meta.Cursor.INVALID)
-                continue;
-
-            return cursor;
+            if (name in Meta.Cursor && typeof Meta.Cursor[name] === 'number' &&
+                (!('INVALID' in Meta.Cursor) || Meta.Cursor[name] !== Meta.Cursor.INVALID))
+                return Meta.Cursor[name];
         }
-
         return null;
     }
 
     _updateDateMenuItem() {
+        // Guard against race during initialization
+        if (!this._dateMenuItem || !this._dateContainer)
+            return;
+
         const date = getRepublicanDate(new Date());
         const includeDayName = this._settings.get_boolean('include-day-name');
         const includeDayNameLink = this._settings.get_boolean('include-day-name-link');
-            
-        // Handle day as string or object {name, link}
-        let dayText = date.dayName;
-        let dayLink = null;
-        
-        if (typeof date.dayName === 'object' && date.dayName !== null) {
-            dayText = date.dayName.name || date.dayName;
-            dayLink = date.dayName.link;
+
+        const dayText = date.dayName?.name || date.dayName || '';
+        const dayLink = date.dayName?.link || null;
+        const showDayText = includeDayName && dayText;
+        const showLink = showDayText && includeDayNameLink && dayLink;
+
+        this._dateLabel.text = `${date.dayOfWeek} ${date.dayOfMonth} ${date.monthName}`;
+        if (showDayText && !showLink)
+            this._dateLabel.text += ` — ${dayText}`;
+
+        // Remove old button if present
+        if (this._dateDayLinkButton.get_parent())
+            this._dateContainer.remove_child(this._dateDayLinkButton);
+
+        this._teardownDayLinkButton();
+
+        if (showLink) {
+            this._dateDayLinkLabel.text = dayText;
+            this._dateContainer.add_child(this._dateDayLinkButton);
+            this._setUpDayLinkButton(dayLink);
+        }
+    }
+
+    _setUpDayLinkButton(link) {
+        this._dayLinkHandler = this._dateDayLinkButton.connect('clicked', () => {
+            Gio.AppInfo.launch_default_for_uri(link, null);
+        });
+
+        if (this._pointerCursor !== null && this._defaultCursor !== null && global.display?.set_cursor) {
+            this._dayHoverEnterHandler = this._dateDayLinkButton.connect('enter-event', () => {
+                global.display.set_cursor(this._pointerCursor);
+                return Clutter.EVENT_PROPAGATE;
+            });
+            this._dayHoverLeaveHandler = this._dateDayLinkButton.connect('leave-event', () => {
+                global.display.set_cursor(this._defaultCursor);
+                return Clutter.EVENT_PROPAGATE;
+            });
         }
 
-        const hasDayButton = this._dateDayLinkButton.get_parent() === this._dateMenuItem;
-        const hasDayText = typeof dayText === 'string' && dayText.length > 0;
-        const hasDayLink = includeDayNameLink && hasDayText && typeof dayLink === 'string' && dayLink.length > 0;
+        this._dateDayLinkButton.style = 'padding: 2px 8px; min-height: 0;';
+        this._dateDayLinkButton.reactive = true;
+        this._dateDayLinkButton.can_focus = true;
+        this._dateDayLinkButton.track_hover = true;
+    }
 
-        let labelText = `${date.dayOfWeek} ${date.dayOfMonth} ${date.monthName}`;
-        if (includeDayName && hasDayText) {
-            labelText += ' — ';
-            if (hasDayLink) {
-                if (!hasDayButton)
-                    this._dateMenuItem.add_child(this._dateDayLinkButton);
-                this._dateDayLinkLabel.text = dayText;
-            } else {
-                if (hasDayButton)
-                    this._dateMenuItem.remove_child(this._dateDayLinkButton);
-                this._dateDayLinkLabel.text = '';
-                labelText += dayText;
-            }
-        } else {
-            if (hasDayButton)
-                this._dateMenuItem.remove_child(this._dateDayLinkButton);
-            this._dateDayLinkLabel.text = '';
-        }
-        this._dateLabel.text = labelText;
-        
-        // Reset any existing handlers
+    _teardownDayLinkButton() {
         if (this._dayLinkHandler) {
             this._dateDayLinkButton.disconnect(this._dayLinkHandler);
             this._dayLinkHandler = null;
@@ -188,53 +206,23 @@ class RevolutionaryClock extends PanelMenu.Button {
             this._dateDayLinkButton.disconnect(this._dayHoverLeaveHandler);
             this._dayHoverLeaveHandler = null;
         }
-
-        
-        if (includeDayName && hasDayLink) {
-            this._dayLinkHandler = this._dateDayLinkButton.connect('clicked', () => {
-                Gio.AppInfo.launch_default_for_uri(dayLink, null);
-            });
-
-            if (this._pointerCursor !== null && this._defaultCursor !== null && global.display?.set_cursor) {
-                this._dayHoverEnterHandler = this._dateDayLinkButton.connect('enter-event', () => {
-                    global.display.set_cursor(this._pointerCursor);
-                    return Clutter.EVENT_PROPAGATE;
-                });
-                this._dayHoverLeaveHandler = this._dateDayLinkButton.connect('leave-event', () => {
-                    global.display.set_cursor(this._defaultCursor);
-                    return Clutter.EVENT_PROPAGATE;
-                });
-            }
-
-            this._dateDayLinkButton.style = 'padding: 2px 8px; min-height: 0;';
-            this._dateDayLinkButton.reactive = true;
-            this._dateDayLinkButton.can_focus = true;
-            this._dateDayLinkButton.track_hover = true;
-        } else {
-            if (this._defaultCursor !== null && global.display?.set_cursor)
-                global.display.set_cursor(this._defaultCursor);
-            this._dateDayLinkButton.style = 'padding: 0; min-height: 0;';
-            this._dateDayLinkButton.reactive = false;
-            this._dateDayLinkButton.can_focus = false;
-            this._dateDayLinkButton.track_hover = false;
-        }
+        if (this._defaultCursor !== null && global.display?.set_cursor)
+            global.display.set_cursor(this._defaultCursor);
     }
 
-    _update() {
-        this._label.set_text(this._formatNow());
+    _updateClockLabel() {
+        this._clockLabel.set_text(this._formatNow());
     }
 
-    _startTimer() {
-        // Update every second; decimal minutes change ~every 86.4s
-        this._timeout = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 1000, () => {
-            this._update();
+    _startClockTimer() {
+        this._clockTimeout = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 1000, () => {
+            this._updateClockLabel();
             return GLib.SOURCE_CONTINUE;
         });
     }
 
     _formatNow() {
         const pad2 = n => String(Math.floor(n)).padStart(2, '0');
-
         const clock = getRepublicanClock(new Date());
         const clockDecoration = this._settings.get_string('clock-decoration');
         const decorationBefore = this._settings.get_boolean('decoration-before-clock');
@@ -255,59 +243,42 @@ class RevolutionaryClock extends PanelMenu.Button {
     }
 
     destroy() {
-        if (this._timeout) {
-            GLib.Source.remove(this._timeout);
-            this._timeout = 0;
+        if (this._clockTimeout) {
+            GLib.Source.remove(this._clockTimeout);
+            this._clockTimeout = 0;
         }
-        if (this._dayLinkHandler) {
-            this._dateDayLinkButton.disconnect(this._dayLinkHandler);
-            this._dayLinkHandler = null;
-        }
-        if (this._dayHoverEnterHandler) {
-            this._dateDayLinkButton.disconnect(this._dayHoverEnterHandler);
-            this._dayHoverEnterHandler = null;
-        }
-        if (this._dayHoverLeaveHandler) {
-            this._dateDayLinkButton.disconnect(this._dayHoverLeaveHandler);
-            this._dayHoverLeaveHandler = null;
-        }
+        this._teardownDayLinkButton();
+
         if (this._defaultCursor !== null && global.display?.set_cursor)
             global.display.set_cursor(this._defaultCursor);
-        if (this._settingsChangedId) {
-            this._settings.disconnect(this._settingsChangedId);
-            this._settingsChangedId = null;
-        }
-        if (this._decorationBeforeChangedId) {
-            this._settings.disconnect(this._decorationBeforeChangedId);
-            this._decorationBeforeChangedId = null;
-        }
-        if (this._decorationAfterChangedId) {
-            this._settings.disconnect(this._decorationAfterChangedId);
-            this._decorationAfterChangedId = null;
-        }
-        if (this._includeDayNameChangedId) {
-            this._settings.disconnect(this._includeDayNameChangedId);
-            this._includeDayNameChangedId = null;
-        }
-        if (this._includeDayNameLinkChangedId) {
-            this._settings.disconnect(this._includeDayNameLinkChangedId);
-            this._includeDayNameLinkChangedId = null;
+
+        const ids = [
+            '_settingsChangedId',
+            '_decorationBeforeChangedId',
+            '_decorationAfterChangedId',
+            '_includeDayNameChangedId',
+            '_includeDayNameLinkChangedId'
+        ];
+        for (const idName of ids) {
+            if (this[idName]) {
+                this._settings.disconnect(this[idName]);
+                this[idName] = null;
+            }
         }
         super.destroy();
     }
 });
 
+
 export default class RevolutionaryClockExtension extends Extension {
     enable() {
         this._settings = this.getSettings();
 
-        // Set up translation function for revdate.js
         this._updateTranslationFunction().then(() => {
-            // Listen for locale changes
             this._localeChangedId = this._settings.connect('changed::locale', () => {
                 this._updateTranslationFunction().then(() => {
                     if (this._revolutionaryClock) {
-                        this._revolutionaryClock._update();
+                        this._revolutionaryClock._updateClockLabel();
                         this._revolutionaryClock._updateDateMenuItem();
                     }
                 });
@@ -331,10 +302,12 @@ export default class RevolutionaryClockExtension extends Extension {
             this._settings.disconnect(this._localeChangedId);
             this._localeChangedId = null;
         }
+
         if (this._revolutionaryClock) {
             this._revolutionaryClock.destroy();
             this._revolutionaryClock = null;
         }
+
         this._settings = null;
     }
 }

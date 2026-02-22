@@ -163,7 +163,6 @@ export function getRepublicanDate(date) {
     
     return {
         years: republicanYear,
-        yeardays,
         dayOfMonth,
         monthName,
         dayName,
