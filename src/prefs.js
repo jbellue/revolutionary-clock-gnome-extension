@@ -127,6 +127,59 @@ export default class RevolutionaryClockPreferences extends ExtensionPreferences 
         localeGroup.add(localeRow);
 
         // Clock decoration entry
+        const savedIndex = settings.get_int('clock-index-in-status-bar');
+        const indexRow = new Adw.SpinRow({
+            title: 'Index in Panel',
+            adjustment: new Gtk.Adjustment({
+                lower: -1,
+                upper: 5,
+                value: savedIndex,
+                'page-increment': 1,
+                'step-increment': 1,
+            }),
+        });
+        indexRow.connect('changed', (widget) => {
+            settings.set_int('clock-index-in-status-bar', widget.value);
+        });
+
+        clockGroup.add(indexRow);
+        const positionGroup = new Adw.ToggleGroup({
+            homogeneous: true,
+            orientation: Gtk.Orientation.HORIZONTAL,
+            can_shrink: true,
+        });
+        positionGroup.add_css_class('flat');
+        const leftPosition = new Adw.Toggle({
+            name: 'left',
+            child: new Gtk.Label({ label: 'Left' }),
+        })
+        const centerPosition = new Adw.Toggle({
+            name: 'center',
+            child: new Gtk.Label({ label: 'Center' }),
+        })
+        const rightPosition = new Adw.Toggle({
+            name: 'right',
+            child: new Gtk.Label({ label: 'Right' }),
+        })
+        positionGroup.add(leftPosition);
+        positionGroup.add(centerPosition);
+        positionGroup.add(rightPosition);
+        positionGroup.connect('notify::active-name', (group) => {
+            const activeName = group.get_active_name();
+            if (activeName) {
+                settings.set_string('clock-position-in-status-bar', activeName);
+            }
+        });
+        const savedPosition = settings.get_string('clock-position-in-status-bar');
+        if (savedPosition && ['left', 'center', 'right'].includes(savedPosition)) {
+            positionGroup.set_active_name(savedPosition);
+        }
+        const positionRow = new Adw.ActionRow({
+            title: 'Position in Panel',
+        });
+        positionRow.add_suffix(positionGroup);
+        clockGroup.add(positionRow);
+
         const decorationBeforeClockRow = new Adw.SwitchRow({
             title: _('Include the Text Before the Clock'),
             active: settings.get_boolean('decoration-before-clock'),

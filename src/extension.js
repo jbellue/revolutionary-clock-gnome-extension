@@ -27,6 +27,9 @@ import { RevolutionaryClock } from './clockIndicator.js';
 export default class RevolutionaryClockExtension extends Extension {
     enable() {
         this._settings = this.getSettings();
+        this._positionChangedId = this._settings.connect('changed::clock-position-in-status-bar', () => this._updatePosition());
+        this._indexChangedId = this._settings.connect('changed::clock-index-in-status-bar', () => this._updatePosition());
+
 
         this._updateTranslationFunction().then(() => {
             this._localeChangedId = this._settings.connect('changed::locale', () => {
@@ -38,8 +41,7 @@ export default class RevolutionaryClockExtension extends Extension {
                 });
             });
 
-            this._revolutionaryClock = new RevolutionaryClock(this._settings);
-            Main.panel.addToStatusArea(this.uuid, this._revolutionaryClock);
+            this._createClockInMainPanel();
         }).catch(e => {
             console.error(`[Revolutionary Clock] Failed to enable extension: ${e.message}`);
         });
@@ -51,12 +53,34 @@ export default class RevolutionaryClockExtension extends Extension {
         setTranslationFunction(translate);
     }
 
+    _createClockInMainPanel() {
+            const index = this._settings.get_int('clock-index-in-status-bar');
+            const location = this._settings.get_string('clock-position-in-status-bar');
+            this._revolutionaryClock = new RevolutionaryClock(this._settings);
+            Main.panel.addToStatusArea(this.uuid, this._revolutionaryClock, index, location);
+    }
+
+    _updatePosition() {
+        if (!this._revolutionaryClock) return;
+        this._revolutionaryClock.destroy();
+        this._createClockInMainPanel();
+    }
+
     disable() {
         if (this._localeChangedId) {
             this._settings.disconnect(this._localeChangedId);
             this._localeChangedId = null;
         }
 
+        if (this._positionChangedId) {
+            this._settings.disconnect(this._positionChangedId);
+            this._positionChangedId = 0;
+        }
+        if (this._indexChangedId) {
+            this._settings.disconnect(this._indexChangedId);
+            this._indexChangedId = 0;
+        }
+        
         if (this._revolutionaryClock) {
             this._revolutionaryClock.destroy();
             this._revolutionaryClock = null;

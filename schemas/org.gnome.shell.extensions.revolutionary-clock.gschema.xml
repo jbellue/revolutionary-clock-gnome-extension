@@ -24,6 +24,20 @@
         Whether to show the configured clock decoration before the clock time.
       </description>
     </key>
+    <key name="clock-position-in-status-bar" type="s">
+      <default>"right"</default>
+      <summary>Clock position in the panel</summary>
+      <description>
+        The position of the clock in the panel. Options: "left", "center", "right".
+      </description>
+    </key>
+    <key name="clock-index-in-status-bar" type="i">
+      <default>0</default>
+      <summary>Clock index in the panel</summary>
+      <description>
+        The index of the clock in the panel position.
+      </description>
+    </key>
     <key name="decoration-after-clock" type="b">
       <default>true</default>
       <summary>Show decoration after the clock</summary>
