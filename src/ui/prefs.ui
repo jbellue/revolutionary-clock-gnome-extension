@@ -31,31 +31,19 @@
                                 <child>
                                     <object class="AdwToggle" id="clockPositionLeft">
                                         <property name="name">left</property>
-                                        <property name="child">
-                                            <object class="GtkLabel">
-                                                <property name="label" translatable="yes">Left</property>
-                                            </object>
-                                        </property>
+                                        <property name="icon-name">format-justify-left-symbolic</property>
                                     </object>
                                 </child>
                                 <child>
                                     <object class="AdwToggle" id="clockPositionCenter">
                                         <property name="name">center</property>
-                                        <property name="child">
-                                            <object class="GtkLabel">
-                                                <property name="label" translatable="yes">Center</property>
-                                            </object>
-                                        </property>
+                                        <property name="icon-name">format-justify-center-symbolic</property>
                                     </object>
                                 </child>
                                 <child>
                                     <object class="AdwToggle" id="clockPositionRight">
                                         <property name="name">right</property>
-                                        <property name="child">
-                                            <object class="GtkLabel">
-                                                <property name="label" translatable="yes">Right</property>
-                                            </object>
-                                        </property>
+                                        <property name="icon-name">format-justify-right-symbolic</property>
                                     </object>
                                 </child>
                             </object>
