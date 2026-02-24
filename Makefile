@@ -9,6 +9,7 @@ install: mo
 	mkdir -p $(INSTALL_DIR)
 	cp src/*.js src/*.json src/*.css $(INSTALL_DIR)/
 	cp -r src/locale $(INSTALL_DIR)/
+	cp -r src/ui $(INSTALL_DIR)/
 	mkdir -p $(INSTALL_DIR)/schemas
 	cp schemas/*.xml $(INSTALL_DIR)/schemas/
 	glib-compile-schemas $(INSTALL_DIR)/schemas/
@@ -48,6 +49,7 @@ package: mo
 	mkdir -p dist
 	mkdir -p src/schemas
 	cp schemas/*.xml src/schemas/
+	cp -r src/ui src/locale src/schemas dist/ 2>/dev/null || true
 	cd src && gnome-extensions pack --force --out-dir=../dist
 	rm -rf src/schemas
 

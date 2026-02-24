@@ -7,3 +7,4 @@ When a day has a link, clicking on the date in the menu will open the Wikipedia 
 TODO:
 - fix the prefs i18n
 - fix the styling
+- make the position (left/center/right) an enum and dropdown (the togglegroup looks pretty bad)

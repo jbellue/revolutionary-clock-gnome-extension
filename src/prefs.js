@@ -16,7 +16,6 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-import Adw from 'gi://Adw';
 import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 import Gtk from 'gi://Gtk';
@@ -85,176 +84,88 @@ export default class RevolutionaryClockPreferences extends ExtensionPreferences 
     fillPreferencesWindow(window) {
         const settings = this.getSettings();
 
-        // Create a preferences page
-        const page = new Adw.PreferencesPage();
-        window.add(page);
+        // Load UI from .ui file
+        const builder = new Gtk.Builder();
+        builder.add_from_file(this.dir.get_path() + '/ui/prefs.ui');
 
-        const localeGroup = new Adw.PreferencesGroup();
-        page.add(localeGroup);
-
-        const clockGroup = new Adw.PreferencesGroup({
-            title: _('Customizing the Clock'),
-        });
-        page.add(clockGroup);
-
-        const dateGroup = new Adw.PreferencesGroup({
-            title: _('Customizing the Date'),
-        });
-        page.add(dateGroup);
-
-        // Locale selection
-        const localeRow = new Adw.ComboRow({
-            title: _('Calendar Language'),
-            subtitle: _('Language for calendar names'),
+        // Clock settings
+        const clockPositionIndex = builder.get_object('clockPositionIndex');
+        clockPositionIndex.set_value(settings.get_int('clock-index-in-status-bar'));
+        clockPositionIndex.connect('notify::value', w => {
+            settings.set_int('clock-index-in-status-bar', w.get_value());
         });
 
+        const clockPositionGroup = builder.get_object('clockPositionGroup');
+        clockPositionGroup.set_active_name(settings.get_string('clock-position-in-status-bar'));
+        clockPositionGroup.connect('notify::active-name', w => {
+            settings.set_string('clock-position-in-status-bar', w.get_active_name());
+        });
+
+        const decorationBeforeClockRow = builder.get_object('decorationBeforeClockRow');
+        decorationBeforeClockRow.set_active(settings.get_boolean('decoration-before-clock'));
+        decorationBeforeClockRow.connect('notify::active', w => {
+            settings.set_boolean('decoration-before-clock', w.get_active());
+        });
+
+        const decorationAfterClockRow = builder.get_object('decorationAfterClockRow');
+        decorationAfterClockRow.set_active(settings.get_boolean('decoration-after-clock'));
+        decorationAfterClockRow.connect('notify::active', w => {
+            settings.set_boolean('decoration-after-clock', w.get_active());
+        });
+
+        const clockDecorationRow = builder.get_object('clockDecorationRow');
+        clockDecorationRow.set_text(settings.get_string('clock-decoration'));
+        clockDecorationRow.connect('notify::text', w => {
+            settings.set_string('clock-decoration', w.get_text());
+        });
+
+        // Calendar settings
+        const localeValue = builder.get_object('localeValue');
         const localeModel = new Gtk.StringList();
         const localeValues = [...getAvailableLocales(this.path), 'system'];
         localeValues.forEach(localeCode => {
             localeModel.append(getLocaleLabel(localeCode, _));
         });
-        localeRow.model = localeModel;
-
-        const localeValue = settings.get_string('locale');
-        const selectedIndex = localeValues.indexOf(localeValue);
-        localeRow.selected = selectedIndex >= 0 ? selectedIndex : localeValues.indexOf('system');
-
-        localeRow.connect('notify::selected', (widget) => {
-            const selected = widget.selected;
-            settings.set_string('locale', localeValues[selected] || 'system');
+        localeValue.set_model(localeModel);
+        let selectedIndex = localeValues.indexOf(settings.get_string('locale'));
+        localeValue.set_selected(selectedIndex >= 0 ? selectedIndex : localeValues.indexOf('system'));
+        localeValue.connect('notify::selected', w => {
+            settings.set_string('locale', localeValues[w.get_selected()] || 'system');
         });
 
-        localeGroup.add(localeRow);
-
-        // Clock decoration entry
-        const savedIndex = settings.get_int('clock-index-in-status-bar');
-        const indexRow = new Adw.SpinRow({
-            title: 'Index in Panel',
-            adjustment: new Gtk.Adjustment({
-                lower: -1,
-                upper: 5,
-                value: savedIndex,
-                'page-increment': 1,
-                'step-increment': 1,
-            }),
-        });
-        indexRow.connect('changed', (widget) => {
-            settings.set_int('clock-index-in-status-bar', widget.value);
+        const includeYearRow = builder.get_object('includeYearRow');
+        includeYearRow.set_active(settings.get_boolean('include-date-year'));
+        includeYearRow.connect('notify::active', w => {
+            settings.set_boolean('include-date-year', w.get_active());
         });
 
-        clockGroup.add(indexRow);
-        const positionGroup = new Adw.ToggleGroup({
-            homogeneous: true,
-            orientation: Gtk.Orientation.HORIZONTAL,
-            can_shrink: true,
+        const yearAsRomanNumeralsRow = builder.get_object('yearAsRomanNumeralsRow');
+        yearAsRomanNumeralsRow.set_active(settings.get_boolean('year-as-roman-numerals'));
+        yearAsRomanNumeralsRow.set_sensitive(settings.get_boolean('include-date-year'));
+        yearAsRomanNumeralsRow.connect('notify::active', w => {
+            settings.set_boolean('year-as-roman-numerals', w.get_active());
         });
-        positionGroup.add_css_class('flat');
-        const leftPosition = new Adw.Toggle({
-            name: 'left',
-            child: new Gtk.Label({ label: 'Left' }),
-        })
-        const centerPosition = new Adw.Toggle({
-            name: 'center',
-            child: new Gtk.Label({ label: 'Center' }),
-        })
-        const rightPosition = new Adw.Toggle({
-            name: 'right',
-            child: new Gtk.Label({ label: 'Right' }),
-        })
-        positionGroup.add(leftPosition);
-        positionGroup.add(centerPosition);
-        positionGroup.add(rightPosition);
-        positionGroup.connect('notify::active-name', (group) => {
-            const activeName = group.get_active_name();
-            if (activeName) {
-                settings.set_string('clock-position-in-status-bar', activeName);
-            }
-        });
-        const savedPosition = settings.get_string('clock-position-in-status-bar');
-        if (savedPosition && ['left', 'center', 'right'].includes(savedPosition)) {
-            positionGroup.set_active_name(savedPosition);
-        }
-        const positionRow = new Adw.ActionRow({
-            title: 'Position in Panel',
-        });
-        positionRow.add_suffix(positionGroup);
-        clockGroup.add(positionRow);
-
-        const decorationBeforeClockRow = new Adw.SwitchRow({
-            title: _('Include the Text Before the Clock'),
-            active: settings.get_boolean('decoration-before-clock'),
-        });
-        decorationBeforeClockRow.connect('notify::active', (widget) => {
-            settings.set_boolean('decoration-before-clock', widget.active);
-        });
-        clockGroup.add(decorationBeforeClockRow);
-
-        const decorationAfterClockRow = new Adw.SwitchRow({
-            title: _('Include the Text After the Clock'),
-            active: settings.get_boolean('decoration-after-clock'),
-        });
-        decorationAfterClockRow.connect('notify::active', (widget) => {
-            settings.set_boolean('decoration-after-clock', widget.active);
-        });
-        clockGroup.add(decorationAfterClockRow);
-
-        const clockDecorationRow = new Adw.EntryRow({
-            title: _('Clock Decoration'),
-            text: settings.get_string('clock-decoration'),
+        includeYearRow.connect('notify::active', w => {
+            yearAsRomanNumeralsRow.set_sensitive(w.get_active());
         });
 
-        clockDecorationRow.connect('changed', (widget) => {
-            settings.set_string('clock-decoration', widget.text);
-        });
-        clockGroup.add(clockDecorationRow);
-
-        const includeDayNameRow = new Adw.SwitchRow({
-            title: _('Include Day Name'),
-            subtitle: _('Show the day name in the date menu'),
-            active: settings.get_boolean('include-day-name'),
+        const includeDayNameRow = builder.get_object('includeDayNameRow');
+        includeDayNameRow.set_active(settings.get_boolean('include-day-name'));
+        includeDayNameRow.connect('notify::active', w => {
+            settings.set_boolean('include-day-name', w.get_active());
+            includeDayNameLinkRow.set_sensitive(w.get_active());
         });
 
-        const includeYearRow = new Adw.SwitchRow({
-            title: _('Include Year'),
-            subtitle: _('Show the year in the date menu'),
-            active: settings.get_boolean('include-date-year'),
+        const includeDayNameLinkRow = builder.get_object('includeDayNameLinkRow');
+        includeDayNameLinkRow.set_active(settings.get_boolean('include-day-name-link'));
+        includeDayNameLinkRow.set_sensitive(settings.get_boolean('include-day-name'));
+        includeDayNameLinkRow.connect('notify::active', w => {
+            settings.set_boolean('include-day-name-link', w.get_active());
         });
 
-        const yearAsRomanNumeralsRow = new Adw.SwitchRow({
-            title: _('Year as Roman Numerals'),
-            subtitle: _('Display the year in Roman numerals (e.g. CCXXXIV)'),
-            active: settings.get_boolean('year-as-roman-numerals'),
-            sensitive: settings.get_boolean('include-date-year'),
-        });
-
-        const includeDayNameLinkRow = new Adw.SwitchRow({
-            title: _('Day Name Link'),
-            subtitle: _('Make day name clickable when link data is available'),
-            active: settings.get_boolean('include-day-name-link'),
-            sensitive: settings.get_boolean('include-day-name'),
-        });
-
-        includeDayNameRow.connect('notify::active', (widget) => {
-            settings.set_boolean('include-day-name', widget.active);
-            includeDayNameLinkRow.sensitive = widget.active;
-        });
-
-        includeYearRow.connect('notify::active', (widget) => {
-            settings.set_boolean('include-date-year', widget.active);
-            yearAsRomanNumeralsRow.sensitive = widget.active;
-        });
-
-        yearAsRomanNumeralsRow.connect('notify::active', (widget) => {
-            settings.set_boolean('year-as-roman-numerals', widget.active);
-        });
-
-        includeDayNameLinkRow.connect('notify::active', (widget) => {
-            settings.set_boolean('include-day-name-link', widget.active);
-        });
-
-        dateGroup.add(includeYearRow);
-        dateGroup.add(yearAsRomanNumeralsRow);
-        dateGroup.add(includeDayNameRow);
-        dateGroup.add(includeDayNameLinkRow);
+        // Add all pages to the window
+        window.add(builder.get_object('clock_settings_page'));
+        window.add(builder.get_object('calendar_settings_page'));
+        window.add(builder.get_object('about_settings_page'));
     }
 }
