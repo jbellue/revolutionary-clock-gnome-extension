@@ -6,13 +6,13 @@
         <property name="icon-name">preferences-system-time-symbolic</property>
         <property name="title" translatable="yes">Clock Settings</property>
         <child>
-            <object class="AdwPreferencesGroup" id="clock_group">
-                <property name="title" translatable="yes">Customizing the Clock</property>
+            <object class="AdwPreferencesGroup">
+                <property name="title" translatable="yes">Clock Position</property>
                 <child>
                     <object class="AdwSpinRow" id="clockPositionIndex">
                         <property name="title" translatable="yes">Index in Panel</property>
                         <property name="adjustment">
-                            <object class="GtkAdjustment" id="iconEntryAdjustment">
+                            <object class="GtkAdjustment">
                                 <property name="lower">-1</property>
                                 <property name="upper">5</property>
                                 <property name="step_increment">1</property>
@@ -22,26 +22,27 @@
                 </child>
                 <child>
                     <object class="AdwActionRow">
-                        <property name="title" translatable="yes">Position in Panel</property>
+                        <property name="title" translatable="yes">Panel Area</property>
                         <child>
                             <object class="AdwToggleGroup" id="clockPositionGroup">
                                 <property name="homogeneous">True</property>
                                 <property name="orientation">horizontal</property>
                                 <property name="can-shrink">True</property>
+                                <property name="css-classes">round</property>
                                 <child>
-                                    <object class="AdwToggle" id="clockPositionLeft">
+                                    <object class="AdwToggle">
                                         <property name="name">left</property>
                                         <property name="icon-name">format-justify-left-symbolic</property>
                                     </object>
                                 </child>
                                 <child>
-                                    <object class="AdwToggle" id="clockPositionCenter">
+                                    <object class="AdwToggle">
                                         <property name="name">center</property>
                                         <property name="icon-name">format-justify-center-symbolic</property>
                                     </object>
                                 </child>
                                 <child>
-                                    <object class="AdwToggle" id="clockPositionRight">
+                                    <object class="AdwToggle">
                                         <property name="name">right</property>
                                         <property name="icon-name">format-justify-right-symbolic</property>
                                     </object>
@@ -50,6 +51,11 @@
                         </child>
                     </object>
                 </child>
+            </object>
+        </child>
+        <child>
+            <object class="AdwPreferencesGroup">
+                <property name="title" translatable="yes">Clock content</property>
                 <child>
                     <object class="AdwSwitchRow" id="decorationBeforeClockRow">
                         <property name="title" translatable="yes">Include the Text Before the Clock</property>
@@ -102,23 +108,6 @@
                     <object class="AdwSwitchRow" id="includeDayNameLinkRow">
                         <property name="title" translatable="yes">Day Name Link</property>
                         <property name="subtitle" translatable="yes">Make day name clickable when link data is available</property>
-                    </object>
-                </child>
-            </object>
-        </child>
-    </object>
-    <object class="AdwPreferencesPage" id="about_settings_page">
-        <property name="icon-name">user-info-symbolic</property>
-        <property name="title" translatable="yes">About</property>
-        <child>
-            <object class="AdwPreferencesGroup" id="about_group">
-                <property name="title" translatable="yes">Revolutionary Clock</property>
-                <child>
-                    <object class="AdwActionRow" id="versionValue">
-                        <property name="title" translatable="yes">Version</property>
-                    </object>
-                    <object class="AdwActionRow" id="authorValue">
-                        <property name="title" translatable="yes">Author</property>
                     </object>
                 </child>
             </object>
