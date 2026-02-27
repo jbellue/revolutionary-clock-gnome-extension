@@ -228,6 +228,14 @@ export class DateMenuItem {
                 this._container.remove_child(this._wikiImage);
             this._wikiImage.destroy();
         }
+        if (this._soup) {
+            this._soup.abort();
+            this._soup = null;
+        }
+        if (this._imageCache) {
+            this._imageCache.clear();
+            this._imageCache = null;
+        }
         this.item.destroy();
     }
 }
