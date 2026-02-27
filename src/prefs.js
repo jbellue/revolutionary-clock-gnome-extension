@@ -163,9 +163,14 @@ export default class RevolutionaryClockPreferences extends ExtensionPreferences 
             settings.set_boolean('include-day-name-link', w.get_active());
         });
 
+        const includeDayNameImageRow = builder.get_object('includeDayNameImageRow');
+        includeDayNameImageRow.set_active(settings.get_boolean('include-day-name-image'));
+        includeDayNameImageRow.connect('notify::active', w => {
+            settings.set_boolean('include-day-name-image', w.get_active());
+        });
+
         // Add all pages to the window
         window.add(builder.get_object('clock_settings_page'));
         window.add(builder.get_object('calendar_settings_page'));
-        window.add(builder.get_object('about_settings_page'));
     }
 }

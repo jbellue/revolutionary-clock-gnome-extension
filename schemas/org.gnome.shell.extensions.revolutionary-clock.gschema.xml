@@ -66,6 +66,13 @@
         Whether to render the revolutionary day name as a clickable link when link data is available.
       </description>
     </key>
+    <key name="include-day-name-image" type="b">
+      <default>true</default>
+      <summary>Include image for day name link</summary>
+      <description>
+        Whether to render an image for the revolutionary day name link when image data is available.
+      </description>
+    </key>
     <key name="year-as-roman-numerals" type="b">
       <default>false</default>
       <summary>Display year as Roman numerals</summary>

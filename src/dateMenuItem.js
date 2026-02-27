@@ -72,6 +72,7 @@ export class DateMenuItem {
         const date = getRepublicanDate(new Date());
         const includeDayName = this._settings.get_boolean('include-day-name');
         const includeDayNameLink = this._settings.get_boolean('include-day-name-link');
+        const includeDayNameImage = this._settings.get_boolean('include-day-name-image');
         const includeYear = this._settings.get_boolean('include-date-year');
         const yearAsRoman = this._settings.get_boolean('year-as-roman-numerals');
 
@@ -81,6 +82,7 @@ export class DateMenuItem {
         const dayLink = date.dayName?.link || null;
         const showDayText = includeDayName && dayText;
         const showLink = showDayText && includeDayNameLink && dayLink;
+        const showImage = includeDayNameImage && dayLink;
 
         this._dateLabel.text = `${date.dayOfWeek} ${date.dayOfMonth} ${date.monthName}${yearText}`;
         if (showDayText && !showLink)
@@ -100,9 +102,9 @@ export class DateMenuItem {
         if (showLink) {
             this._dayLinkButton.setup(dayLink, dayText);
             this._container.add_child(this._dayLinkButton);
-            if (dayLink) {
-                this.showWikiImageForDay(dayLink);
-            }
+        }
+        if (showImage) {
+            this.showWikiImageForDay(dayLink);
         }
     }
 

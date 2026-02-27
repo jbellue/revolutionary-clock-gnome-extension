@@ -52,6 +52,7 @@ class RevolutionaryClock extends PanelMenu.Button {
 
         this._includeDayNameChangedId = this._settings.connect('changed::include-day-name', () => this._updateDateMenuItem());
         this._includeDayNameLinkChangedId = this._settings.connect('changed::include-day-name-link', () => this._updateDateMenuItem());
+        this._includeDayNameImageChangedId = this._settings.connect('changed::include-day-name-image', () => this._updateDateMenuItem());
         this._includeYearChangedId = this._settings.connect('changed::include-date-year', () => this._updateDateMenuItem());
         this._yearAsRomanNumeralsChangedId = this._settings.connect('changed::year-as-roman-numerals', () => this._updateDateMenuItem());
 
@@ -116,6 +117,7 @@ class RevolutionaryClock extends PanelMenu.Button {
             '_decorationAfterChangedId',
             '_includeDayNameChangedId',
             '_includeDayNameLinkChangedId',
+            '_includeDayNameImageChangedId',
             '_includeYearChangedId',
             '_yearAsRomanNumeralsChangedId',
         ];
