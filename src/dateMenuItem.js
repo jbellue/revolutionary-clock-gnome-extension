@@ -20,6 +20,7 @@ import St from 'gi://St';
 import Clutter from 'gi://Clutter';
 import Soup from 'gi://Soup';
 import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
 
 import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 
@@ -56,8 +57,13 @@ export class DateMenuItem {
 
         // Image for Wikipedia
         this._soup = new Soup.Session();
-        this._soup.user_agent = 'User-Agent: Mozilla/5.0 (X11; GNOME Shell/0.1a; Linux x86_64; RevolutionaryClock';
+        this._soup.user_agent = 'RevolutionaryClock/1.0 (https://github.com/jbellue/revolutionary-clock)';
         this._wikiImage = null;
+
+        // Extension cache directory
+        this._cacheDir = `${GLib.get_user_cache_dir()}/revolutionaryclock/`;
+        GLib.mkdir_with_parents(this._cacheDir, 0o755);
+        this._imageCache = new Map();  // URL → local path
 
         this.item.add_child(this._container);
     }
@@ -94,70 +100,134 @@ export class DateMenuItem {
         if (showLink) {
             this._dayLinkButton.setup(dayLink, dayText);
             this._container.add_child(this._dayLinkButton);
-
-            // Try to fetch and show Wikipedia image
             if (dayLink) {
-                log(`[RevolutionaryClock] Attempting to fetch Wikipedia image for: ${dayLink}`);
-                fetchWikipediaImageUrl(this._soup, dayLink).then(url => {
-                    log(`[RevolutionaryClock] Wikipedia image URL: ${url}`);
-                    if (url) {
-                        // Download the image data
-                        try {
-                            let file = Gio.File.new_for_uri(url);
-                            file.load_contents_async(null, (file, res) => {
-                                try {
-                                    let [ok, contents] = file.load_contents_finish(res);
-                                    if (!ok) return;
-
-                                    const GLib = imports.gi.GLib;
-                                    
-                                    // Save to temp PNG
-                                    let tmpDir = GLib.get_tmp_dir();
-                                    let timestamp = String(Date.now());
-                                    let tempPath = GLib.build_filenamev([tmpDir, `wiki-${timestamp}.png`]);
-                                    
-                                    let tempFile = Gio.File.new_for_path(tempPath);
-                                    let stream = tempFile.replace(null, false, Gio.FileCreateFlags.NONE, null);
-                                    stream.write_all(contents, null);
-                                    stream.close(null);
-
-                                    // THIS IS THE RIGHT WAY
-                                    let gicon = Gio.icon_new_for_string(`file://${tempPath}`);
-                                    
-                                    this._wikiImage = new St.Icon({
-                                        gicon: gicon,
-                                        icon_size: 32,
-                                        style_class: 'revolutionary-clock-wiki-image',
-                                    });
-                                    
-                                    this._container.insert_child_at_index(this._wikiImage, this._container.get_n_children() - 1);
-                                    this._wikiTempPath = tempPath;
-                                    
-                                } catch (e) {
-                                    log(`[RevolutionaryClock] Error: ${e}`);
-                                }
-                            });
-                        } catch (e) {
-                            log(`[RevolutionaryClock] Error downloading image: ${e}`);
-                        }
-                    }
-                }).catch(e => {
-                    log(`[RevolutionaryClock] Error fetching Wikipedia image URL: ${e}`);
-                });
+                this.showWikiImageForDay(dayLink);
             }
         }
+    }
+
+    async downloadAndCacheWikiImage(dayLink) {
+        // Fetch the image URL for the dayLink, download, and cache it
+        try {
+            const url = await fetchWikipediaImageUrl(this._soup, dayLink);
+            if (!url) {
+                log(`[RevolutionaryClock] No Wikipedia image URL found for: ${dayLink}`);
+                return null;
+            }
+            // Generate cache filename from dayLink hash and preserve extension
+            let hash = new GLib.Checksum(GLib.ChecksumType.MD5);
+            hash.update(dayLink);
+            let extMatch = url.match(/\.([a-zA-Z0-9]+)(?:\?|$)/);
+            let ext = extMatch ? extMatch[1].toLowerCase() : 'jpg';
+            if (!['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) ext = 'jpg';
+            let cacheFile = `${this._cacheDir}${hash.get_string()}.${ext}`;
+            let file = Gio.File.new_for_path(cacheFile);
+            // Download image if not already present
+            if (!file.query_exists(null)) {
+                let result = await this._downloadImage(url, dayLink);
+                if (result && result.bytes && result.contentType && result.status === 200 && result.contentType.startsWith('image/')) {
+                    let stream = file.replace(null, false, Gio.FileCreateFlags.NONE, null);
+                    stream.write_all(result.bytes.get_data(), null);
+                    stream.close(null);
+                    log(`[RevolutionaryClock] Downloaded and saved image for ${dayLink} to ${cacheFile}`);
+                } else {
+                    log(`[RevolutionaryClock] Failed to download image for ${dayLink}`);
+                    return null;
+                }
+            }
+            this._imageCache.set(dayLink, cacheFile);
+            return cacheFile;
+        } catch (e) {
+            log(`[RevolutionaryClock] Error in downloadAndCacheWikiImage: ${e}`);
+            return null;
+        }
+    }
+
+    setWikiImageFromCache(dayLink) {
+        const cacheFile = this._imageCache.get(dayLink);
+        if (!cacheFile) {
+            log(`[RevolutionaryClock] No cached image for dayLink: ${dayLink}`);
+            return;
+        }
+        let file = Gio.File.new_for_path(cacheFile);
+        if (!file.query_exists(null)) {
+            log(`[RevolutionaryClock] Cached file missing for dayLink: ${dayLink}`);
+            return;
+        }
+        this._wikiImage = new St.Icon();
+        this._setWikiImageFromFile(file);
+        this._container.insert_child_at_index(
+            this._wikiImage,
+            this._container.get_n_children() - 1
+        );
+    }
+
+    async showWikiImageForDay(dayLink) {
+        if (this._imageCache.has(dayLink)) {
+            this.setWikiImageFromCache(dayLink);
+            return;
+        }
+        const cacheFile = await this.downloadAndCacheWikiImage(dayLink);
+        if (cacheFile) {
+            this.setWikiImageFromCache(dayLink);
+        }
+    }
+
+    _setWikiImageFromFile(filePathOrFile) {
+        try {
+            let file = typeof filePathOrFile === 'string' ? Gio.File.new_for_path(filePathOrFile) : filePathOrFile;
+            let gicon = new Gio.FileIcon({ file });
+            this._wikiImage?.set_gicon(gicon);
+            log(`[RevolutionaryClock] Set icon from file: ${file.get_path()}`);
+        } catch (e) {
+            log(`[RevolutionaryClock] Failed to set gicon from file: ${filePathOrFile}, error: ${e}`);
+        }
+    }
+
+    _downloadImage(url, referer = null) {
+        return new Promise((resolve) => {
+            let session = this._soup;
+            let msg = Soup.Message.new('GET', url);
+            // Explicitly set User-Agent header for Wikimedia
+            msg.request_headers.replace('User-Agent', 'RevolutionaryClock/1.0 (https://github.com/jbellue/revolutionary-clock)');
+            if (referer) {
+                msg.request_headers.append('Referer', referer);
+            }
+            session.send_and_read_async(msg, 0, null, (session, res) => {
+                try {
+                    const bytes = session.send_and_read_finish(res);
+                    const contentType = msg.response_headers?.get_one('Content-Type') || '';
+                    const status = msg.status_code;
+                    // Collect all headers for logging
+                    let headers = {};
+                    if (msg.response_headers) {
+                        msg.response_headers.foreach((name, value) => { headers[name] = value; });
+                    }
+                    // Try to get body as text for error logging
+                    let bodyText = null;
+                    try {
+                        if (bytes && bytes.get_data) {
+                            const byteArray = imports.byteArray.toString(bytes.get_data());
+                            bodyText = byteArray;
+                        }
+                    } catch (e) {}
+                    resolve({ bytes, contentType, status, headers, bodyText });
+                } catch (e) {
+                    resolve(null);
+                }
+            });
+        });
     }
 
     destroy() {
         if (this._dayLinkButton.get_parent())
             this._container.remove_child(this._dayLinkButton);
         this._dayLinkButton.destroy();
-        if (this._wikiImage && this._wikiImage.get_parent())
-            this._container.remove_child(this._wikiImage);
-        if (this._wikiImage)
+        if (this._wikiImage) {
+            if (this._wikiImage.get_parent())
+                this._container.remove_child(this._wikiImage);
             this._wikiImage.destroy();
-        if (this._wikiTempPath)
-            Gio.File.new_for_path(this._wikiTempPath).delete(null);
+        }
         this.item.destroy();
     }
 }

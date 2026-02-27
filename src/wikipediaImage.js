@@ -13,7 +13,7 @@ export async function fetchWikipediaImageUrl(soup, wikiUrl) {
     const title = decodeURIComponent(urlMatch[2]);
 
     // Use the correct language subdomain for the API
-    const apiUrl = `https://${host}/w/api.php?action=query&titles=${encodeURIComponent(title)}&prop=pageimages&format=json&pithumbsize=200&origin=*`;
+    const apiUrl = `https://${host}/w/api.php?action=query&titles=${encodeURIComponent(title)}&prop=pageimages&redirects=true&format=json&pithumbsize=200&origin=*`;
 
     return new Promise((resolve, reject) => {
         const message = Soup.Message.new('GET', apiUrl);
