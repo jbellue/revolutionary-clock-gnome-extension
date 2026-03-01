@@ -21,6 +21,7 @@ import Clutter from 'gi://Clutter';
 import Soup from 'gi://Soup';
 import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
+import GdkPixbuf from 'gi://GdkPixbuf';
 
 import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 
@@ -156,8 +157,7 @@ export class DateMenuItem {
             log(`[RevolutionaryClock] Cached file missing for dayLink: ${dayLink}`);
             return;
         }
-        this._wikiImage = new St.Icon();
-        this._setWikiImageFromFile(file);
+        this._wikiImage = this._setWikiImageFromFile(file);
         this._container.insert_child_at_index(
             this._wikiImage,
             this._container.get_n_children() - 1
@@ -178,11 +178,33 @@ export class DateMenuItem {
     _setWikiImageFromFile(filePathOrFile) {
         try {
             let file = typeof filePathOrFile === 'string' ? Gio.File.new_for_path(filePathOrFile) : filePathOrFile;
-            let gicon = new Gio.FileIcon({ file });
-            this._wikiImage?.set_gicon(gicon);
-            log(`[RevolutionaryClock] Set icon from file: ${file.get_path()}`);
+            let filePath = file.get_path();
+            log(`[RevolutionaryClock] Set image from file: ${filePath}`);
+        
+            // Load the pixbuf to get dimensions
+            let pixbuf = GdkPixbuf.Pixbuf.new_from_file(filePath);
+            let width = pixbuf.get_width();
+            let height = pixbuf.get_height();
+            
+            // Limit max size
+            let maxSize = 300;
+            if (width > maxSize || height > maxSize) {
+                let scale = Math.min(maxSize / width, maxSize / height);
+                width = Math.round(width * scale);
+                height = Math.round(height * scale);
+            }
+            
+            // Create a simple container with the image as background
+            let bin = new St.Bin({
+                width: width,
+                height: height,
+                style: `background-image: url('${filePath}'); background-size: contain; background-repeat: no-repeat;`,
+            });
+            
+            return bin;
         } catch (e) {
-            log(`[RevolutionaryClock] Failed to set gicon from file: ${filePathOrFile}, error: ${e}`);
+            log(`[RevolutionaryClock] Failed to set image from file: ${filePathOrFile}, error: ${e}`);
+            return null;
         }
     }
 
