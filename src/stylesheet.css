@@ -11,9 +11,44 @@
     min-width: 0;
 }
 
+.revolutionary-clock-menu-item {
+    padding: 0;
+}
+
+.revolutionary-clock-card {
+    spacing: 8px;
+    padding: 10px;
+    min-width: 340px;
+}
+
+.revolutionary-clock-weekday-label {
+    font-size: 1em;
+    font-weight: 500;
+}
+
+.revolutionary-clock-date-label {
+    font-size: 2em;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.revolutionary-clock-day-name-label {
+    opacity: 0.85;
+}
+
+.revolutionary-clock-image-slot {
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
+.revolutionary-clock-day-image {
+    border-radius: 12px;
+}
+
 /* Day name link button */
 .revolutionary-clock-day-link-button {
     padding: 2px 8px;
     min-height: 0;
-    margin-left: 1em;
+    margin-top: 4px;
+    margin-left: 0;
 }

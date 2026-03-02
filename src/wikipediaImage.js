@@ -12,7 +12,7 @@ export async function fetchWikipediaImageUrl(soup, wikiUrl) {
     const host = urlMatch[1];
     const title = decodeURIComponent(urlMatch[2]);
 
-    const apiUrl = `https://${host}/w/api.php?action=query&titles=${encodeURIComponent(title)}&prop=pageimages&pilicense=any&redirects=true&format=json&pithumbsize=150&origin=*`;
+    const apiUrl = `https://${host}/w/api.php?action=query&titles=${encodeURIComponent(title)}&prop=pageimages&pilicense=any&redirects=true&format=json&pithumbsize=320&origin=*`;
 
     return new Promise((resolve, reject) => {
         const message = Soup.Message.new('GET', apiUrl);

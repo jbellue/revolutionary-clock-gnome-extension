@@ -35,24 +35,62 @@ export class DateMenuItem {
         this._settings = settings;
 
         this.item = new PopupMenu.PopupBaseMenuItem({
-            reactive: true,
+            reactive: false,
             activate: false,
             can_focus: false,
         });
         this.item.track_hover = false;
+        this.item.add_style_class_name('revolutionary-clock-menu-item');
 
         this._container = new St.BoxLayout({
-            vertical: false,
+            vertical: true,
+            x_expand: true,
+            y_align: Clutter.ActorAlign.START,
+            style_class: 'revolutionary-clock-card',
+        });
+
+        this._contentColumn = new St.BoxLayout({
+            vertical: true,
             x_expand: false,
-            y_align: Clutter.ActorAlign.CENTER,
+            x_align: Clutter.ActorAlign.CENTER,
+            width: 320,
+        });
+
+        this._weekdayLabel = new St.Label({
+            y_align: Clutter.ActorAlign.START,
+            x_align: Clutter.ActorAlign.START,
+            x_expand: true,
+            style_class: 'revolutionary-clock-weekday-label',
         });
 
         this._dateLabel = new St.Label({
-            y_align: Clutter.ActorAlign.CENTER,
+            y_align: Clutter.ActorAlign.START,
             x_align: Clutter.ActorAlign.START,
-            x_expand: false,
+            x_expand: true,
+            style_class: 'revolutionary-clock-date-label',
         });
-        this._container.add_child(this._dateLabel);
+
+        this._dayNameLabel = new St.Label({
+            y_align: Clutter.ActorAlign.START,
+            x_align: Clutter.ActorAlign.START,
+            x_expand: true,
+            style_class: 'revolutionary-clock-day-name-label',
+            visible: false,
+        });
+
+        this._imageSlot = new St.BoxLayout({
+            vertical: false,
+            x_expand: true,
+            x_align: Clutter.ActorAlign.START,
+            style_class: 'revolutionary-clock-image-slot',
+        });
+
+        this._contentColumn.add_child(this._weekdayLabel);
+        this._contentColumn.add_child(this._dateLabel);
+        this._contentColumn.add_child(this._dayNameLabel);
+        this._contentColumn.add_child(this._imageSlot);
+
+        this._container.add_child(this._contentColumn);
 
         this._dayLinkButton = new DayLinkButton();
 
@@ -85,24 +123,33 @@ export class DateMenuItem {
         const showLink = showDayText && includeDayNameLink && dayLink;
         const showImage = includeDayNameImage && dayLink;
 
-        this._dateLabel.text = `${date.dayOfWeek} ${date.dayOfMonth} ${date.monthName}${yearText}`;
-        if (showDayText && !showLink)
-            this._dateLabel.text += ` — ${dayText}`;
+        this._weekdayLabel.text = `${date.dayOfWeek}`;
+        this._dateLabel.text = `${date.dayOfMonth} ${date.monthName}${yearText}`;
+
+        if (showDayText && !showLink) {
+            this._dayNameLabel.text = dayText;
+            this._dayNameLabel.visible = true;
+        } else {
+            this._dayNameLabel.visible = false;
+        }
 
         // Remove previous image if any
         if (this._wikiImage && this._wikiImage.get_parent()) {
-            this._container.remove_child(this._wikiImage);
+            this._imageSlot.remove_child(this._wikiImage);
+            this._wikiImage.destroy();
             this._wikiImage = null;
         }
 
+        this._imageSlot.visible = showImage;
+
         if (this._dayLinkButton.get_parent())
-            this._container.remove_child(this._dayLinkButton);
+            this._contentColumn.remove_child(this._dayLinkButton);
 
         this._dayLinkButton.teardown();
 
         if (showLink) {
             this._dayLinkButton.setup(dayLink, dayText);
-            this._container.add_child(this._dayLinkButton);
+            this._contentColumn.add_child(this._dayLinkButton);
         }
         if (showImage) {
             this.showWikiImageForDay(dayLink);
@@ -158,10 +205,10 @@ export class DateMenuItem {
             return;
         }
         this._wikiImage = this._setWikiImageFromFile(file);
-        this._container.insert_child_at_index(
-            this._wikiImage,
-            this._container.get_n_children() - 1
-        );
+        if (!this._wikiImage)
+            return;
+        this._wikiImage.add_style_class_name('revolutionary-clock-day-image');
+        this._imageSlot.add_child(this._wikiImage);
     }
 
     async showWikiImageForDay(dayLink) {
@@ -180,28 +227,31 @@ export class DateMenuItem {
             let file = typeof filePathOrFile === 'string' ? Gio.File.new_for_path(filePathOrFile) : filePathOrFile;
             let filePath = file.get_path();
             log(`[RevolutionaryClock] Set image from file: ${filePath}`);
-        
-            // Load the pixbuf to get dimensions
-            let pixbuf = GdkPixbuf.Pixbuf.new_from_file(filePath);
-            let width = pixbuf.get_width();
-            let height = pixbuf.get_height();
-            
-            // Limit max size
-            let maxSize = 300;
-            if (width > maxSize || height > maxSize) {
-                let scale = Math.min(maxSize / width, maxSize / height);
-                width = Math.round(width * scale);
-                height = Math.round(height * scale);
+
+            const targetWidth = this._contentColumn.width || 320;
+            let targetHeight = 300;
+
+            try {
+                const pixbuf = GdkPixbuf.Pixbuf.new_from_file(filePath);
+                const sourceWidth = pixbuf.get_width();
+                const sourceHeight = pixbuf.get_height();
+                targetHeight = Math.max(1, Math.round((sourceHeight * targetWidth) / sourceWidth));
+            } catch (e) {
+                log(`[RevolutionaryClock] Pixbuf dimension read failed, using default size fallback: ${e}`);
             }
-            
-            // Create a simple container with the image as background
-            let bin = new St.Bin({
-                width: width,
-                height: height,
-                style: `background-image: url('${filePath}'); background-size: contain; background-repeat: no-repeat;`,
+
+            const uri = file.get_uri();
+            const escapedUri = uri.replace(/"/g, '\\"');
+
+            this._imageActor = new St.Widget({
+                width: targetWidth,
+                height: targetHeight,
+                x_expand: true,
+                x_align: Clutter.ActorAlign.START,
+                style: `background-image: url("${escapedUri}"); background-size: ${targetWidth}px ${targetHeight}px; background-repeat: no-repeat;`,
             });
-            
-            return bin;
+
+            return this._imageActor;
         } catch (e) {
             log(`[RevolutionaryClock] Failed to set image from file: ${filePathOrFile}, error: ${e}`);
             return null;
@@ -245,11 +295,11 @@ export class DateMenuItem {
 
     destroy() {
         if (this._dayLinkButton.get_parent())
-            this._container.remove_child(this._dayLinkButton);
+            this._contentColumn.remove_child(this._dayLinkButton);
         this._dayLinkButton.destroy();
         if (this._wikiImage) {
             if (this._wikiImage.get_parent())
-                this._container.remove_child(this._wikiImage);
+                this._imageSlot.remove_child(this._wikiImage);
             this._wikiImage.destroy();
         }
         if (this._soup) {
