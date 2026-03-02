@@ -22,12 +22,12 @@ import Soup from 'gi://Soup';
 import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 import GdkPixbuf from 'gi://GdkPixbuf';
+import Meta from 'gi://Meta';
 
 import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 
 import { getRepublicanDate } from './revdate.js';
 
-import { DayLinkButton } from './dayLinkButton.js';
 import { fetchWikipediaImageUrl } from './wikipediaImage.js';
 
 export class DateMenuItem {
@@ -74,6 +74,7 @@ export class DateMenuItem {
             y_align: Clutter.ActorAlign.START,
             x_align: Clutter.ActorAlign.START,
             x_expand: true,
+            reactive: true,
             style_class: 'revolutionary-clock-day-name-label',
             visible: false,
         });
@@ -82,17 +83,27 @@ export class DateMenuItem {
             vertical: false,
             x_expand: true,
             x_align: Clutter.ActorAlign.START,
+            reactive: true,
             style_class: 'revolutionary-clock-image-slot',
         });
 
         this._contentColumn.add_child(this._weekdayLabel);
         this._contentColumn.add_child(this._dateLabel);
-        this._contentColumn.add_child(this._dayNameLabel);
         this._contentColumn.add_child(this._imageSlot);
+        this._contentColumn.add_child(this._dayNameLabel);
 
         this._container.add_child(this._contentColumn);
 
-        this._dayLinkButton = new DayLinkButton();
+        this._currentDayLink = null;
+        this._pointerCursor = this._resolveCursor(['POINTING_HAND', 'POINTER', 'HAND']);
+        this._defaultCursor = this._resolveCursor(['DEFAULT', 'ARROW']);
+
+        this._dayNameClickId = this._dayNameLabel.connect('button-press-event', () => this._openCurrentDayLink());
+        this._imageSlotClickId = this._imageSlot.connect('button-press-event', () => this._openCurrentDayLink());
+        this._dayNameEnterId = this._dayNameLabel.connect('enter-event', () => this._setPointerCursor());
+        this._dayNameLeaveId = this._dayNameLabel.connect('leave-event', () => this._setDefaultCursor());
+        this._imageSlotEnterId = this._imageSlot.connect('enter-event', () => this._setPointerCursor());
+        this._imageSlotLeaveId = this._imageSlot.connect('leave-event', () => this._setDefaultCursor());
 
         // Image for Wikipedia
         this._soup = new Soup.Session();
@@ -120,18 +131,16 @@ export class DateMenuItem {
         const dayText = date.dayName?.name || date.dayName || '';
         const dayLink = date.dayName?.link || null;
         const showDayText = includeDayName && dayText;
-        const showLink = showDayText && includeDayNameLink && dayLink;
+        const showLink = includeDayNameLink && dayLink;
         const showImage = includeDayNameImage && dayLink;
+
+        this._currentDayLink = showLink ? dayLink : null;
 
         this._weekdayLabel.text = `${date.dayOfWeek}`;
         this._dateLabel.text = `${date.dayOfMonth} ${date.monthName}${yearText}`;
 
-        if (showDayText && !showLink) {
-            this._dayNameLabel.text = dayText;
-            this._dayNameLabel.visible = true;
-        } else {
-            this._dayNameLabel.visible = false;
-        }
+        this._dayNameLabel.text = dayText;
+        this._dayNameLabel.visible = showDayText;
 
         // Remove previous image if any
         if (this._wikiImage && this._wikiImage.get_parent()) {
@@ -142,18 +151,52 @@ export class DateMenuItem {
 
         this._imageSlot.visible = showImage;
 
-        if (this._dayLinkButton.get_parent())
-            this._contentColumn.remove_child(this._dayLinkButton);
-
-        this._dayLinkButton.teardown();
-
         if (showLink) {
-            this._dayLinkButton.setup(dayLink, dayText);
-            this._contentColumn.add_child(this._dayLinkButton);
+            this._dayNameLabel.add_style_class_name('revolutionary-clock-day-name-link');
+            this._imageSlot.add_style_class_name('revolutionary-clock-image-link');
+        } else {
+            this._dayNameLabel.remove_style_class_name('revolutionary-clock-day-name-link');
+            this._imageSlot.remove_style_class_name('revolutionary-clock-image-link');
+            this._setDefaultCursor();
         }
         if (showImage) {
             this.showWikiImageForDay(dayLink);
         }
+    }
+
+    _resolveCursor(names) {
+        if (!Meta?.Cursor)
+            return null;
+
+        for (const name of names) {
+            if (name in Meta.Cursor && typeof Meta.Cursor[name] === 'number' &&
+                (!('INVALID' in Meta.Cursor) || Meta.Cursor[name] !== Meta.Cursor.INVALID))
+                return Meta.Cursor[name];
+        }
+        return null;
+    }
+
+    _setPointerCursor() {
+        if (!this._currentDayLink)
+            return Clutter.EVENT_PROPAGATE;
+
+        if (this._pointerCursor !== null && global.display?.set_cursor)
+            global.display.set_cursor(this._pointerCursor);
+        return Clutter.EVENT_PROPAGATE;
+    }
+
+    _setDefaultCursor() {
+        if (this._defaultCursor !== null && global.display?.set_cursor)
+            global.display.set_cursor(this._defaultCursor);
+        return Clutter.EVENT_PROPAGATE;
+    }
+
+    _openCurrentDayLink() {
+        if (!this._currentDayLink)
+            return Clutter.EVENT_PROPAGATE;
+
+        Gio.AppInfo.launch_default_for_uri(this._currentDayLink, null);
+        return Clutter.EVENT_STOP;
     }
 
     async downloadAndCacheWikiImage(dayLink) {
@@ -294,9 +337,31 @@ export class DateMenuItem {
     }
 
     destroy() {
-        if (this._dayLinkButton.get_parent())
-            this._contentColumn.remove_child(this._dayLinkButton);
-        this._dayLinkButton.destroy();
+        if (this._dayNameClickId) {
+            this._dayNameLabel.disconnect(this._dayNameClickId);
+            this._dayNameClickId = null;
+        }
+        if (this._imageSlotClickId) {
+            this._imageSlot.disconnect(this._imageSlotClickId);
+            this._imageSlotClickId = null;
+        }
+        if (this._dayNameEnterId) {
+            this._dayNameLabel.disconnect(this._dayNameEnterId);
+            this._dayNameEnterId = null;
+        }
+        if (this._dayNameLeaveId) {
+            this._dayNameLabel.disconnect(this._dayNameLeaveId);
+            this._dayNameLeaveId = null;
+        }
+        if (this._imageSlotEnterId) {
+            this._imageSlot.disconnect(this._imageSlotEnterId);
+            this._imageSlotEnterId = null;
+        }
+        if (this._imageSlotLeaveId) {
+            this._imageSlot.disconnect(this._imageSlotLeaveId);
+            this._imageSlotLeaveId = null;
+        }
+        this._setDefaultCursor();
         if (this._wikiImage) {
             if (this._wikiImage.get_parent())
                 this._imageSlot.remove_child(this._wikiImage);
