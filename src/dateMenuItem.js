@@ -68,7 +68,7 @@ export class DateMenuItem {
 
         this._dayNameLabel = new St.Label({
             y_align: Clutter.ActorAlign.START,
-            x_align: Clutter.ActorAlign.START,
+            x_align: Clutter.ActorAlign.CENTER,
             x_expand: true,
             reactive: true,
             style_class: 'revolutionary-clock-day-name-label',
