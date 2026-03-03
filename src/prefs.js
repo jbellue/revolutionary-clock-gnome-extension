@@ -90,10 +90,7 @@ export default class RevolutionaryClockPreferences extends ExtensionPreferences 
 
         // Clock settings
         const clockPositionIndex = builder.get_object('clockPositionIndex');
-        clockPositionIndex.set_value(settings.get_int('clock-index-in-status-bar'));
-        clockPositionIndex.connect('notify::value', w => {
-            settings.set_int('clock-index-in-status-bar', w.get_value());
-        });
+        settings.bind('clock-index-in-status-bar', clockPositionIndex, 'value', Gio.SettingsBindFlags.DEFAULT);
 
         const clockPositionGroup = builder.get_object('clockPositionGroup');
         clockPositionGroup.set_active_name(settings.get_string('clock-position-in-status-bar'));
@@ -102,22 +99,13 @@ export default class RevolutionaryClockPreferences extends ExtensionPreferences 
         });
 
         const decorationBeforeClockRow = builder.get_object('decorationBeforeClockRow');
-        decorationBeforeClockRow.set_active(settings.get_boolean('decoration-before-clock'));
-        decorationBeforeClockRow.connect('notify::active', w => {
-            settings.set_boolean('decoration-before-clock', w.get_active());
-        });
+        settings.bind('decoration-before-clock', decorationBeforeClockRow, 'active', Gio.SettingsBindFlags.DEFAULT);
 
         const decorationAfterClockRow = builder.get_object('decorationAfterClockRow');
-        decorationAfterClockRow.set_active(settings.get_boolean('decoration-after-clock'));
-        decorationAfterClockRow.connect('notify::active', w => {
-            settings.set_boolean('decoration-after-clock', w.get_active());
-        });
+        settings.bind('decoration-after-clock', decorationAfterClockRow, 'active', Gio.SettingsBindFlags.DEFAULT);
 
         const clockDecorationRow = builder.get_object('clockDecorationRow');
-        clockDecorationRow.set_text(settings.get_string('clock-decoration'));
-        clockDecorationRow.connect('notify::text', w => {
-            settings.set_string('clock-decoration', w.get_text());
-        });
+        settings.bind('clock-decoration', clockDecorationRow, 'text', Gio.SettingsBindFlags.DEFAULT);
 
         // Calendar settings
         const localeValue = builder.get_object('localeValue');
@@ -134,48 +122,25 @@ export default class RevolutionaryClockPreferences extends ExtensionPreferences 
         });
 
         const includeYearRow = builder.get_object('includeYearRow');
-        includeYearRow.set_active(settings.get_boolean('include-date-year'));
-        includeYearRow.connect('notify::active', w => {
-            settings.set_boolean('include-date-year', w.get_active());
-        });
+        settings.bind('include-date-year', includeYearRow, 'active', Gio.SettingsBindFlags.DEFAULT);
 
         const yearAsRomanNumeralsRow = builder.get_object('yearAsRomanNumeralsRow');
-        yearAsRomanNumeralsRow.set_active(settings.get_boolean('year-as-roman-numerals'));
-        yearAsRomanNumeralsRow.set_sensitive(settings.get_boolean('include-date-year'));
-        yearAsRomanNumeralsRow.connect('notify::active', w => {
-            settings.set_boolean('year-as-roman-numerals', w.get_active());
-        });
-        includeYearRow.connect('notify::active', w => {
-            yearAsRomanNumeralsRow.set_sensitive(w.get_active());
-        });
+        settings.bind('year-as-roman-numerals', yearAsRomanNumeralsRow, 'active', Gio.SettingsBindFlags.DEFAULT);
+        settings.bind('include-date-year', yearAsRomanNumeralsRow, 'sensitive', Gio.SettingsBindFlags.GET);
 
         const includeDayNameRow = builder.get_object('includeDayNameRow');
-        includeDayNameRow.set_active(settings.get_boolean('include-day-name'));
-        includeDayNameRow.connect('notify::active', w => {
-            settings.set_boolean('include-day-name', w.get_active());
-            includeDayNameLinkRow.set_sensitive(w.get_active());
-        });
+        settings.bind('include-day-name', includeDayNameRow, 'active', Gio.SettingsBindFlags.DEFAULT);
 
         const includeDayNameLinkRow = builder.get_object('includeDayNameLinkRow');
-        includeDayNameLinkRow.set_active(settings.get_boolean('include-day-name-link'));
-        includeDayNameLinkRow.set_sensitive(settings.get_boolean('include-day-name'));
-        includeDayNameLinkRow.connect('notify::active', w => {
-            settings.set_boolean('include-day-name-link', w.get_active());
-        });
+        settings.bind('include-day-name-link', includeDayNameLinkRow, 'active', Gio.SettingsBindFlags.DEFAULT);
+        settings.bind('include-day-name', includeDayNameLinkRow, 'sensitive', Gio.SettingsBindFlags.GET);
 
         const includeDayNameImageRow = builder.get_object('includeDayNameImageRow');
-        includeDayNameImageRow.set_active(settings.get_boolean('include-day-name-image'));
-        includeDayNameImageRow.connect('notify::active', w => {
-            settings.set_boolean('include-day-name-image', w.get_active());
-            includeDayNameImageLinkRow.set_sensitive(w.get_active());
-        });
+        settings.bind('include-day-name-image', includeDayNameImageRow, 'active', Gio.SettingsBindFlags.DEFAULT);
 
         const includeDayNameImageLinkRow = builder.get_object('includeDayNameImageLinkRow');
-        includeDayNameImageLinkRow.set_active(settings.get_boolean('include-day-name-image-link'));
-        includeDayNameImageLinkRow.set_sensitive(settings.get_boolean('include-day-name-image'));
-        includeDayNameImageLinkRow.connect('notify::active', w => {
-            settings.set_boolean('include-day-name-image-link', w.get_active());
-        });
+        settings.bind('include-day-name-image-link', includeDayNameImageLinkRow, 'active', Gio.SettingsBindFlags.DEFAULT);
+        settings.bind('include-day-name-image', includeDayNameImageLinkRow, 'sensitive', Gio.SettingsBindFlags.GET);
 
         // Add all pages to the window
         window.add(builder.get_object('clock_settings_page'));
