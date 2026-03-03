@@ -99,13 +99,14 @@ export class DateMenuItem {
         this._pointerCursor = this._resolveCursor(['POINTING_HAND', 'POINTER', 'HAND']);
         this._defaultCursor = this._resolveCursor(['DEFAULT', 'ARROW']);
 
-        this._dayNameClickId = this._dayNameLabel.connect('button-press-event', () => this._openLink(this._currentDayLink));
-        this._dayNameEnterId = this._dayNameLabel.connect('enter-event', () => this._setPointerCursor(this._currentDayLink));
-        this._dayNameLeaveId = this._dayNameLabel.connect('leave-event', () => this._setDefaultCursor());
-    
-        this._imageSlotClickId = this._imageSlot.connect('button-press-event', () => this._openLink(this._currentImageLink));
-        this._imageSlotEnterId = this._imageSlot.connect('enter-event', () => this._setPointerCursor(this._currentImageLink));
-        this._imageSlotLeaveId = this._imageSlot.connect('leave-event', () => this._setDefaultCursor());
+        this._signals = [
+            {actor: this._dayNameLabel, id: this._dayNameLabel.connect('button-press-event', () => this._openLink(this._currentDayLink))},
+            {actor: this._dayNameLabel, id: this._dayNameLabel.connect('enter-event', () => this._setPointerCursor(this._currentDayLink))},
+            {actor: this._dayNameLabel, id: this._dayNameLabel.connect('leave-event', () => this._setDefaultCursor())},
+            {actor: this._imageSlot, id: this._imageSlot.connect('button-press-event', () => this._openLink(this._currentImageLink))},
+            {actor: this._imageSlot, id: this._imageSlot.connect('enter-event', () => this._setPointerCursor(this._currentImageLink))},
+            {actor: this._imageSlot, id: this._imageSlot.connect('leave-event', () => this._setDefaultCursor())},
+        ];
 
         // Image for Wikipedia
         this._soup = new Soup.Session();
@@ -338,44 +339,28 @@ export class DateMenuItem {
     }
 
     destroy() {
-        if (this._dayNameClickId) {
-            this._dayNameLabel.disconnect(this._dayNameClickId);
-            this._dayNameClickId = null;
-        }
-        if (this._imageSlotClickId) {
-            this._imageSlot.disconnect(this._imageSlotClickId);
-            this._imageSlotClickId = null;
-        }
-        if (this._dayNameEnterId) {
-            this._dayNameLabel.disconnect(this._dayNameEnterId);
-            this._dayNameEnterId = null;
-        }
-        if (this._dayNameLeaveId) {
-            this._dayNameLabel.disconnect(this._dayNameLeaveId);
-            this._dayNameLeaveId = null;
-        }
-        if (this._imageSlotEnterId) {
-            this._imageSlot.disconnect(this._imageSlotEnterId);
-            this._imageSlotEnterId = null;
-        }
-        if (this._imageSlotLeaveId) {
-            this._imageSlot.disconnect(this._imageSlotLeaveId);
-            this._imageSlotLeaveId = null;
-        }
+        // Disconnect all signals
+        this._signals.forEach(({actor, id}) => actor.disconnect(id));
+        this._signals = [];
+
         this._setDefaultCursor();
+
         if (this._wikiImage) {
             if (this._wikiImage.get_parent())
                 this._imageSlot.remove_child(this._wikiImage);
             this._wikiImage.destroy();
         }
+
         if (this._soup) {
             this._soup.abort();
             this._soup = null;
         }
+
         if (this._imageCache) {
             this._imageCache.clear();
             this._imageCache = null;
         }
+
         this.item.destroy();
     }
 }
