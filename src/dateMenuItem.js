@@ -92,6 +92,7 @@ export class DateMenuItem {
 
         this._currentDayLink = null;
         this._currentImageLink = null;
+        this._currentImageDayLink = null; // Track which dayLink the current image is for
         this._pointerCursor = this._resolveCursor(['POINTING_HAND', 'POINTER', 'HAND']);
         this._defaultCursor = this._resolveCursor(['DEFAULT', 'ARROW']);
 
@@ -138,11 +139,15 @@ export class DateMenuItem {
         this._dayNameLabel.text = dayText;
         this._dayNameLabel.visible = showDayText;
 
-        // Remove previous image if any
-        if (this._wikiImage && this._wikiImage.get_parent()) {
-            this._imageSlot.remove_child(this._wikiImage);
-            this._wikiImage.destroy();
-            this._wikiImage = null;
+        // Handle image visibility and updates
+        if (!showImage || dayLink !== this._currentImageDayLink) {
+            // Remove image if we don't want to show it anymore, or if the dayLink changed
+            if (this._wikiImage && this._wikiImage.get_parent()) {
+                this._imageSlot.remove_child(this._wikiImage);
+                this._wikiImage.destroy();
+                this._wikiImage = null;
+            }
+            this._currentImageDayLink = null;
         }
 
         this._imageSlot.visible = showImage;
@@ -157,7 +162,9 @@ export class DateMenuItem {
             this._setDefaultCursor();
         }
 
-        if (showImage) {
+        // Load image only if it changed
+        if (showImage && dayLink !== this._currentImageDayLink) {
+            this._currentImageDayLink = dayLink;
             this._showWikiImageForDay(dayLink);
         }
     }
