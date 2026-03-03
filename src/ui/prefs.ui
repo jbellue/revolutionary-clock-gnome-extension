@@ -98,6 +98,11 @@
                         <property name="subtitle" translatable="yes">Display the year in Roman numerals (e.g. CCXXXIV)</property>
                     </object>
                 </child>
+            </object>
+        </child>
+        <child>
+            <object class="AdwPreferencesGroup" id="calendar_day_name_group">
+                <property name="title" translatable="yes">Customizing the Day Name</property>
                 <child>
                     <object class="AdwSwitchRow" id="includeDayNameRow">
                         <property name="title" translatable="yes">Include Day Name</property>
@@ -110,6 +115,11 @@
                         <property name="subtitle" translatable="yes">Make day name clickable when link data is available</property>
                     </object>
                 </child>
+            </object>
+        </child>
+        <child>
+            <object class="AdwPreferencesGroup" id="calendar_day_name_image_group">
+                <property name="title" translatable="yes">Customizing the Day Name Image</property>
                 <child>
                     <object class="AdwSwitchRow" id="includeDayNameImageRow">
                         <property name="title" translatable="yes">Include Image</property>
