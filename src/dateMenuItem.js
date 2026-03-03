@@ -147,6 +147,12 @@ export class DateMenuItem {
 
         this._imageSlot.visible = showImage;
 
+        if (showLink) {
+            this._dayNameLabel.add_style_class_name('link-text');
+        } else {
+            this._dayNameLabel.remove_style_class_name('link-text');
+        }
+
         if (!showLink && !showImageLink) {
             this._setDefaultCursor();
         }

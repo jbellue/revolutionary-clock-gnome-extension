@@ -36,6 +36,10 @@
     opacity: 0.85;
 }
 
+.link-text {
+    text-decoration: underline;
+}
+
 .revolutionary-clock-image-slot {
     margin-top: 4px;
     margin-bottom: 4px;
