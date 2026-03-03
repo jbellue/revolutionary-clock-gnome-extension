@@ -95,14 +95,15 @@ export class DateMenuItem {
         this._container.add_child(this._contentColumn);
 
         this._currentDayLink = null;
+        this._currentImageLink = null;
         this._pointerCursor = this._resolveCursor(['POINTING_HAND', 'POINTER', 'HAND']);
         this._defaultCursor = this._resolveCursor(['DEFAULT', 'ARROW']);
 
-        this._dayNameClickId = this._dayNameLabel.connect('button-press-event', () => this._openCurrentDayLink());
-        this._imageSlotClickId = this._imageSlot.connect('button-press-event', () => this._openCurrentDayLink());
-        this._dayNameEnterId = this._dayNameLabel.connect('enter-event', () => this._setPointerCursor());
+        this._dayNameClickId = this._dayNameLabel.connect('button-press-event', () => this._openDayNameLink());
+        this._imageSlotClickId = this._imageSlot.connect('button-press-event', () => this._openImageLink());
+        this._dayNameEnterId = this._dayNameLabel.connect('enter-event', () => this._setPointerCursorForDayName());
         this._dayNameLeaveId = this._dayNameLabel.connect('leave-event', () => this._setDefaultCursor());
-        this._imageSlotEnterId = this._imageSlot.connect('enter-event', () => this._setPointerCursor());
+        this._imageSlotEnterId = this._imageSlot.connect('enter-event', () => this._setPointerCursorForImage());
         this._imageSlotLeaveId = this._imageSlot.connect('leave-event', () => this._setDefaultCursor());
 
         // Image for Wikipedia
@@ -123,6 +124,7 @@ export class DateMenuItem {
         const includeDayName = this._settings.get_boolean('include-day-name');
         const includeDayNameLink = this._settings.get_boolean('include-day-name-link');
         const includeDayNameImage = this._settings.get_boolean('include-day-name-image');
+        const includeDayNameImageLink = this._settings.get_boolean('include-day-name-image-link');
         const includeYear = this._settings.get_boolean('include-date-year');
         const yearAsRoman = this._settings.get_boolean('year-as-roman-numerals');
 
@@ -133,8 +135,10 @@ export class DateMenuItem {
         const showDayText = includeDayName && dayText;
         const showLink = includeDayNameLink && dayLink;
         const showImage = includeDayNameImage && dayLink;
+        const showImageLink = includeDayNameImageLink && dayLink;
 
         this._currentDayLink = showLink ? dayLink : null;
+        this._currentImageLink = showImageLink ? dayLink : null;
 
         this._weekdayLabel.text = `${date.dayOfWeek}`;
         this._dateLabel.text = `${date.dayOfMonth} ${date.monthName}${yearText}`;
@@ -151,14 +155,10 @@ export class DateMenuItem {
 
         this._imageSlot.visible = showImage;
 
-        if (showLink) {
-            this._dayNameLabel.add_style_class_name('revolutionary-clock-day-name-link');
-            this._imageSlot.add_style_class_name('revolutionary-clock-image-link');
-        } else {
-            this._dayNameLabel.remove_style_class_name('revolutionary-clock-day-name-link');
-            this._imageSlot.remove_style_class_name('revolutionary-clock-image-link');
+        if (!showLink && !showImageLink) {
             this._setDefaultCursor();
         }
+
         if (showImage) {
             this.showWikiImageForDay(dayLink);
         }
@@ -176,8 +176,17 @@ export class DateMenuItem {
         return null;
     }
 
-    _setPointerCursor() {
+    _setPointerCursorForDayName() {
         if (!this._currentDayLink)
+            return Clutter.EVENT_PROPAGATE;
+
+        if (this._pointerCursor !== null && global.display?.set_cursor)
+            global.display.set_cursor(this._pointerCursor);
+        return Clutter.EVENT_PROPAGATE;
+    }
+
+    _setPointerCursorForImage() {
+        if (!this._currentImageLink)
             return Clutter.EVENT_PROPAGATE;
 
         if (this._pointerCursor !== null && global.display?.set_cursor)
@@ -191,11 +200,19 @@ export class DateMenuItem {
         return Clutter.EVENT_PROPAGATE;
     }
 
-    _openCurrentDayLink() {
+    _openDayNameLink() {
         if (!this._currentDayLink)
             return Clutter.EVENT_PROPAGATE;
 
         Gio.AppInfo.launch_default_for_uri(this._currentDayLink, null);
+        return Clutter.EVENT_STOP;
+    }
+
+    _openImageLink() {
+        if (!this._currentImageLink)
+            return Clutter.EVENT_PROPAGATE;
+
+        Gio.AppInfo.launch_default_for_uri(this._currentImageLink, null);
         return Clutter.EVENT_STOP;
     }
 

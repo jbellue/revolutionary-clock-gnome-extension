@@ -116,6 +116,12 @@
                         <property name="subtitle" translatable="yes">Show an image for the day name link when available</property>
                     </object>
                 </child>
+                <child>
+                    <object class="AdwSwitchRow" id="includeDayNameImageLinkRow">
+                        <property name="title" translatable="yes">Day Name Image Link</property>
+                        <property name="subtitle" translatable="yes">Make day name image clickable when link data is available</property>
+                    </object>
+                </child>
             </object>
         </child>
     </object>

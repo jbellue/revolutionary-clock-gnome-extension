@@ -167,6 +167,14 @@ export default class RevolutionaryClockPreferences extends ExtensionPreferences 
         includeDayNameImageRow.set_active(settings.get_boolean('include-day-name-image'));
         includeDayNameImageRow.connect('notify::active', w => {
             settings.set_boolean('include-day-name-image', w.get_active());
+            includeDayNameImageLinkRow.set_sensitive(w.get_active());
+        });
+
+        const includeDayNameImageLinkRow = builder.get_object('includeDayNameImageLinkRow');
+        includeDayNameImageLinkRow.set_active(settings.get_boolean('include-day-name-image-link'));
+        includeDayNameImageLinkRow.set_sensitive(settings.get_boolean('include-day-name-image'));
+        includeDayNameImageLinkRow.connect('notify::active', w => {
+            settings.set_boolean('include-day-name-image-link', w.get_active());
         });
 
         // Add all pages to the window
