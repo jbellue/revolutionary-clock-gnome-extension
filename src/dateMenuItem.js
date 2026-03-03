@@ -18,17 +18,13 @@
 
 import St from 'gi://St';
 import Clutter from 'gi://Clutter';
-import Soup from 'gi://Soup';
 import Gio from 'gi://Gio';
-import GLib from 'gi://GLib';
-import GdkPixbuf from 'gi://GdkPixbuf';
 import Meta from 'gi://Meta';
 
 import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 
 import { getRepublicanDate } from './revdate.js';
-
-import { fetchWikipediaImageUrl } from './wikipediaImage.js';
+import { WikiImageManager } from './wikiImageManager.js';
 
 export class DateMenuItem {
     constructor(settings) {
@@ -108,15 +104,9 @@ export class DateMenuItem {
             {actor: this._imageSlot, id: this._imageSlot.connect('leave-event', () => this._setDefaultCursor())},
         ];
 
-        // Image for Wikipedia
-        this._soup = new Soup.Session();
-        this._soup.user_agent = 'RevolutionaryClock/1.0 (https://github.com/jbellue/revolutionary-clock)';
+        // Wikipedia image management
+        this._wikiImageManager = new WikiImageManager();
         this._wikiImage = null;
-
-        // Extension cache directory
-        this._cacheDir = `${GLib.get_user_cache_dir()}/revolutionaryclock/`;
-        GLib.mkdir_with_parents(this._cacheDir, 0o755);
-        this._imageCache = new Map();  // URL → local path
 
         this.item.add_child(this._container);
     }
@@ -162,7 +152,7 @@ export class DateMenuItem {
         }
 
         if (showImage) {
-            this.showWikiImageForDay(dayLink);
+            this._showWikiImageForDay(dayLink);
         }
     }
 
@@ -201,141 +191,34 @@ export class DateMenuItem {
         return Clutter.EVENT_STOP;
     }
 
-    async downloadAndCacheWikiImage(dayLink) {
-        // Fetch the image URL for the dayLink, download, and cache it
-        try {
-            const url = await fetchWikipediaImageUrl(this._soup, dayLink);
-            if (!url) {
-                log(`[RevolutionaryClock] No Wikipedia image URL found for: ${dayLink}`);
-                return null;
-            }
-            // Generate cache filename from dayLink hash and preserve extension
-            let hash = new GLib.Checksum(GLib.ChecksumType.MD5);
-            hash.update(dayLink);
-            let extMatch = url.match(/\.([a-zA-Z0-9]+)(?:\?|$)/);
-            let ext = extMatch ? extMatch[1].toLowerCase() : 'jpg';
-            if (!['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) ext = 'jpg';
-            let cacheFile = `${this._cacheDir}${hash.get_string()}.${ext}`;
-            let file = Gio.File.new_for_path(cacheFile);
-            // Download image if not already present
-            if (!file.query_exists(null)) {
-                let result = await this._downloadImage(url, dayLink);
-                if (result && result.bytes && result.contentType && result.status === 200 && result.contentType.startsWith('image/')) {
-                    let stream = file.replace(null, false, Gio.FileCreateFlags.NONE, null);
-                    stream.write_all(result.bytes.get_data(), null);
-                    stream.close(null);
-                    log(`[RevolutionaryClock] Downloaded and saved image for ${dayLink} to ${cacheFile}`);
-                } else {
-                    log(`[RevolutionaryClock] Failed to download image for ${dayLink}`);
-                    return null;
-                }
-            }
-            this._imageCache.set(dayLink, cacheFile);
-            return cacheFile;
-        } catch (e) {
-            log(`[RevolutionaryClock] Error in downloadAndCacheWikiImage: ${e}`);
-            return null;
+    async _showWikiImageForDay(dayLink) {
+        // Check if already cached
+        if (this._wikiImageManager.hasCache(dayLink)) {
+            this._setWikiImageFromCache(dayLink);
+            return;
+        }
+
+        // Download and cache
+        const cacheFile = await this._wikiImageManager.downloadAndCache(dayLink);
+        if (cacheFile) {
+            this._setWikiImageFromCache(dayLink);
         }
     }
 
-    setWikiImageFromCache(dayLink) {
-        const cacheFile = this._imageCache.get(dayLink);
+    _setWikiImageFromCache(dayLink) {
+        const cacheFile = this._wikiImageManager.getCachePath(dayLink);
         if (!cacheFile) {
             log(`[RevolutionaryClock] No cached image for dayLink: ${dayLink}`);
             return;
         }
-        let file = Gio.File.new_for_path(cacheFile);
-        if (!file.query_exists(null)) {
-            log(`[RevolutionaryClock] Cached file missing for dayLink: ${dayLink}`);
-            return;
-        }
-        this._wikiImage = this._setWikiImageFromFile(file);
+
+        const targetWidth = this._contentColumn.width || 320;
+        this._wikiImage = this._wikiImageManager.createImageActor(cacheFile, targetWidth);
         if (!this._wikiImage)
             return;
+
         this._wikiImage.add_style_class_name('revolutionary-clock-day-image');
         this._imageSlot.add_child(this._wikiImage);
-    }
-
-    async showWikiImageForDay(dayLink) {
-        if (this._imageCache.has(dayLink)) {
-            this.setWikiImageFromCache(dayLink);
-            return;
-        }
-        const cacheFile = await this.downloadAndCacheWikiImage(dayLink);
-        if (cacheFile) {
-            this.setWikiImageFromCache(dayLink);
-        }
-    }
-
-    _setWikiImageFromFile(filePathOrFile) {
-        try {
-            let file = typeof filePathOrFile === 'string' ? Gio.File.new_for_path(filePathOrFile) : filePathOrFile;
-            let filePath = file.get_path();
-            log(`[RevolutionaryClock] Set image from file: ${filePath}`);
-
-            const targetWidth = this._contentColumn.width || 320;
-            let targetHeight = 300;
-
-            try {
-                const pixbuf = GdkPixbuf.Pixbuf.new_from_file(filePath);
-                const sourceWidth = pixbuf.get_width();
-                const sourceHeight = pixbuf.get_height();
-                targetHeight = Math.max(1, Math.round((sourceHeight * targetWidth) / sourceWidth));
-            } catch (e) {
-                log(`[RevolutionaryClock] Pixbuf dimension read failed, using default size fallback: ${e}`);
-            }
-
-            const uri = file.get_uri();
-            const escapedUri = uri.replace(/"/g, '\\"');
-
-            this._imageActor = new St.Widget({
-                width: targetWidth,
-                height: targetHeight,
-                x_expand: true,
-                x_align: Clutter.ActorAlign.START,
-                style: `background-image: url("${escapedUri}"); background-size: ${targetWidth}px ${targetHeight}px; background-repeat: no-repeat;`,
-            });
-
-            return this._imageActor;
-        } catch (e) {
-            log(`[RevolutionaryClock] Failed to set image from file: ${filePathOrFile}, error: ${e}`);
-            return null;
-        }
-    }
-
-    _downloadImage(url, referer = null) {
-        return new Promise((resolve) => {
-            let session = this._soup;
-            let msg = Soup.Message.new('GET', url);
-            // Explicitly set User-Agent header for Wikimedia
-            msg.request_headers.replace('User-Agent', 'RevolutionaryClock/1.0 (https://github.com/jbellue/revolutionary-clock)');
-            if (referer) {
-                msg.request_headers.append('Referer', referer);
-            }
-            session.send_and_read_async(msg, 0, null, (session, res) => {
-                try {
-                    const bytes = session.send_and_read_finish(res);
-                    const contentType = msg.response_headers?.get_one('Content-Type') || '';
-                    const status = msg.status_code;
-                    // Collect all headers for logging
-                    let headers = {};
-                    if (msg.response_headers) {
-                        msg.response_headers.foreach((name, value) => { headers[name] = value; });
-                    }
-                    // Try to get body as text for error logging
-                    let bodyText = null;
-                    try {
-                        if (bytes && bytes.get_data) {
-                            const byteArray = imports.byteArray.toString(bytes.get_data());
-                            bodyText = byteArray;
-                        }
-                    } catch (e) {}
-                    resolve({ bytes, contentType, status, headers, bodyText });
-                } catch (e) {
-                    resolve(null);
-                }
-            });
-        });
     }
 
     destroy() {
@@ -351,14 +234,9 @@ export class DateMenuItem {
             this._wikiImage.destroy();
         }
 
-        if (this._soup) {
-            this._soup.abort();
-            this._soup = null;
-        }
-
-        if (this._imageCache) {
-            this._imageCache.clear();
-            this._imageCache = null;
+        if (this._wikiImageManager) {
+            this._wikiImageManager.destroy();
+            this._wikiImageManager = null;
         }
 
         this.item.destroy();
