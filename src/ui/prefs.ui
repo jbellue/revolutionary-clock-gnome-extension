@@ -84,7 +84,6 @@
                 <child>
                     <object class="AdwComboRow" id="localeValue">
                         <property name="title" translatable="yes">Calendar Language</property>
-                        <property name="subtitle" translatable="yes">Language for calendar names</property>
                     </object>
                 </child>
                 <child>
@@ -96,7 +95,6 @@
                 <child>
                     <object class="AdwSwitchRow" id="yearAsRomanNumeralsRow">
                         <property name="title" translatable="yes">Year as Roman Numerals</property>
-                        <property name="subtitle" translatable="yes">Display the year in Roman numerals (e.g. CCXXXIV)</property>
                     </object>
                 </child>
             </object>
@@ -107,7 +105,6 @@
                 <child>
                     <object class="AdwSwitchRow" id="includeDayNameRow">
                         <property name="title" translatable="yes">Include Day Name</property>
-                        <property name="subtitle" translatable="yes">Show the day name in the date menu</property>
                     </object>
                 </child>
                 <child>
@@ -124,7 +121,6 @@
                 <child>
                     <object class="AdwSwitchRow" id="includeDayNameImageRow">
                         <property name="title" translatable="yes">Include Image</property>
-                        <property name="subtitle" translatable="yes">Show an image for the day name link when available</property>
                     </object>
                 </child>
                 <child>
