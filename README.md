@@ -6,7 +6,6 @@ When a day has a link, clicking on the date in the menu will open the Wikipedia 
 
 TODO:
 - fix the prefs i18n
-- make the position (left/center/right) an enum and dropdown (the togglegroup looks pretty bad)
 - add periodic cache cleaning
 - add a debug settings page (e.g. clear cache now, browse cache)
 - fix this error too:

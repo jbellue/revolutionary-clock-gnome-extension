@@ -9,18 +9,6 @@
             <object class="AdwPreferencesGroup">
                 <property name="title" translatable="yes">Clock Position</property>
                 <child>
-                    <object class="AdwSpinRow" id="clockPositionIndex">
-                        <property name="title" translatable="yes">Position Offset</property>
-                        <property name="adjustment">
-                            <object class="GtkAdjustment">
-                                <property name="lower">-1</property>
-                                <property name="upper">10</property>
-                                <property name="step_increment">1</property>
-                            </object>
-                        </property>
-                    </object>
-                </child>
-                <child>
                     <object class="AdwActionRow">
                         <property name="title" translatable="yes">Position in Panel</property>
                         <child>
@@ -28,6 +16,7 @@
                                 <property name="homogeneous">True</property>
                                 <property name="orientation">horizontal</property>
                                 <property name="can-shrink">True</property>
+                                <property name="valign">center</property>
                                 <property name="css-classes">round</property>
                                 <child>
                                     <object class="AdwToggle">
@@ -49,6 +38,18 @@
                                 </child>
                             </object>
                         </child>
+                    </object>
+                </child>
+                <child>
+                    <object class="AdwSpinRow" id="clockPositionIndex">
+                        <property name="title" translatable="yes">Position Offset</property>
+                        <property name="adjustment">
+                            <object class="GtkAdjustment">
+                                <property name="lower">-1</property>
+                                <property name="upper">10</property>
+                                <property name="step_increment">1</property>
+                            </object>
+                        </property>
                     </object>
                 </child>
             </object>
