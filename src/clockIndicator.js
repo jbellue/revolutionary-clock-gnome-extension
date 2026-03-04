@@ -50,20 +50,16 @@ class RevolutionaryClock extends PanelMenu.Button {
         this.menu.actor.add_style_class_name('revolutionary-clock-menu-popup');
         this._updateDateMenuItem();
 
-        this._includeDayNameChangedId = this._settings.connect('changed::include-day-name', () => this._updateDateMenuItem());
-        this._includeDayNameLinkChangedId = this._settings.connect('changed::include-day-name-link', () => this._updateDateMenuItem());
-        this._includeDayNameImageChangedId = this._settings.connect('changed::include-day-name-image', () => this._updateDateMenuItem());
-        this._includeYearChangedId = this._settings.connect('changed::include-date-year', () => this._updateDateMenuItem());
-        this._yearAsRomanNumeralsChangedId = this._settings.connect('changed::year-as-roman-numerals', () => this._updateDateMenuItem());
+        this._signals =  [
+            {id: this._settings.connect('changed::clock-decoration', () => this._updateClockLabel())},
+            {id: this._settings.connect('changed::decoration-before-clock', () => this._updateClockLabel())},
+            {id: this._settings.connect('changed::decoration-after-clock', () => this._updateClockLabel())},
+        ];
 
         this.menu.connect('open-state-changed', (_, isOpen) => {
             if (isOpen)
                 this._updateDateMenuItem();
         });
-
-        this._settingsChangedId = this._settings.connect('changed::clock-decoration', () => this._updateClockLabel());
-        this._decorationBeforeChangedId = this._settings.connect('changed::decoration-before-clock', () => this._updateClockLabel());
-        this._decorationAfterChangedId = this._settings.connect('changed::decoration-after-clock', () => this._updateClockLabel());
     }
 
     _updateDateMenuItem() {
@@ -71,7 +67,9 @@ class RevolutionaryClock extends PanelMenu.Button {
     }
 
     _updateClockLabel() {
-        this._clockLabel.set_text(this._formatNow());
+        this._clockLabel.set_text(
+            this._formatNow(getRepublicanClock(new Date()))
+        );
     }
 
     _startClockTimer() {
@@ -81,9 +79,8 @@ class RevolutionaryClock extends PanelMenu.Button {
         });
     }
 
-    _formatNow() {
+    _formatNow(clock) {
         const pad2 = n => String(Math.floor(n)).padStart(2, '0');
-        const clock = getRepublicanClock(new Date());
         const clockDecoration = this._settings.get_string('clock-decoration');
         const decorationBefore = this._settings.get_boolean('decoration-before-clock');
         const decorationAfter = this._settings.get_boolean('decoration-after-clock');
@@ -111,22 +108,9 @@ class RevolutionaryClock extends PanelMenu.Button {
         this._dateMenuItem?.destroy();
         this._dateMenuItem = null;
 
-        const ids = [
-            '_settingsChangedId',
-            '_decorationBeforeChangedId',
-            '_decorationAfterChangedId',
-            '_includeDayNameChangedId',
-            '_includeDayNameLinkChangedId',
-            '_includeDayNameImageChangedId',
-            '_includeYearChangedId',
-            '_yearAsRomanNumeralsChangedId',
-        ];
-        for (const idName of ids) {
-            if (this[idName]) {
-                this._settings.disconnect(this[idName]);
-                this[idName] = null;
-            }
-        }
+        this._signals.forEach(({id}) => this._settings.disconnect(id));
+        this._signals = [];
+
         super.destroy();
     }
 });

@@ -104,6 +104,11 @@ export class DateMenuItem {
             {actor: this._imageSlot, id: this._imageSlot.connect('button-press-event', () => this._handleClick(this._currentImageLink))},
             {actor: this._imageSlot, id: this._imageSlot.connect('enter-event', () => this._setPointerCursor(this._currentImageLink))},
             {actor: this._imageSlot, id: this._imageSlot.connect('leave-event', () => this._setDefaultCursor())},
+            {actor: this._settings, id: this._settings.connect('changed::include-day-name', () => this.update())},
+            {actor: this._settings, id: this._settings.connect('changed::include-day-name-link', () => this.update())},
+            {actor: this._settings, id: this._settings.connect('changed::include-day-name-image', () => this.update())},
+            {actor: this._settings, id: this._settings.connect('changed::include-date-year', () => this.update())},
+            {actor: this._settings, id: this._settings.connect('changed::year-as-roman-numerals', () => this.update())},
         ];
 
         // Wikipedia image management
