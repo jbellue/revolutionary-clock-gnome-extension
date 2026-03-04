@@ -45,7 +45,7 @@ class RevolutionaryClock extends PanelMenu.Button {
         this._updateClockLabel();
         this._startClockTimer();
 
-        this._dateMenuItem = new DateMenuItem(settings);
+        this._dateMenuItem = new DateMenuItem(settings, () => this.menu.close());
         this.menu.addMenuItem(this._dateMenuItem.item);
         this.menu.actor.add_style_class_name('revolutionary-clock-menu-popup');
         this._updateDateMenuItem();

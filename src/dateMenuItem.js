@@ -27,8 +27,9 @@ import { getRepublicanDate } from './revdate.js';
 import { WikiImageManager } from './wikiImageManager.js';
 
 export class DateMenuItem {
-    constructor(settings) {
+    constructor(settings, onLinkClicked = null) {
         this._settings = settings;
+        this._onLinkClicked = onLinkClicked;
 
         this.item = new PopupMenu.PopupBaseMenuItem({
             reactive: false,
@@ -97,10 +98,10 @@ export class DateMenuItem {
         this._defaultCursor = this._resolveCursor(['DEFAULT', 'ARROW']);
 
         this._signals = [
-            {actor: this._dayNameLabel, id: this._dayNameLabel.connect('button-press-event', () => this._openLink(this._currentDayLink))},
+            {actor: this._dayNameLabel, id: this._dayNameLabel.connect('button-press-event', () => this._handleClick(this._currentDayLink))},
             {actor: this._dayNameLabel, id: this._dayNameLabel.connect('enter-event', () => this._setPointerCursor(this._currentDayLink))},
             {actor: this._dayNameLabel, id: this._dayNameLabel.connect('leave-event', () => this._setDefaultCursor())},
-            {actor: this._imageSlot, id: this._imageSlot.connect('button-press-event', () => this._openLink(this._currentImageLink))},
+            {actor: this._imageSlot, id: this._imageSlot.connect('button-press-event', () => this._handleClick(this._currentImageLink))},
             {actor: this._imageSlot, id: this._imageSlot.connect('enter-event', () => this._setPointerCursor(this._currentImageLink))},
             {actor: this._imageSlot, id: this._imageSlot.connect('leave-event', () => this._setDefaultCursor())},
         ];
@@ -196,11 +197,13 @@ export class DateMenuItem {
         return Clutter.EVENT_PROPAGATE;
     }
 
-    _openLink(link) {
+    _handleClick(link) {
         if (!link)
             return Clutter.EVENT_PROPAGATE;
 
         Gio.AppInfo.launch_default_for_uri(link, null);
+        if (this._onLinkClicked)
+            this._onLinkClicked();
         return Clutter.EVENT_STOP;
     }
 
