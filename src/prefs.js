@@ -21,11 +21,12 @@ import GLib from 'gi://GLib';
 import Gtk from 'gi://Gtk';
 
 import {ExtensionPreferences} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
+import { CACHE_DIR, LOG_PREFIX } from './constants.js';
 
 const _ = imports.gettext.domain('revolutionary-clock').gettext;
 
 function getCacheDir() {
-    return `${GLib.get_user_cache_dir()}/revolutionaryclock/`;
+    return CACHE_DIR;
 }
 
 function clearCache() {

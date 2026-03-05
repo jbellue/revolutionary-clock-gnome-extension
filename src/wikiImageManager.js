@@ -23,13 +23,15 @@ import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 import GdkPixbuf from 'gi://GdkPixbuf';
 
+import { CACHE_DIR, USER_AGENT } from './constants.js';
+
 export class WikiImageManager {
     constructor(settings = null) {
         this._settings = settings;
         this._soup = new Soup.Session();
-        this._soup.user_agent = 'RevolutionaryClock/1.0 (https://github.com/jbellue/revolutionary-clock)';
+        this._soup.user_agent = USER_AGENT;
 
-        this._cacheDir = `${GLib.get_user_cache_dir()}/revolutionaryclock/`;
+        this._cacheDir = CACHE_DIR;
         GLib.mkdir_with_parents(this._cacheDir, 0o755);
         this._imageCache = new Map();  // URL → local path
     }
@@ -211,7 +213,7 @@ export class WikiImageManager {
         return new Promise((resolve) => {
             let session = this._soup;
             let msg = Soup.Message.new('GET', url);
-            msg.request_headers.replace('User-Agent', 'RevolutionaryClock/1.0 (https://github.com/jbellue/revolutionary-clock)');
+            msg.request_headers.replace('User-Agent', USER_AGENT);
             if (referer) {
                 msg.request_headers.append('Referer', referer);
             }
