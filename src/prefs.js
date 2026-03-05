@@ -22,80 +22,9 @@ import Gtk from 'gi://Gtk';
 
 import {ExtensionPreferences} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 import { CACHE_DIR, LOG_PREFIX } from './constants.js';
+import { clearAllCacheFiles, getCacheStats } from './cacheUtils.js';
 
 const _ = imports.gettext.domain('revolutionary-clock').gettext;
-
-function getCacheDir() {
-    return CACHE_DIR;
-}
-
-function clearCache() {
-    try {
-        const cacheDirPath = getCacheDir();
-        const cacheDir = Gio.File.new_for_path(cacheDirPath);
-        if (!cacheDir.query_exists(null)) {
-            console.log('[RevolutionaryClock] Cache directory does not exist');
-            return 0;
-        }
-
-        let filesDeleted = 0;
-        const enumerator = cacheDir.enumerate_children(
-            'standard::name',
-            Gio.FileQueryInfoFlags.NONE,
-            null
-        );
-
-        let info;
-        while ((info = enumerator.next_file(null)) !== null) {
-            const fileName = info.get_name();
-            const file = cacheDir.get_child(fileName);
-            try {
-                if (file.delete(null)) {
-                    filesDeleted++;
-                }
-            } catch (e) {
-                console.log(`[RevolutionaryClock] Failed to delete ${fileName}: ${e}`);
-            }
-        }
-        enumerator.close(null);
-
-        console.log(`[RevolutionaryClock] Cleared cache: deleted ${filesDeleted} files`);
-        return filesDeleted;
-    } catch (e) {
-        console.log(`[RevolutionaryClock] Error clearing cache: ${e}`);
-        return 0;
-    }
-}
-
-function getCacheStats() {
-    try {
-        const cacheDirPath = getCacheDir();
-        const cacheDir = Gio.File.new_for_path(cacheDirPath);
-        if (!cacheDir.query_exists(null)) {
-            return { fileCount: 0, totalSize: 0 };
-        }
-
-        let fileCount = 0;
-        let totalSize = 0;
-        const enumerator = cacheDir.enumerate_children(
-            'standard::name,standard::size',
-            Gio.FileQueryInfoFlags.NONE,
-            null
-        );
-
-        let info;
-        while ((info = enumerator.next_file(null)) !== null) {
-            fileCount++;
-            totalSize += info.get_size();
-        }
-        enumerator.close(null);
-
-        return { fileCount, totalSize };
-    } catch (e) {
-        console.log(`[RevolutionaryClock] Error getting cache stats: ${e}`);
-        return { fileCount: 0, totalSize: 0 };
-    }
-}
 
 
 function getAvailableLocales(extensionPath) {
@@ -140,7 +69,7 @@ function getAvailableLocales(extensionPath) {
 
         enumerator.close(null);
     } catch (e) {
-        console.warn(`[Revolutionary Clock] Could not list locales in ${localeDirPath}: ${e.message}`);
+        log(`${LOG_PREFIX} Could not list locales in ${localeDirPath}: ${e.message}`);
     }
 
     locales.sort();
@@ -232,7 +161,7 @@ export default class RevolutionaryClockPreferences extends ExtensionPreferences 
 
         // Clear cache button
         clearCacheButton.connect('clicked', () => {
-            const filesDeleted = clearCache();
+            const filesDeleted = clearAllCacheFiles();
             updateCacheStats();
             
             // Show a toast notification if available
@@ -249,12 +178,11 @@ export default class RevolutionaryClockPreferences extends ExtensionPreferences 
 
         // Browse cache folder button
         browseCacheButton.connect('clicked', () => {
-            const cacheDirPath = getCacheDir();
-            const uri = GLib.filename_to_uri(cacheDirPath, null);
+            const uri = GLib.filename_to_uri(CACHE_DIR, null);
             try {
                 Gio.AppInfo.launch_default_for_uri(uri, null);
             } catch (e) {
-                log(`[RevolutionaryClock] Failed to open cache directory: ${e.message}`);
+                log(`${LOG_PREFIX} Failed to open cache directory: ${e.message}`);
             }
         });
 

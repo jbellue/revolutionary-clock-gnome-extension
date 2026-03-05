@@ -23,7 +23,8 @@ import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 import GdkPixbuf from 'gi://GdkPixbuf';
 
-import { CACHE_DIR, USER_AGENT } from './constants.js';
+import { CACHE_DIR, USER_AGENT, LOG_PREFIX } from './constants.js';
+import { cleanupExpiredCacheFiles, getCacheFilePath, hasCache, getCachePath } from './cacheUtils.js';
 
 export class WikiImageManager {
     constructor(settings = null) {
@@ -36,9 +37,18 @@ export class WikiImageManager {
         this._imageCache = new Map();  // URL → local path
     }
 
+    // Thin wrapper methods that delegate to cacheUtils
+    hasCache(dayLink) {
+        return hasCache(this._imageCache, dayLink);
+    }
+
+    getCachePath(dayLink) {
+        return getCachePath(this._imageCache, dayLink);
+    }
+
     async downloadAndCache(dayLink) {
         try {
-            const cacheFile = this._getCacheFilePath(dayLink);
+            const cacheFile = getCacheFilePath(dayLink);
             let file = Gio.File.new_for_path(cacheFile);
 
             if (file.query_exists(null)) {
@@ -48,7 +58,7 @@ export class WikiImageManager {
 
             const url = await this.fetchWikipediaImageUrl(dayLink);
             if (!url) {
-                log(`[RevolutionaryClock] No Wikipedia image URL found for: ${dayLink}`);
+                log(`${LOG_PREFIX} No Wikipedia image URL found for: ${dayLink}`);
                 return null;
             }
 
@@ -57,70 +67,19 @@ export class WikiImageManager {
                 let stream = file.replace(null, false, Gio.FileCreateFlags.NONE, null);
                 stream.write_all(result.bytes.get_data(), null);
                 stream.close(null);
-                this._cleanupExpiredCacheFiles();
-                log(`[RevolutionaryClock] Downloaded and saved image for ${dayLink} to ${cacheFile}`);
+                const maxAgeDays = this._settings ? this._settings.get_int('delete-cache-older-than-days') : 0;
+                cleanupExpiredCacheFiles(maxAgeDays);
+                log(`${LOG_PREFIX} Downloaded and saved image for ${dayLink} to ${cacheFile}`);
             } else {
-                log(`[RevolutionaryClock] Failed to download image for ${dayLink}`);
+                log(`${LOG_PREFIX} Failed to download image for ${dayLink}`);
                 return null;
             }
 
             this._imageCache.set(dayLink, cacheFile);
             return cacheFile;
         } catch (e) {
-            log(`[RevolutionaryClock] Error in downloadAndCache: ${e}`);
+            log(`${LOG_PREFIX} Error in downloadAndCache: ${e}`);
             return null;
-        }
-    }
-
-    _getCacheFilePath(dayLink) {
-        let hash = new GLib.Checksum(GLib.ChecksumType.MD5);
-        hash.update(dayLink);
-        return `${this._cacheDir}${hash.get_string()}.img`;
-    }
-
-    _cleanupExpiredCacheFiles() {
-        try {
-            const maxAgeDays = this._settings ? this._settings.get_int('delete-cache-older-than-days') : 0;
-            if (maxAgeDays <= 0)
-                return;
-
-            const nowSeconds = Math.floor(Date.now() / 1000);
-            const cutoffSeconds = nowSeconds - (maxAgeDays * 24 * 60 * 60);
-            const cacheDir = Gio.File.new_for_path(this._cacheDir);
-            if (!cacheDir.query_exists(null))
-                return;
-
-            const enumerator = cacheDir.enumerate_children(
-                'standard::name,standard::type,time::modified',
-                Gio.FileQueryInfoFlags.NONE,
-                null
-            );
-
-            let info;
-            let deletedCount = 0;
-            while ((info = enumerator.next_file(null)) !== null) {
-                if (info.get_file_type() !== Gio.FileType.REGULAR)
-                    continue;
-
-                const modified = Number(info.get_attribute_uint64('time::modified'));
-                if (!Number.isFinite(modified) || modified >= cutoffSeconds)
-                    continue;
-
-                const file = cacheDir.get_child(info.get_name());
-                try {
-                    if (file.delete(null))
-                        deletedCount++;
-                } catch (e) {
-                    log(`[RevolutionaryClock] Failed to delete expired cache file ${info.get_name()}: ${e}`);
-                }
-            }
-
-            enumerator.close(null);
-
-            if (deletedCount > 0)
-                log(`[RevolutionaryClock] Deleted ${deletedCount} expired cached image${deletedCount !== 1 ? 's' : ''}`);
-        } catch (e) {
-            log(`[RevolutionaryClock] Error while cleaning expired cache files: ${e}`);
         }
     }
 
@@ -152,22 +111,14 @@ export class WikiImageManager {
                             }
                         }
                     }
-                    log(`[RevolutionaryClock] No thumbnail found in API response for: ${wikiUrl}`);
+                    log(`${LOG_PREFIX} No thumbnail found in API response for: ${wikiUrl}`);
                     resolve(null);
                 } catch (e) {
-                    log(`[RevolutionaryClock] Error fetching Wikipedia image for: ${wikiUrl}, Error: ${e}`);
+                    log(`${LOG_PREFIX} Error fetching Wikipedia image for: ${wikiUrl}, Error: ${e}`);
                     resolve(null);
                 }
             });
         });
-    }
-
-    hasCache(dayLink) {
-        return this._imageCache.has(dayLink);
-    }
-
-    getCachePath(dayLink) {
-        return this._imageCache.get(dayLink);
     }
 
     createImageActor(cacheFile, targetWidth = 320) {
@@ -176,11 +127,11 @@ export class WikiImageManager {
             let filePath = file.get_path();
 
             if (!file.query_exists(null)) {
-                log(`[RevolutionaryClock] Cached file missing: ${filePath}`);
+                log(`${LOG_PREFIX} Cached file missing: ${filePath}`);
                 return null;
             }
 
-            log(`[RevolutionaryClock] Set image from file: ${filePath}`);
+            log(`${LOG_PREFIX} Set image from file: ${filePath}`);
 
             let targetHeight = 300;
 
@@ -190,7 +141,7 @@ export class WikiImageManager {
                 const sourceHeight = pixbuf.get_height();
                 targetHeight = Math.max(1, Math.round((sourceHeight * targetWidth) / sourceWidth));
             } catch (e) {
-                log(`[RevolutionaryClock] Pixbuf dimension read failed, using default size fallback: ${e}`);
+                log(`${LOG_PREFIX} Pixbuf dimension read failed, using default size fallback: ${e}`);
             }
 
             const uri = file.get_uri();
@@ -204,7 +155,7 @@ export class WikiImageManager {
                 style: `background-image: url("${escapedUri}"); background-size: ${targetWidth}px ${targetHeight}px; background-repeat: no-repeat;`,
             });
         } catch (e) {
-            log(`[RevolutionaryClock] Failed to create image actor: ${e}`);
+            log(`${LOG_PREFIX} Failed to create image actor: ${e}`);
             return null;
         }
     }

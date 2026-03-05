@@ -25,6 +25,7 @@ import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 
 import { getRepublicanDate } from './revdate.js';
 import { WikiImageManager } from './wikiImageManager.js';
+import { LOG_PREFIX } from './constants.js';
 
 export class DateMenuItem {
     constructor(settings, onLinkClicked = null) {
@@ -229,7 +230,7 @@ export class DateMenuItem {
     _setWikiImageFromCache(dayLink) {
         const cacheFile = this._wikiImageManager.getCachePath(dayLink);
         if (!cacheFile) {
-            log(`[RevolutionaryClock] No cached image for dayLink: ${dayLink}`);
+            log(`${LOG_PREFIX} No cached image for dayLink: ${dayLink}`);
             return;
         }
 
