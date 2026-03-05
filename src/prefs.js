@@ -218,6 +218,8 @@ export default class RevolutionaryClockPreferences extends ExtensionPreferences 
         const cacheStatsRow = builder.get_object('cacheStatsRow');
         const clearCacheButton = builder.get_object('clearCacheButton');
         const browseCacheButton = builder.get_object('browseCacheButton');
+        const deleteCacheOlderThanRow = builder.get_object('deleteCacheOlderThanRow');
+        settings.bind('delete-cache-older-than-days', deleteCacheOlderThanRow, 'value', Gio.SettingsBindFlags.DEFAULT);
 
         // Update cache stats
         const updateCacheStats = () => {

@@ -87,5 +87,12 @@
         Whether to display the Republican year in Roman numerals (e.g. CCXXXIV) instead of Arabic numerals.
       </description>
     </key>
+    <key name="delete-cache-older-than-days" type="i">
+      <default>0</default>
+      <summary>Delete cache files older than specified days</summary>
+      <description>
+        The number of days after which cache files should be deleted. Set to 0 to disable automatic deletion.
+      </description>
+    </key>
   </schema>
 </schemalist>

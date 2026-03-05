@@ -112,7 +112,7 @@ export class DateMenuItem {
         ];
 
         // Wikipedia image management
-        this._wikiImageManager = new WikiImageManager();
+        this._wikiImageManager = new WikiImageManager(this._settings);
         this._wikiImage = null;
 
         this.item.add_child(this._container);

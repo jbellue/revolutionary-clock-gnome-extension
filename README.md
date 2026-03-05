@@ -6,7 +6,6 @@ When a day has a link, clicking on the date in the menu will open the Wikipedia 
 
 TODO:
 - fix the prefs i18n
-- add periodic cache cleaning
 - fix this error too:
 GNOME Shell-Message: 13:24:15.659: [RevolutionaryClock] No thumbnail found in API response for: https://fr.wikipedia.org/wiki/B%C3%AAche
 GNOME Shell-Message: 13:24:15.659: [RevolutionaryClock] No Wikipedia image URL found for: https://fr.wikipedia.org/wiki/B%C3%AAche

@@ -24,7 +24,8 @@ import GLib from 'gi://GLib';
 import GdkPixbuf from 'gi://GdkPixbuf';
 
 export class WikiImageManager {
-    constructor() {
+    constructor(settings = null) {
+        this._settings = settings;
         this._soup = new Soup.Session();
         this._soup.user_agent = 'RevolutionaryClock/1.0 (https://github.com/jbellue/revolutionary-clock)';
 
@@ -35,34 +36,30 @@ export class WikiImageManager {
 
     async downloadAndCache(dayLink) {
         try {
+            const cacheFile = this._getCacheFilePath(dayLink);
+            let file = Gio.File.new_for_path(cacheFile);
+
+            if (file.query_exists(null)) {
+                this._imageCache.set(dayLink, cacheFile);
+                return cacheFile;
+            }
+
             const url = await this.fetchWikipediaImageUrl(dayLink);
             if (!url) {
                 log(`[RevolutionaryClock] No Wikipedia image URL found for: ${dayLink}`);
                 return null;
             }
 
-            // Generate cache filename from dayLink hash and preserve extension
-            let hash = new GLib.Checksum(GLib.ChecksumType.MD5);
-            hash.update(dayLink);
-            let extMatch = url.match(/\.([a-zA-Z0-9]+)(?:\?|$)/);
-            let ext = extMatch ? extMatch[1].toLowerCase() : 'jpg';
-            if (!['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext))
-                ext = 'jpg';
-            let cacheFile = `${this._cacheDir}${hash.get_string()}.${ext}`;
-            let file = Gio.File.new_for_path(cacheFile);
-
-            // Download image if not already present
-            if (!file.query_exists(null)) {
-                let result = await this._downloadImage(url, dayLink);
-                if (result && result.bytes && result.contentType && result.status === 200 && result.contentType.startsWith('image/')) {
-                    let stream = file.replace(null, false, Gio.FileCreateFlags.NONE, null);
-                    stream.write_all(result.bytes.get_data(), null);
-                    stream.close(null);
-                    log(`[RevolutionaryClock] Downloaded and saved image for ${dayLink} to ${cacheFile}`);
-                } else {
-                    log(`[RevolutionaryClock] Failed to download image for ${dayLink}`);
-                    return null;
-                }
+            let result = await this._downloadImage(url, dayLink);
+            if (result && result.bytes && result.contentType && result.status === 200 && result.contentType.startsWith('image/')) {
+                let stream = file.replace(null, false, Gio.FileCreateFlags.NONE, null);
+                stream.write_all(result.bytes.get_data(), null);
+                stream.close(null);
+                this._cleanupExpiredCacheFiles();
+                log(`[RevolutionaryClock] Downloaded and saved image for ${dayLink} to ${cacheFile}`);
+            } else {
+                log(`[RevolutionaryClock] Failed to download image for ${dayLink}`);
+                return null;
             }
 
             this._imageCache.set(dayLink, cacheFile);
@@ -70,6 +67,58 @@ export class WikiImageManager {
         } catch (e) {
             log(`[RevolutionaryClock] Error in downloadAndCache: ${e}`);
             return null;
+        }
+    }
+
+    _getCacheFilePath(dayLink) {
+        let hash = new GLib.Checksum(GLib.ChecksumType.MD5);
+        hash.update(dayLink);
+        return `${this._cacheDir}${hash.get_string()}.img`;
+    }
+
+    _cleanupExpiredCacheFiles() {
+        try {
+            const maxAgeDays = this._settings ? this._settings.get_int('delete-cache-older-than-days') : 0;
+            if (maxAgeDays <= 0)
+                return;
+
+            const nowSeconds = Math.floor(Date.now() / 1000);
+            const cutoffSeconds = nowSeconds - (maxAgeDays * 24 * 60 * 60);
+            const cacheDir = Gio.File.new_for_path(this._cacheDir);
+            if (!cacheDir.query_exists(null))
+                return;
+
+            const enumerator = cacheDir.enumerate_children(
+                'standard::name,standard::type,time::modified',
+                Gio.FileQueryInfoFlags.NONE,
+                null
+            );
+
+            let info;
+            let deletedCount = 0;
+            while ((info = enumerator.next_file(null)) !== null) {
+                if (info.get_file_type() !== Gio.FileType.REGULAR)
+                    continue;
+
+                const modified = Number(info.get_attribute_uint64('time::modified'));
+                if (!Number.isFinite(modified) || modified >= cutoffSeconds)
+                    continue;
+
+                const file = cacheDir.get_child(info.get_name());
+                try {
+                    if (file.delete(null))
+                        deletedCount++;
+                } catch (e) {
+                    log(`[RevolutionaryClock] Failed to delete expired cache file ${info.get_name()}: ${e}`);
+                }
+            }
+
+            enumerator.close(null);
+
+            if (deletedCount > 0)
+                log(`[RevolutionaryClock] Deleted ${deletedCount} expired cached image${deletedCount !== 1 ? 's' : ''}`);
+        } catch (e) {
+            log(`[RevolutionaryClock] Error while cleaning expired cache files: ${e}`);
         }
     }
 
