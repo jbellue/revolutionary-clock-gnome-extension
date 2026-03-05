@@ -26,7 +26,6 @@ import { clearAllCacheFiles, getCacheStats } from './cacheUtils.js';
 
 const _ = imports.gettext.domain('revolutionary-clock').gettext;
 
-
 function getAvailableLocales(extensionPath) {
     const locales = [];
     const candidateDirs = ['locales', 'locale'];

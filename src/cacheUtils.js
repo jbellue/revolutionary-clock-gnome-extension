@@ -58,7 +58,7 @@ export function getCachePath(cache, dayLink) {
  * @param {Function} callback - Function to call for each file
  * @returns {boolean} - true if enumeration completed successfully
  */
-export function enumerateCacheFiles(callback) {
+function enumerateCacheFiles(callback) {
     try {
         const cacheDir = Gio.File.new_for_path(CACHE_DIR);
         if (!cacheDir.query_exists(null))
