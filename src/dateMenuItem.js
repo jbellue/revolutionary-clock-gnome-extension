@@ -288,6 +288,7 @@ export class DateMenuItem {
             if (this._wikiImage.get_parent())
                 this._imageSlot.remove_child(this._wikiImage);
             this._wikiImage.destroy();
+            this._wikiImage = null;
         }
 
         if (this._wikiImageManager) {
