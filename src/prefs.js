@@ -21,7 +21,7 @@ import GLib from 'gi://GLib';
 import Gtk from 'gi://Gtk';
 
 import {ExtensionPreferences} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
-import { CACHE_DIR, LOG_PREFIX } from './constants.js';
+import { CACHE_DIR } from './constants.js';
 import { clearAllCacheFiles, getCacheStats } from './cacheUtils.js';
 
 const _ = imports.gettext.domain('revolutionary-clock').gettext;
@@ -76,7 +76,7 @@ function getAvailableLocales(extensionPath) {
 
         enumerator.close(null);
     } catch (e) {
-        log(`${LOG_PREFIX} Could not list locales in ${localeDirPath}: ${e.message}`);
+        logMessage(`Could not list locales in ${localeDirPath}: ${e.message}`, 'WARN');
     }
 
     locales.sort();
@@ -200,7 +200,8 @@ export default class RevolutionaryClockPreferences extends ExtensionPreferences 
             try {
                 Gio.AppInfo.launch_default_for_uri(uri, null);
             } catch (e) {
-                log(`${LOG_PREFIX} Failed to open cache directory: ${e.message}`);
+                logMessage(`Failed to open cache directory: ${e.message}`, 'ERROR');
+            }
             }
         });
 

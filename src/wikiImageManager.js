@@ -23,8 +23,9 @@ import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 import GdkPixbuf from 'gi://GdkPixbuf';
 
-import { CACHE_DIR, USER_AGENT, LOG_PREFIX } from './constants.js';
+import { CACHE_DIR, USER_AGENT } from './constants.js';
 import { cleanupExpiredCacheFiles, getCacheFilePath, hasCache, getCachePath } from './cacheUtils.js';
+import { logMessage } from './logger.js';
 
 export class WikiImageManager {
     constructor(settings = null) {
@@ -72,7 +73,7 @@ export class WikiImageManager {
 
             const url = await this.fetchWikipediaImageUrl(dayLink);
             if (!url) {
-                log(`${LOG_PREFIX} No Wikipedia image URL found for: ${dayLink}`);
+                logMessage(`No Wikipedia image URL found for: ${dayLink}`, 'WARN');
                 return null;
             }
 
@@ -85,16 +86,16 @@ export class WikiImageManager {
                 // After saving the new image, clean up old cache files based on settings
                 const maxAgeDays = this._settings ? this._settings.get_int('delete-cache-older-than-days') : 0;
                 cleanupExpiredCacheFiles(maxAgeDays);
-                log(`${LOG_PREFIX} Downloaded and saved image for ${dayLink} to ${cacheFile}`);
+                logMessage(`Downloaded and saved image for ${dayLink} to ${cacheFile}`);
             } else {
-                log(`${LOG_PREFIX} Failed to download image for ${dayLink}`);
+                logMessage(`Failed to download image for ${dayLink}`, 'WARN');
                 return null;
             }
 
             this._imageCache.set(dayLink, cacheFile);
             return cacheFile;
         } catch (e) {
-            log(`${LOG_PREFIX} Error in downloadAndCache: ${e}`);
+            logMessage(`Error in downloadAndCache: ${e}`, 'ERROR');
             return null;
         }
     }
@@ -132,10 +133,10 @@ export class WikiImageManager {
                             }
                         }
                     }
-                    log(`${LOG_PREFIX} No thumbnail found in API response for: ${wikiUrl}`);
+                    logMessage(`No thumbnail found in API response for: ${wikiUrl}`, 'WARN');
                     resolve(null);
                 } catch (e) {
-                    log(`${LOG_PREFIX} Error fetching Wikipedia image for: ${wikiUrl}, Error: ${e}`);
+                    logMessage(`Error fetching Wikipedia image for: ${wikiUrl}, Error: ${e}`, 'ERROR');
                     resolve(null);
                 }
             });
@@ -154,11 +155,11 @@ export class WikiImageManager {
             let filePath = file.get_path();
 
             if (!file.query_exists(null)) {
-                log(`${LOG_PREFIX} Cached file missing: ${filePath}`);
+                logMessage(`Cached file missing: ${filePath}`, 'WARN');
                 return null;
             }
 
-            log(`${LOG_PREFIX} Set image from file: ${filePath}`);
+            logMessage(`Set image from file: ${filePath}`);
 
             let targetHeight = 300;
 
@@ -168,7 +169,7 @@ export class WikiImageManager {
                 const sourceHeight = pixbuf.get_height();
                 targetHeight = Math.max(1, Math.round((sourceHeight * targetWidth) / sourceWidth));
             } catch (e) {
-                log(`${LOG_PREFIX} Pixbuf dimension read failed, using default size fallback: ${e}`);
+                logMessage(`Pixbuf dimension read failed, using default size fallback: ${e}`, 'WARN');
             }
 
             const uri = file.get_uri();
@@ -182,7 +183,7 @@ export class WikiImageManager {
                 style: `background-image: url("${escapedUri}"); background-size: ${targetWidth}px ${targetHeight}px; background-repeat: no-repeat;`,
             });
         } catch (e) {
-            log(`${LOG_PREFIX} Failed to create image actor: ${e}`);
+            logMessage(`Failed to create image actor: ${e}`, 'ERROR');
             return null;
         }
     }
@@ -209,7 +210,7 @@ export class WikiImageManager {
                     const status = msg.status_code;
                     resolve({ bytes, contentType, status });
                 } catch (e) {
-                    log(`${LOG_PREFIX} Failed to download image: ${e}`);
+                    logMessage(`Failed to download image: ${e}`, 'ERROR');
                     resolve(null);
                 }
             });

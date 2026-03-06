@@ -151,10 +151,20 @@
                         <property name="subtitle" translatable="yes">Remove all cached images</property>
                         <child>
                             <object class="GtkButton" id="clearCacheButton">
-                                <property name="label" translatable="yes">Delete</property>
                                 <property name="valign">center</property>
+                                <property name="child">
+                                    <object class="AdwButtonContent">
+                                        <property name="icon-name">user-trash-symbolic</property>
+                                        <property name="label" translatable="yes">_Delete</property>
+                                        <property name="use-underline">True</property>
+                                        <style>
+                                            <class name="compact-button"/>
+                                        </style>
+                                    </object>
+                                </property>
                                 <style>
                                     <class name="destructive-action"/>
+                                    <class name="compact-button"/>
                                 </style>
                             </object>
                         </child>
@@ -166,8 +176,20 @@
                         <property name="subtitle" translatable="yes">Open cache directory in file manager</property>
                         <child>
                             <object class="GtkButton" id="browseCacheButton">
-                                <property name="label" translatable="yes">Open</property>
                                 <property name="valign">center</property>
+                                <property name="child">
+                                    <object class="AdwButtonContent">
+                                        <property name="icon-name">document-open-symbolic</property>
+                                        <property name="label" translatable="yes">_Open</property>
+                                        <property name="use-underline">True</property>
+                                        <style>
+                                            <class name="compact-button"/>
+                                        </style>
+                                    </object>
+                                </property>
+                                <style>
+                                    <class name="compact-button"/>
+                                </style>
                             </object>
                         </child>
                     </object>

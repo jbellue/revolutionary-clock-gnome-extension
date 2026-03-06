@@ -22,7 +22,7 @@ import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import { setTranslationFunction } from './revdate.js';
 import { setupLocale, translate } from './translations.js';
 import { RevolutionaryClock } from './clockIndicator.js';
-import { LOG_PREFIX } from './constants.js';
+import { logMessage } from './logger.js';
 
 
 export default class RevolutionaryClockExtension extends Extension {
@@ -48,7 +48,7 @@ export default class RevolutionaryClockExtension extends Extension {
 
             this._createClockInMainPanel();
         }).catch(e => {
-            log(`${LOG_PREFIX} Failed to enable extension: ${e.message}`);
+            logMessage(`Failed to enable extension: ${e.message}`, 'ERROR');
         });
     }
 

@@ -19,7 +19,8 @@
 import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 
-import { CACHE_DIR, LOG_PREFIX } from './constants.js';
+import { CACHE_DIR } from './constants.js';
+import { logMessage } from './logger.js';
 
 /**
  * Gets the cache file path for a given dayLink.
@@ -83,7 +84,7 @@ function enumerateCacheFiles(callback) {
         enumerator.close(null);
         return true;
     } catch (e) {
-        log(`${LOG_PREFIX} Error enumerating cache: ${e}`);
+        logMessage(`Error enumerating cache: ${e}`, 'ERROR');
         return false;
     }
 }
@@ -110,7 +111,7 @@ function deleteFile(file) {
     try {
         return file.delete(null);
     } catch (e) {
-        log(`${LOG_PREFIX} Failed to delete ${file.get_basename()}: ${e}`);
+        logMessage(`Failed to delete ${file.get_basename()}: ${e}`, 'ERROR');
         return false;
     }
 }
@@ -140,11 +141,11 @@ export function cleanupExpiredCacheFiles(maxAgeDays) {
         }
 
         if (deletedCount > 0)
-            log(`${LOG_PREFIX} Deleted ${deletedCount} expired cached image${deletedCount !== 1 ? 's' : ''}`);
+            logMessage(`Deleted ${deletedCount} expired cached image${deletedCount !== 1 ? 's' : ''}`);
 
         return deletedCount;
     } catch (e) {
-        log(`${LOG_PREFIX} Error while cleaning expired cache files: ${e}`);
+        logMessage(`Error while cleaning expired cache files: ${e}`, 'ERROR');
         return 0;
     }
 }
@@ -157,7 +158,7 @@ export function clearAllCacheFiles() {
     try {
         const files = getCacheFiles();
         if (files.length === 0) {
-            log(`${LOG_PREFIX} Cache directory is empty`);
+            logMessage(`Cache directory is empty`);
             return 0;
         }
 
@@ -167,10 +168,10 @@ export function clearAllCacheFiles() {
                 filesDeleted++;
         }
 
-        log(`${LOG_PREFIX} Cleared cache: deleted ${filesDeleted} files`);
+        logMessage(`Cleared cache: deleted ${filesDeleted} files`);
         return filesDeleted;
     } catch (e) {
-        log(`${LOG_PREFIX} Error clearing cache: ${e}`);
+        logMessage(`Error clearing cache: ${e}`, 'ERROR');
         return 0;
     }
 }
@@ -188,7 +189,7 @@ export async function getCacheStats() {
         }
         return { fileCount: files.length, totalSize };
     } catch (e) {
-        log(`${LOG_PREFIX} Error getting cache stats: ${e}`);
+        logMessage(`Error getting cache stats: ${e}`, 'ERROR');
         return { fileCount: 0, totalSize: 0 };
     }
 }

@@ -48,3 +48,8 @@
 .revolutionary-clock-day-image {
     border-radius: 12px;
 }
+
+/* Compact button style for prefs window */
+button.compact-button {
+    min-height: 24px;
+}
