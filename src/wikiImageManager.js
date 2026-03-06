@@ -37,15 +37,29 @@ export class WikiImageManager {
         this._imageCache = new Map();  // URL → local path
     }
 
-    // Thin wrapper methods that delegate to cacheUtils
+    /**
+     * Checks if the image for the given dayLink is already cached
+     * @param {string} dayLink - The dayLink for which to check the cache.
+     * @returns {boolean} - True if the image is cached, false otherwise.
+     */
     hasCache(dayLink) {
         return hasCache(this._imageCache, dayLink);
     }
 
+    /**
+     * Gets the cache path for the given dayLink.
+     * @param {string} dayLink - The dayLink for which to get the cache path.
+     * @returns {string|null} - The cache path if available, null otherwise.
+     */
     getCachePath(dayLink) {
         return getCachePath(this._imageCache, dayLink);
     }
 
+    /**
+     * Downloads and caches the image for the given dayLink.
+     * @param {string} dayLink - The dayLink for which to download and cache the image.
+     * @returns {Promise<string|null>} - The cache path if successful, null otherwise.
+     */
     async downloadAndCache(dayLink) {
         try {
             const cacheFile = getCacheFilePath(dayLink);
@@ -67,6 +81,8 @@ export class WikiImageManager {
                 const stream = file.replace(null, false, Gio.FileCreateFlags.NONE, null);
                 stream.write_all(result.bytes.get_data(), null);
                 stream.close(null);
+
+                // After saving the new image, clean up old cache files based on settings
                 const maxAgeDays = this._settings ? this._settings.get_int('delete-cache-older-than-days') : 0;
                 cleanupExpiredCacheFiles(maxAgeDays);
                 log(`${LOG_PREFIX} Downloaded and saved image for ${dayLink} to ${cacheFile}`);
@@ -83,6 +99,11 @@ export class WikiImageManager {
         }
     }
 
+    /**
+     * Fetches the Wikipedia image URL for the given wiki URL.
+     * @param {string} wikiUrl - The Wikipedia URL for which to fetch the image.
+     * @returns {Promise<string|null>} - The image URL if found, null otherwise.
+     */
     async fetchWikipediaImageUrl(wikiUrl) {
         // Extract the host and article title from the URL
         const urlMatch = wikiUrl.match(/^https?:\/\/(\w+\.wikipedia\.org)\/wiki\/([^#?]+)/);
@@ -121,6 +142,12 @@ export class WikiImageManager {
         });
     }
 
+    /**
+     * Creates an image actor from the cached file.
+     * @param {string|Gio.File} cacheFile - The cached file path or Gio.File object.
+     * @param {number} targetWidth - The target width for the image.
+     * @returns {St.Widget|null} - The created image actor or null if failed.
+     */
     createImageActor(cacheFile, targetWidth = 320) {
         try {
             let file = typeof cacheFile === 'string' ? Gio.File.new_for_path(cacheFile) : cacheFile;
@@ -160,6 +187,12 @@ export class WikiImageManager {
         }
     }
 
+    /**
+     * Downloads an image from the given URL.
+     * @param {string} url - The URL of the image to download.
+     * @param {string|null} referer - The referer URL, if any.
+     * @returns {Promise<{bytes: Uint8Array, contentType: string, status: number}|null>} - The downloaded image data or null if failed.
+     */
     _downloadImage(url, referer = null) {
         return new Promise((resolve) => {
             let session = this._soup;
