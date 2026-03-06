@@ -64,7 +64,7 @@ export class WikiImageManager {
 
             let result = await this._downloadImage(url, dayLink);
             if (result && result.bytes && result.contentType && result.status === 200 && result.contentType.startsWith('image/')) {
-                let stream = file.replace(null, false, Gio.FileCreateFlags.NONE, null);
+                const stream = file.replace(null, false, Gio.FileCreateFlags.NONE, null);
                 stream.write_all(result.bytes.get_data(), null);
                 stream.close(null);
                 const maxAgeDays = this._settings ? this._settings.get_int('delete-cache-older-than-days') : 0;
@@ -94,7 +94,7 @@ export class WikiImageManager {
 
         const apiUrl = `https://${host}/w/api.php?action=query&titles=${encodeURIComponent(title)}&prop=pageimages&pilicense=any&redirects=true&format=json&pithumbsize=320&origin=*`;
 
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve, _reject) => {
             const message = Soup.Message.new('GET', apiUrl);
             this._soup.send_and_read_async(message, 0, null, (soup, res) => {
                 try {
@@ -174,23 +174,7 @@ export class WikiImageManager {
                     const bytes = session.send_and_read_finish(res);
                     const contentType = msg.response_headers?.get_one('Content-Type') || '';
                     const status = msg.status_code;
-
-                    // Collect all headers for logging
-                    let headers = {};
-                    if (msg.response_headers) {
-                        msg.response_headers.foreach((name, value) => { headers[name] = value; });
-                    }
-
-                    // Try to get body as text for error logging
-                    let bodyText = null;
-                    try {
-                        if (bytes && bytes.get_data) {
-                            const byteArray = imports.byteArray.toString(bytes.get_data());
-                            bodyText = byteArray;
-                        }
-                    } catch (e) {}
-
-                    resolve({ bytes, contentType, status, headers, bodyText });
+                    resolve({ bytes, contentType, status });
                 } catch (e) {
                     log(`${LOG_PREFIX} Failed to download image: ${e}`);
                     resolve(null);
