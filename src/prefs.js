@@ -26,6 +26,14 @@ import { clearAllCacheFiles, getCacheStats } from './cacheUtils.js';
 
 const _ = imports.gettext.domain('revolutionary-clock').gettext;
 
+/**
+ * Retrieves the list of available locales for the calendar formatting.
+ * It looks for .js files in the "locales" or "locale" subdirectory of the extension.
+ * The locale code is derived from the filename (e.g. "en.js" -> "en").
+ * The "system" locale is also added as an option to use the system default locale.
+ * @param {*} extensionPath - The path to the extension directory.
+ * @returns {string[]} - An array of available locale codes.
+ */
 function getAvailableLocales(extensionPath) {
     const locales = [];
     const candidateDirs = ['locales', 'locale'];
@@ -75,6 +83,12 @@ function getAvailableLocales(extensionPath) {
     return locales;
 }
 
+/**
+ * Retrieves the label for a given locale code.
+ * @param {string} localeCode - The locale code (e.g., "en", "fr").
+ * @param {*} _ - The gettext function for translations.
+ * @returns {string} - The label for the locale.
+ */
 function getLocaleLabel(localeCode, _) {
     if (localeCode === 'system')
         return _('System Default');
@@ -82,6 +96,10 @@ function getLocaleLabel(localeCode, _) {
 }
 
 export default class RevolutionaryClockPreferences extends ExtensionPreferences {
+    /**
+     * Fills the preferences window with the UI elements and binds them to the settings.
+     * @param {*} window - The preferences window.
+     */
     fillPreferencesWindow(window) {
         const settings = this.getSettings();
 

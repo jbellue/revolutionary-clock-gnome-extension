@@ -62,16 +62,27 @@ class RevolutionaryClock extends PanelMenu.Button {
         });
     }
 
+    /**
+     * Updates the date menu item with the current date.
+     * This is called when the menu is opened,
+     * and also when the locale changes (to update the date format and translation).
+     */
     _updateDateMenuItem() {
         this._dateMenuItem?.update();
     }
 
+    /**
+     * Updates the clock label with the current time in the French Republican Calendar.
+     */
     _updateClockLabel() {
         this._clockLabel.set_text(
             this._formatNow(getRepublicanClock(new Date()))
         );
     }
 
+    /**
+     * Starts a timer that updates the clock label every second.
+     */
     _startClockTimer() {
         this._clockTimeout = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 1000, () => {
             this._updateClockLabel();
@@ -79,6 +90,11 @@ class RevolutionaryClock extends PanelMenu.Button {
         });
     }
 
+    /**
+     * Formats the current time in the French Republican Calendar.
+     * @param {*} clock - The clock object containing hours and minutes.
+     * @returns {string} - The formatted time string.
+     */
     _formatNow(clock) {
         const pad2 = n => String(Math.floor(n)).padStart(2, '0');
         const clockDecoration = this._settings.get_string('clock-decoration');

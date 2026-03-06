@@ -119,6 +119,10 @@ export class DateMenuItem {
         this.item.add_child(this._container);
     }
 
+    /**
+     * Update the date menu item with the current Republican date, including labels and images based on settings
+     * @returns {void}
+     */
     async update() {
         const date = getRepublicanDate(new Date());
         const includeDayName = this._settings.get_boolean('include-day-name');
@@ -176,6 +180,11 @@ export class DateMenuItem {
         }
     }
 
+    /**
+     * Resolves the cursor constant value for a given set of possible cursor names.
+     * @param {string[]} names - The possible cursor names to resolve (e.g., ['POINTING_HAND', 'POINTER', 'HAND'])
+     * @returns {string} - The cursor constant value if found, or null if none of the names could be resolved.
+     */
     _resolveCursor(names) {
         if (!Meta?.Cursor)
             return null;
@@ -188,6 +197,11 @@ export class DateMenuItem {
         return null;
     }
 
+    /**
+     * Set the cursor to pointer if the link is valid, otherwise do nothing.
+     * @param {*} link - The link to check.
+     * @returns {number} Clutter.EVENT_PROPAGATE to allow event to continue, or Clutter.EVENT_STOP if we handled it.
+     */
     _setPointerCursor(link) {
         if (!link)
             return Clutter.EVENT_PROPAGATE;
@@ -197,12 +211,22 @@ export class DateMenuItem {
         return Clutter.EVENT_PROPAGATE;
     }
 
+    /**
+     * Set the cursor to default if no link is valid.
+     * @returns {number} Clutter.EVENT_PROPAGATE to allow event to continue.
+     */
     _setDefaultCursor() {
         if (this._defaultCursor !== null && global.display?.set_cursor)
             global.display.set_cursor(this._defaultCursor);
         return Clutter.EVENT_PROPAGATE;
     }
 
+    /**
+     * Handle click events on the day name label and image slot, opening the link if valid.
+     * @param {*} link 
+     * @returns {number} Clutter.EVENT_PROPAGATE if no link was handled, or Clutter.EVENT_STOP if we handled the click.
+     * Also calls the onLinkClicked callback if provided.
+     */
     _handleClick(link) {
         if (!link)
             return Clutter.EVENT_PROPAGATE;
@@ -213,6 +237,11 @@ export class DateMenuItem {
         return Clutter.EVENT_STOP;
     }
 
+    /**
+     * Show the Wikipedia image for the given dayLink, using cache if available, or downloading it if not.
+     * @param {*} dayLink - The dayLink for which to show the Wikipedia image.
+     * @returns {Promise<void>} - A promise that resolves when the image is shown.
+     */
     async _showWikiImageForDay(dayLink) {
         // Check if already cached
         if (this._wikiImageManager.hasCache(dayLink)) {
@@ -227,6 +256,11 @@ export class DateMenuItem {
         }
     }
 
+    /**
+     * Set the Wikipedia image from the cache for the given dayLink.
+     * @param {*} dayLink - The dayLink for which to set the cached image.
+     * @returns {void}
+     */
     _setWikiImageFromCache(dayLink) {
         const cacheFile = this._wikiImageManager.getCachePath(dayLink);
         if (!cacheFile) {

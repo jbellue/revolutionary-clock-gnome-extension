@@ -52,12 +52,19 @@ export default class RevolutionaryClockExtension extends Extension {
         });
     }
 
+    /**
+     * Updates the translation function based on the current locale setting.
+     * This is called when the extension is enabled, and also when the locale setting changes.
+     */
     async _updateTranslationFunction() {
         const locale = this._settings.get_string('locale');
         await setupLocale(locale, this.dir);
         setTranslationFunction(translate);
     }
 
+    /**
+     * Creates the clock indicator in the main panel at the position specified in the settings.
+     */
     _createClockInMainPanel() {
             const index = this._settings.get_int('clock-index-in-status-bar');
             const location = this._settings.get_string('clock-position-in-status-bar');
@@ -65,6 +72,10 @@ export default class RevolutionaryClockExtension extends Extension {
             Main.panel.addToStatusArea(this.uuid, this._revolutionaryClock, index, location);
     }
 
+    /**
+     * Updates the position of the clock indicator in the main panel based on the settings.
+     * This is called when the clock position or index settings change.
+     */
     _updatePosition() {
         if (!this._revolutionaryClock) return;
         this._revolutionaryClock.destroy();
