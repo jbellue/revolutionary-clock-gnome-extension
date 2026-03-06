@@ -6,6 +6,7 @@
  */
 
 import GLib from 'gi://GLib';
+import { LOG_PREFIX } from './constants.js';
 
 let localeTranslations = null;
 
@@ -21,22 +22,22 @@ export async function setupLocale(locale, extensionDir) {
     
     if (locale === 'system') {
         targetLocale = getSystemLocale();
-        console.log(`[Revolutionary Clock] Detected system locale: ${targetLocale}`);
+        log(`${LOG_PREFIX} Detected system locale: ${targetLocale}`);
     }
     
     // Load translations for the locale (including French)
     try {
         const module = await import(`./locale/${targetLocale}.js`);
         localeTranslations = module.translations;
-        console.log(`[Revolutionary Clock] Loaded calendar translations for ${targetLocale}`);
+        log(`${LOG_PREFIX} Loaded calendar translations for ${targetLocale}`);
     } catch (e) {
-        console.warn(`[Revolutionary Clock] Could not load calendar translations for ${targetLocale}, falling back to French:`, e.message);
+        log(`${LOG_PREFIX} Could not load calendar translations for ${targetLocale}, falling back to French: ${e.message}`);
         // Fallback to French
         try {
             const module = await import(`./locale/fr.js`);
             localeTranslations = module.translations;
         } catch (err) {
-            console.error(`[Revolutionary Clock] Could not load French fallback:`, err);
+            log(`${LOG_PREFIX} Could not load French fallback: ${err.message}`);
             localeTranslations = null;
         }
     }

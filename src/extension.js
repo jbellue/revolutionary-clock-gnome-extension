@@ -22,6 +22,7 @@ import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import { setTranslationFunction } from './revdate.js';
 import { setupLocale, translate } from './translations.js';
 import { RevolutionaryClock } from './clockIndicator.js';
+import { LOG_PREFIX } from './constants.js';
 
 
 export default class RevolutionaryClockExtension extends Extension {
@@ -36,18 +37,18 @@ export default class RevolutionaryClockExtension extends Extension {
         this._updateTranslationFunction().then(() => {
             this._signals.push({ id: 
                 this._settings.connect('changed::locale', () => {
-                this._updateTranslationFunction().then(() => {
-                    if (this._revolutionaryClock) {
-                        this._revolutionaryClock._updateClockLabel();
-                        this._revolutionaryClock._updateDateMenuItem();
-                    }
-                })
+                    this._updateTranslationFunction().then(() => {
+                        if (this._revolutionaryClock) {
+                            this._revolutionaryClock._updateClockLabel();
+                            this._revolutionaryClock._updateDateMenuItem();
+                        }
+                    })
                 })
             });
 
             this._createClockInMainPanel();
         }).catch(e => {
-            console.error(`[Revolutionary Clock] Failed to enable extension: ${e.message}`);
+            log(`${LOG_PREFIX} Failed to enable extension: ${e.message}`);
         });
     }
 

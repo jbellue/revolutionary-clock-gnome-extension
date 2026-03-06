@@ -192,6 +192,7 @@ export class WikiImageManager {
 
                     resolve({ bytes, contentType, status, headers, bodyText });
                 } catch (e) {
+                    log(`${LOG_PREFIX} Failed to download image: ${e}`);
                     resolve(null);
                 }
             });
