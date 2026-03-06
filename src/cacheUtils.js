@@ -177,9 +177,9 @@ export function clearAllCacheFiles() {
 
 /**
  * Gets cache statistics (file count and total size).
- * @returns {Object} - Object with fileCount and totalSize properties
+ * @returns {Promise<Object>} - Promise resolving to object with fileCount and totalSize properties
  */
-export function getCacheStats() {
+export async function getCacheStats() {
     try {
         const files = getCacheFiles();
         let totalSize = 0;

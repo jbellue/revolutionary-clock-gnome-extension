@@ -169,17 +169,18 @@ export default class RevolutionaryClockPreferences extends ExtensionPreferences 
         settings.bind('delete-cache-older-than-days', deleteCacheOlderThanRow, 'value', Gio.SettingsBindFlags.DEFAULT);
 
         // Update cache stats
-        const updateCacheStats = () => {
-            const stats = getCacheStats();
+        const updateCacheStats = async () => {
+            cacheStatsRow.set_subtitle('...');
+            const stats = await getCacheStats();
             const sizeMB = (stats.totalSize / (1024 * 1024)).toFixed(2);
             cacheStatsRow.set_subtitle(`${stats.fileCount} file${stats.fileCount !== 1 ? 's' : ''}, ${sizeMB} MB`);
         };
         updateCacheStats();
 
         // Clear cache button
-        clearCacheButton.connect('clicked', () => {
+        clearCacheButton.connect('clicked', async () => {
             const filesDeleted = clearAllCacheFiles();
-            updateCacheStats();
+            await updateCacheStats();
             
             // Show a toast notification if available
             const dialog = new Gtk.MessageDialog({
