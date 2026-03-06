@@ -63,3 +63,10 @@ dbus:
 
 .PHONY: dev
 dev: reinstall dbus
+
+.PHONY: run-prefs
+run-prefs:
+	gnome-extensions prefs $(EXTENSION_ID)
+
+.PHONY: prefs
+prefs: reinstall run-prefs
