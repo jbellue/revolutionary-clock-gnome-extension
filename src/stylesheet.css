@@ -4,9 +4,6 @@
     padding: 0 0.45em;
 }
 
-/* The popup BoxPointer (menu.actor) normally gets a min-width from the
-   shell theme (e.g. ".popup-menu { min-width: Xem }"). Override it so
-   the clock menu shrink-wraps to its content. */
 .revolutionary-clock-menu-popup {
     min-width: 0;
 }
@@ -49,7 +46,6 @@
     border-radius: 12px;
 }
 
-/* Compact button style for prefs window */
 button.compact-button {
     min-height: 24px;
 }
