@@ -20,7 +20,4 @@ import GLib from 'gi://GLib';
 
 const CACHE_DIR_NAME = 'revolutionaryclock';
 export const CACHE_DIR = `${GLib.get_user_cache_dir()}/${CACHE_DIR_NAME}/`;
-export const LOG_DIR = `${CACHE_DIR}logs/`;
-export const LOG_FILE_PATH = `${LOG_DIR}extension.log`;
 export const USER_AGENT = 'RevolutionaryClock/1.0 (https://github.com/jbellue/revolutionary-clock)';
-export const LOG_PREFIX = '[RevolutionaryClock]';

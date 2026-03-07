@@ -22,8 +22,6 @@ import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import { setTranslationFunction } from './revdate.js';
 import { setupLocale, translate } from './translations.js';
 import { RevolutionaryClock } from './clockIndicator.js';
-import { logMessage } from './logger.js';
-
 
 export default class RevolutionaryClockExtension extends Extension {
     enable() {
@@ -32,6 +30,7 @@ export default class RevolutionaryClockExtension extends Extension {
             { id: this._settings.connect('changed::clock-position-in-status-bar', () => this._updatePosition()) },
             { id: this._settings.connect('changed::clock-index-in-status-bar', () => this._updatePosition()) }
         ];
+        this.logger = this.getLogger();
 
 
         this._updateTranslationFunction().then(() => {
@@ -48,7 +47,7 @@ export default class RevolutionaryClockExtension extends Extension {
 
             this._createClockInMainPanel();
         }).catch(e => {
-            logMessage(`Failed to enable extension: ${e.message}`, 'ERROR');
+            this.logger.error(`Failed to enable extension: ${e.message}`);
         });
     }
 
@@ -58,7 +57,7 @@ export default class RevolutionaryClockExtension extends Extension {
      */
     async _updateTranslationFunction() {
         const locale = this._settings.get_string('locale');
-        await setupLocale(locale, this.dir);
+        await setupLocale(locale, this.logger);
         setTranslationFunction(translate);
     }
 
@@ -68,7 +67,7 @@ export default class RevolutionaryClockExtension extends Extension {
     _createClockInMainPanel() {
             const index = this._settings.get_int('clock-index-in-status-bar');
             const location = this._settings.get_string('clock-position-in-status-bar');
-            this._revolutionaryClock = new RevolutionaryClock(this._settings);
+            this._revolutionaryClock = new RevolutionaryClock(this._settings, this.logger);
             Main.panel.addToStatusArea(this.uuid, this._revolutionaryClock, index, location);
     }
 

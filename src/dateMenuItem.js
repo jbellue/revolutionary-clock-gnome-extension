@@ -25,11 +25,11 @@ import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 
 import { getRepublicanDate } from './revdate.js';
 import { WikiImageManager } from './wikiImageManager.js';
-import { logMessage } from './logger.js';
 
 export class DateMenuItem {
-    constructor(settings, onLinkClicked = null) {
+    constructor(settings, logger, onLinkClicked = null) {
         this._settings = settings;
+        this._logger = logger;
         this._onLinkClicked = onLinkClicked;
 
         this.item = new PopupMenu.PopupBaseMenuItem({
@@ -113,7 +113,7 @@ export class DateMenuItem {
         ];
 
         // Wikipedia image management
-        this._wikiImageManager = new WikiImageManager(this._settings);
+        this._wikiImageManager = new WikiImageManager(this._settings, this._logger);
         this._wikiImage = null;
 
         this.item.add_child(this._container);
@@ -264,7 +264,7 @@ export class DateMenuItem {
     _setWikiImageFromCache(dayLink) {
         const cacheFile = this._wikiImageManager.getCachePath(dayLink);
         if (!cacheFile) {
-            logMessage(`No cached image for dayLink: ${dayLink}`);
+            this._logger.info(`No cached image for dayLink: ${dayLink}`);
             return;
         }
 

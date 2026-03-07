@@ -19,7 +19,6 @@
  */
 
 import GLib from 'gi://GLib';
-import { logMessage } from './logger.js';
 
 let localeTranslations = null;
 
@@ -30,27 +29,27 @@ function getSystemLocale() {
     return lang.split('_')[0].split('.')[0];
 }
 
-export async function setupLocale(locale, extensionDir) {
+export async function setupLocale(locale, logger) {
     let targetLocale = locale;
     
     if (locale === 'system') {
         targetLocale = getSystemLocale();
-        logMessage(`Detected system locale: ${targetLocale}`);
+        logger.info(`Detected system locale: ${targetLocale}`);
     }
     
     // Load translations for the locale (including French)
     try {
         const module = await import(`./locale/${targetLocale}.js`);
         localeTranslations = module.translations;
-        logMessage(`Loaded calendar translations for ${targetLocale}`);
+        logger.info(`Loaded calendar translations for ${targetLocale}`);
     } catch (e) {
-        logMessage(`Could not load calendar translations for ${targetLocale}, falling back to French: ${e.message}`, 'WARN');
+        logger.warn(`Could not load calendar translations for ${targetLocale}, falling back to French: ${e.message}`);
         // Fallback to French
         try {
             const module = await import(`./locale/fr.js`);
             localeTranslations = module.translations;
         } catch (err) {
-            logMessage(`Could not load French fallback: ${err.message}`, 'ERROR');
+            logger.error(`Could not load French fallback: ${err.message}`);
             localeTranslations = null;
         }
     }

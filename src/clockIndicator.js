@@ -28,7 +28,7 @@ import { DateMenuItem } from './dateMenuItem.js';
 
 export const RevolutionaryClock = GObject.registerClass(
 class RevolutionaryClock extends PanelMenu.Button {
-    _init(settings) {
+    _init(settings, logger) {
         super._init(0.5, 'Revolutionary Clock', false);
 
         this._settings = settings;
@@ -45,7 +45,7 @@ class RevolutionaryClock extends PanelMenu.Button {
         this._updateClockLabel();
         this._startClockTimer();
 
-        this._dateMenuItem = new DateMenuItem(settings, () => this.menu.close());
+        this._dateMenuItem = new DateMenuItem(settings, logger, () => this.menu.close());
         this.menu.addMenuItem(this._dateMenuItem.item);
         this.menu.actor.add_style_class_name('revolutionary-clock-menu-popup');
         this._updateDateMenuItem();

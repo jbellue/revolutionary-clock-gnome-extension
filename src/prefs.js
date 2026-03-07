@@ -22,8 +22,7 @@ import Gtk from 'gi://Gtk';
 
 import {ExtensionPreferences} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 import { CACHE_DIR } from './constants.js';
-import { clearAllCacheFiles, getCacheStats } from './cacheUtils.js';
-import { clearLogFile, ensureLogFileExists, getLogFilePath, logMessage } from './logger.js';
+import { CacheManager } from './cacheManager.js';
 
 const _ = imports.gettext.domain('revolutionary-clock').gettext;
 
@@ -35,7 +34,7 @@ const _ = imports.gettext.domain('revolutionary-clock').gettext;
  * @param {*} extensionPath - The path to the extension directory.
  * @returns {string[]} - An array of available locale codes.
  */
-function getAvailableLocales(extensionPath) {
+function getAvailableLocales(extensionPath, logger) {
     const locales = [];
     const candidateDirs = ['locales', 'locale'];
 
@@ -77,7 +76,7 @@ function getAvailableLocales(extensionPath) {
 
         enumerator.close(null);
     } catch (e) {
-        logMessage(`Could not list locales in ${localeDirPath}: ${e.message}`, 'WARN');
+        logger.warn(`Could not list locales in ${localeDirPath}: ${e.message}`);
     }
 
     locales.sort();
@@ -103,6 +102,8 @@ export default class RevolutionaryClockPreferences extends ExtensionPreferences 
      */
     fillPreferencesWindow(window) {
         const settings = this.getSettings();
+        const logger = this.getLogger();
+        const cacheManager = new CacheManager(logger);
 
         // Load UI from .ui file
         const builder = new Gtk.Builder();
@@ -130,7 +131,7 @@ export default class RevolutionaryClockPreferences extends ExtensionPreferences 
         // Calendar settings
         const localeValue = builder.get_object('localeValue');
         const localeModel = new Gtk.StringList();
-        const localeValues = [...getAvailableLocales(this.path), 'system'];
+        const localeValues = [...getAvailableLocales(this.path, logger), 'system'];
         localeValues.forEach(localeCode => {
             localeModel.append(getLocaleLabel(localeCode, _));
         });
@@ -172,7 +173,7 @@ export default class RevolutionaryClockPreferences extends ExtensionPreferences 
         // Update cache stats
         const updateCacheStats = async () => {
             cacheStatsRow.set_subtitle('...');
-            const stats = await getCacheStats();
+            const stats = await cacheManager.getCacheStats();
             const sizeMB = (stats.totalSize / (1024 * 1024)).toFixed(2);
             cacheStatsRow.set_subtitle(`${stats.fileCount} file${stats.fileCount !== 1 ? 's' : ''}, ${sizeMB} MB`);
         };
@@ -180,7 +181,7 @@ export default class RevolutionaryClockPreferences extends ExtensionPreferences 
 
         // Clear cache button
         clearCacheButton.connect('clicked', async () => {
-            const filesDeleted = clearAllCacheFiles();
+            const filesDeleted = cacheManager.clearAllCacheFiles();
             await updateCacheStats();
             
             // Show a toast notification if available
@@ -201,36 +202,7 @@ export default class RevolutionaryClockPreferences extends ExtensionPreferences 
             try {
                 Gio.AppInfo.launch_default_for_uri(uri, null);
             } catch (e) {
-                logMessage(`Failed to open cache directory: ${e.message}`, 'ERROR');
-            }
-        });
-
-        // Log management
-        const clearLogsButton = builder.get_object('clearLogsButton');
-        const openLogsButton = builder.get_object('openLogsButton');
-
-        clearLogsButton.connect('clicked', () => {
-            clearLogFile();
-
-            const dialog = new Gtk.MessageDialog({
-                text: _('Logs Cleared'),
-                secondary_text: _('Deleted extension log entries'),
-                buttons: Gtk.ButtonsType.OK,
-                modal: true,
-                transient_for: window,
-            });
-            dialog.connect('response', () => dialog.destroy());
-            dialog.show();
-        });
-
-        openLogsButton.connect('clicked', () => {
-            const path = getLogFilePath();
-            const uri = GLib.filename_to_uri(path, null);
-            try {
-                ensureLogFileExists();
-                Gio.AppInfo.launch_default_for_uri(uri, null);
-            } catch (e) {
-                logMessage(`Failed to open log file: ${e.message}`, 'ERROR');
+                logger.error(`Failed to open cache directory: ${e.message}`);
             }
         });
 
