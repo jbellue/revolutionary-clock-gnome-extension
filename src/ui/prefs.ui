@@ -133,7 +133,7 @@
         </child>
     </object>
     <object class="AdwPreferencesPage" id="cache_settings_page">
-        <property name="icon-name">preferences-other-symbolic</property>
+        <property name="icon-name">drive-harddisk-solidstate-symbolic</property>
         <property name="title" translatable="yes">Cache</property>
         <child>
             <object class="AdwPreferencesGroup" id="cache_management_group">
