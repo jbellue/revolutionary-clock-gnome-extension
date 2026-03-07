@@ -19,8 +19,7 @@
 import { Extension } from 'resource:///org/gnome/shell/extensions/extension.js';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 
-import { setTranslationFunction } from './revdate.js';
-import { setupLocale, translate } from './translations.js';
+import { setupLocale } from './translations.js';
 import { RevolutionaryClock } from './clockIndicator.js';
 
 export default class RevolutionaryClockExtension extends Extension {
@@ -52,13 +51,12 @@ export default class RevolutionaryClockExtension extends Extension {
     }
 
     /**
-     * Updates the translation function based on the current locale setting.
+     * Updates the locale based on the current locale setting.
      * This is called when the extension is enabled, and also when the locale setting changes.
      */
     async _updateTranslationFunction() {
         const locale = this._settings.get_string('locale');
         await setupLocale(locale, this.logger);
-        setTranslationFunction(translate);
     }
 
     /**

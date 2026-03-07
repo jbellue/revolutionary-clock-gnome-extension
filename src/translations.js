@@ -62,3 +62,11 @@ export function translate(text) {
     
     return localeTranslations[text] || text;
 }
+
+/**
+ * Get the current translations object
+ * @returns {Object|null} The translations object or null if not loaded
+ */
+export function getTranslations() {
+    return localeTranslations;
+}

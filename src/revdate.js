@@ -19,47 +19,39 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-// Translation function - will be set by setTranslationFunction()
-let _ = (str) => str;
-
 /**
- * Set the translation function for translatable strings
- * @param {Function} gettext - The gettext function from Extension
+ * Get translated month names from translations object
+ * @param {Object} translations - The translations object
  */
-export function setTranslationFunction(gettext) {
-    _ = gettext;
-}
-
-/**
- * Get translated month names
- */
-function getMonthNames() {
+function getMonthNames(translations) {
     const months = [];
     for (let i = 1; i <= 12; i++) { 
-        months.push(_(`month_${i}`));
+        months.push(translations[`month_${i}`]);
     }
-    months.push(_("month_extra")); // Add the extra month for the complementary days
+    months.push(translations["month_extra"]); // Add the extra month for the complementary days
     return months;
 }
 
 /**
- * Get translated day names
+ * Get translated day names from translations object
+ * @param {Object} translations - The translations object
  */
-function getDayNames() {
+function getDayNames(translations) {
     const days = [];
     for (let i = 1; i <= 366; i++) {
-        days.push(_(`day_${i}`));
+        days.push(translations[`day_${i}`]);
     }
     return days;
 }
 
 /**
- * Get translated weekday names
+ * Get translated weekday names from translations object
+ * @param {Object} translations - The translations object
  */
-function getWeekdayNames() {
+function getWeekdayNames(translations) {
     const weekdays = [];
     for (let i = 1; i <= 10; i++) {
-        weekdays.push(_(`weekday_${i}`));
+        weekdays.push(translations[`weekday_${i}`]);
     }
     return weekdays;
 }
@@ -158,8 +150,10 @@ export function getRepublicanClock(date) {
  * Get Republican calendar date from a standard Date object
  * Returns the date, month, year, day name, etc.
  * Uses the actual autumn equinox date for each year
+ * @param {Date} date - The date to convert
+ * @param {Object} translations - The translations object containing calendar names
  */
-export function getRepublicanDate(date) {
+export function getRepublicanDate(date, translations) {
     const currentYear = date.getFullYear();
     
     // Get equinox dates for current and previous year
@@ -183,9 +177,9 @@ export function getRepublicanDate(date) {
     // Calculate the number of days since the start of the Republican year
     const yeardays = Math.floor((date.getTime() - firstDayOfRepYear.getTime()) / MS_PER_DAY);
 
-    const monthNames = getMonthNames();
-    const dayNames = getDayNames();
-    const weekdayNames = getWeekdayNames();
+    const monthNames = getMonthNames(translations);
+    const dayNames = getDayNames(translations);
+    const weekdayNames = getWeekdayNames(translations);
 
     const dayOfMonth = (yeardays % 30) + 1; // day of month, 1-based
     const monthName = monthNames[Math.floor(yeardays / 30)];

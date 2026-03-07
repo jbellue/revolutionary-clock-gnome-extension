@@ -24,6 +24,7 @@ import Meta from 'gi://Meta';
 import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 
 import { getRepublicanDate } from './revdate.js';
+import { getTranslations } from './translations.js';
 import { WikiImageManager } from './wikiImageManager.js';
 
 export class DateMenuItem {
@@ -124,7 +125,12 @@ export class DateMenuItem {
      * @returns {void}
      */
     async update() {
-        const date = getRepublicanDate(new Date());
+        const translations = getTranslations();
+        if (!translations) {
+            this._logger.error('Translations not loaded');
+            return;
+        }
+        const date = getRepublicanDate(new Date(), translations);
         const includeDayName = this._settings.get_boolean('include-day-name');
         const includeDayNameLink = this._settings.get_boolean('include-day-name-link');
         const includeDayNameImage = this._settings.get_boolean('include-day-name-image');
