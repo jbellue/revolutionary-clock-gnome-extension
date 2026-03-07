@@ -340,7 +340,7 @@
                                         <child>
                                             <object class="GtkLinkButton" id="license-link">
                                                 <property name="uri">https://github.com/jbellue/revolutionary-clock-gnome-extension/blob/main/LICENSE</property>
-                                                <property name="label">MPL or whatever</property>
+                                                <property name="label">GNU GPL V2</property>
                                                 <property name="valign">GTK_ALIGN_CENTER</property>
                                             </object>
                                         </child>
