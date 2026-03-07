@@ -23,6 +23,7 @@ import Gtk from 'gi://Gtk';
 import {ExtensionPreferences} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 import { CACHE_DIR } from './constants.js';
 import { clearAllCacheFiles, getCacheStats } from './cacheUtils.js';
+import { clearLogFile, ensureLogFileExists, getLogFilePath, logMessage } from './logger.js';
 
 const _ = imports.gettext.domain('revolutionary-clock').gettext;
 
@@ -202,6 +203,34 @@ export default class RevolutionaryClockPreferences extends ExtensionPreferences 
             } catch (e) {
                 logMessage(`Failed to open cache directory: ${e.message}`, 'ERROR');
             }
+        });
+
+        // Log management
+        const clearLogsButton = builder.get_object('clearLogsButton');
+        const openLogsButton = builder.get_object('openLogsButton');
+
+        clearLogsButton.connect('clicked', () => {
+            clearLogFile();
+
+            const dialog = new Gtk.MessageDialog({
+                text: _('Logs Cleared'),
+                secondary_text: _('Deleted extension log entries'),
+                buttons: Gtk.ButtonsType.OK,
+                modal: true,
+                transient_for: window,
+            });
+            dialog.connect('response', () => dialog.destroy());
+            dialog.show();
+        });
+
+        openLogsButton.connect('clicked', () => {
+            const path = getLogFilePath();
+            const uri = GLib.filename_to_uri(path, null);
+            try {
+                ensureLogFileExists();
+                Gio.AppInfo.launch_default_for_uri(uri, null);
+            } catch (e) {
+                logMessage(`Failed to open log file: ${e.message}`, 'ERROR');
             }
         });
 
@@ -209,5 +238,6 @@ export default class RevolutionaryClockPreferences extends ExtensionPreferences 
         window.add(builder.get_object('clock_settings_page'));
         window.add(builder.get_object('calendar_settings_page'));
         window.add(builder.get_object('cache_settings_page'));
+        window.add(builder.get_object('about_page'));
     }
 }

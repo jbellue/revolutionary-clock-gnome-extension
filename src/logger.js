@@ -10,10 +10,7 @@ import GLib from 'gi://GLib';
 
 import { LOG_DIR, LOG_FILE_PATH, LOG_PREFIX } from './constants.js';
 
-const MAX_LOG_LINES_IN_MEMORY = 300;
 const MAX_LOG_FILE_SIZE_BYTES = 1024 * 1024;
-
-let memoryLogs = [];
 
 function ensureLogStorage() {
     GLib.mkdir_with_parents(LOG_DIR, 0o755);
@@ -81,16 +78,9 @@ function decodeBytes(bytes) {
     }
 }
 
-function addToMemory(line) {
-    memoryLogs.push(line);
-    if (memoryLogs.length > MAX_LOG_LINES_IN_MEMORY)
-        memoryLogs = memoryLogs.slice(-MAX_LOG_LINES_IN_MEMORY);
-}
-
 export function logMessage(message, level = 'INFO') {
     const { shellLine, fileLine } = formatLine(level, message);
     safeShellLog(shellLine);
-    addToMemory(fileLine);
     appendToFile(fileLine);
 }
 
@@ -106,7 +96,7 @@ export function error(message) {
     logMessage(message, 'ERROR');
 }
 
-export function getRecentLogEntries(maxLines = 200) {
+function getRecentLogEntries(maxLines = 200) {
     try {
         const file = Gio.File.new_for_path(LOG_FILE_PATH);
         if (!file.query_exists(null))
@@ -121,10 +111,6 @@ export function getRecentLogEntries(maxLines = 200) {
     } catch (_e) {
         return [];
     }
-}
-
-export function getRecentInMemoryEntries(maxLines = 200) {
-    return memoryLogs.slice(-Math.max(1, maxLines));
 }
 
 export function clearLogFile() {

@@ -4,7 +4,7 @@
     <requires lib="libadwaita" version="1.0"/>
     <object class="AdwPreferencesPage" id="clock_settings_page">
         <property name="icon-name">preferences-system-time-symbolic</property>
-        <property name="title" translatable="yes">Clock Settings</property>
+        <property name="title" translatable="yes">Clock</property>
         <child>
             <object class="AdwPreferencesGroup">
                 <property name="title" translatable="yes">Clock Position</property>
@@ -77,7 +77,7 @@
     </object>
     <object class="AdwPreferencesPage" id="calendar_settings_page">
         <property name="icon-name">x-office-calendar-symbolic</property>
-        <property name="title" translatable="yes">Calendar Settings</property>
+        <property name="title" translatable="yes">Calendar</property>
         <child>
             <object class="AdwPreferencesGroup" id="calendar_group">
                 <property name="title" translatable="yes">Customizing the Date</property>
@@ -205,6 +205,155 @@
                                 <property name="step_increment">1</property>
                             </object>
                         </property>
+                    </object>
+                </child>
+            </object>
+        </child>
+        <child>
+            <object class="AdwPreferencesGroup" id="logs_group">
+                <property name="title" translatable="yes">Logs</property>
+                <child>
+                    <object class="AdwActionRow" id="clearLogsRow">
+                        <property name="title" translatable="yes">Clear Logs</property>
+                        <property name="subtitle" translatable="yes">Delete all saved extension log entries</property>
+                        <child>
+                            <object class="GtkButton" id="clearLogsButton">
+                                <property name="valign">center</property>
+                                <property name="child">
+                                    <object class="AdwButtonContent">
+                                        <property name="icon-name">user-trash-symbolic</property>
+                                        <property name="label" translatable="yes">Delete</property>
+                                        <property name="use-underline">True</property>
+                                    </object>
+                                </property>
+                                <style>
+                                    <class name="destructive-action"/>
+                                    <class name="compact-button"/>
+                                </style>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+                <child>
+                    <object class="AdwActionRow" id="openLogsRow">
+                        <property name="title" translatable="yes">Open Log File</property>
+                        <property name="subtitle" translatable="yes">Open the log file in your default application</property>
+                        <child>
+                            <object class="GtkButton" id="openLogsButton">
+                                <property name="valign">center</property>
+                                <property name="child">
+                                    <object class="AdwButtonContent">
+                                        <property name="icon-name">document-open-symbolic</property>
+                                        <property name="label" translatable="yes">_Open</property>
+                                        <property name="use-underline">True</property>
+                                    </object>
+                                </property>
+                                <style>
+                                    <class name="compact-button"/>
+                                </style>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+            </object>
+        </child>
+    </object>
+    <object class="AdwPreferencesPage" id="about_page">
+        <property name="icon-name">auth-sim-missing-symbolic</property>
+        <property name="title" translatable="yes">About</property>
+        <child>
+            <object class="AdwPreferencesGroup" id="about_details_group">
+                <child>
+                    <object class="GtkBox">
+                        <property name="orientation">vertical</property>
+                        <child>
+                            <object class="AdwPreferencesGroup" id="details_group">
+                                <child>
+                                    <object class="AdwActionRow">
+                                        <property name="title" translatable="yes">GNOME extensions page</property>
+                                        <property name="use-underline">True</property>
+                                        <property name="activatable">True</property>
+                                        <property name="activatable-widget">gnome-extension-link</property>
+                                        <child>
+                                            <object class="GtkLinkButton" id="gnome-extension-link">
+                                                <property name="uri">https://extensions.gnome.org/extension/TBC</property>
+                                                <property name="label">GNOME Extensions TBC</property>
+                                                <property name="valign">GTK_ALIGN_CENTER</property>
+                                            </object>
+                                        </child>
+                                        <child>
+                                            <object class="GtkImage">
+                                                <property name="icon-name">adw-external-link-symbolic</property>
+                                                <property name="accessible-role">presentation</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="AdwActionRow">
+                                        <property name="title" translatable="yes">Source</property>
+                                        <property name="use-underline">True</property>
+                                        <property name="activatable">True</property>
+                                        <property name="activatable-widget">source-link</property>
+                                        <child>
+                                            <object class="GtkLinkButton" id="source-link">
+                                                <property name="uri">https://github.com/jbellue/revolutionary-clock-gnome-extension</property>
+                                                <property name="label">GitHub</property>
+                                                <property name="valign">GTK_ALIGN_CENTER</property>
+                                            </object>
+                                        </child>
+                                        <child>
+                                            <object class="GtkImage">
+                                                <property name="icon-name">adw-external-link-symbolic</property>
+                                                <property name="accessible-role">presentation</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="AdwActionRow">
+                                        <property name="title" translatable="yes">Issues</property>
+                                        <property name="use-underline">True</property>
+                                        <property name="activatable">True</property>
+                                        <property name="activatable-widget">issues-link</property>
+                                        <child>
+                                            <object class="GtkLinkButton" id="issues-link">
+                                                <property name="uri">https://github.com/jbellue/revolutionary-clock-gnome-extension/issues</property>
+                                                <property name="label">GitHub</property>
+                                                <property name="valign">GTK_ALIGN_CENTER</property>
+                                            </object>
+                                        </child>
+                                        <child>
+                                            <object class="GtkImage">
+                                                <property name="icon-name">adw-external-link-symbolic</property>
+                                                <property name="accessible-role">presentation</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="AdwActionRow">
+                                        <property name="title" translatable="yes">License</property>
+                                        <property name="use-underline">True</property>
+                                        <property name="activatable">True</property>
+                                        <property name="activatable-widget">license-link</property>
+                                        <child>
+                                            <object class="GtkLinkButton" id="license-link">
+                                                <property name="uri">https://github.com/jbellue/revolutionary-clock-gnome-extension/blob/main/LICENSE</property>
+                                                <property name="label">MPL or whatever</property>
+                                                <property name="valign">GTK_ALIGN_CENTER</property>
+                                            </object>
+                                        </child>
+                                        <child>
+                                            <object class="GtkImage">
+                                                <property name="icon-name">adw-external-link-symbolic</property>
+                                                <property name="accessible-role">presentation</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                </child>
+                            </object>
+                        </child>
                     </object>
                 </child>
             </object>
