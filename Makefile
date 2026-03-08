@@ -7,7 +7,7 @@ LOCALES = $(basename $(notdir $(PO_FILES)))
 .PHONY: install
 install: mo
 	mkdir -p $(INSTALL_DIR)
-	cp src/metadata.json src/*.js src/*.json src/*.css $(INSTALL_DIR)/
+	cp src/*.js src/*.json src/*.css $(INSTALL_DIR)/
 	cp -r src/locale $(INSTALL_DIR)/
 	cp -r src/ui $(INSTALL_DIR)/
 	mkdir -p $(INSTALL_DIR)/schemas
