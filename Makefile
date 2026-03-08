@@ -49,8 +49,9 @@ package: mo
 	mkdir -p dist
 	mkdir -p src/schemas
 	cp schemas/*.xml src/schemas/
-	cp -r src/ui src/locale src/schemas dist/ 2>/dev/null || true
-	cd src && gnome-extensions pack --force --out-dir=../dist
+	cd src && zip -r ../dist/$(EXTENSION_ID).shell-extension.zip \
+		metadata.json *.js *.css \
+		locale/ ui/ schemas/
 	rm -rf src/schemas
 
 .PHONY: test

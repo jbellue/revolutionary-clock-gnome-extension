@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install dependencies
-        run: apk add --no-cache gettext make
+        run: apk add --no-cache gettext make zip
       - name: Build package
         run: make package
       - name: Upload release
