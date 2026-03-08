@@ -1,81 +1,200 @@
-# Spanish translation of revolutionary-clock
-# Copyright (C) 2024
-# This file is distributed under the same license as the revolutionary-clock package.
+# Spanish translation for Revolutionary Clock
+# Copyright (C) 2026 jbellue
+# This file is distributed under the same license as the Revolutionary Clock package.
+# Julien Bellue <julien@bellue.fr>, 2026.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: revolutionary-clock\n"
+"Project-Id-Version: Revolutionary Clock\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-22 23:36+0100\n"
-"PO-Revision-Date: 2026-02-22 00:00+0000\n"
-"Last-Translator: \n"
-"Language-Team: Spanish\n"
+"POT-Creation-Date: 2026-03-07 22:44+0100\n"
+"PO-Revision-Date: 2026-03-08 13:27+0100\n"
+"Last-Translator: Julien Bellue <julien@bellue.fr>\n"
+"Language-Team: Spanish <>\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: src/prefs.js:81
+#: src/prefs.js:95
 msgid "System Default"
 msgstr "Predeterminado del sistema"
 
-#: src/prefs.js:97
-msgid "Customizing the Clock"
-msgstr "Personalizar el reloj"
+#: src/prefs.js:180
+#, javascript-format
+msgid "%d file, %d MB"
+msgid_plural "%d archivos, %d MB"
+msgstr[0] "%d archivo, %d MB"
+msgstr[1] "%d archivos, %d MB"
 
-#: src/prefs.js:102
-msgid "Customizing the Date"
-msgstr "Personalizar la fecha"
+#: src/prefs.js:194
+#, javascript-format
+msgid "Deleted %d cached image"
+msgid_plural "Eliminadas %d imágenes en caché"
+msgstr[0] "Eliminada %d imagen en caché"
+msgstr[1] "Eliminadas %d imágenes en caché"
 
-#: src/prefs.js:108
-msgid "Calendar Language"
-msgstr "Idioma del calendario"
+#: src/prefs.js:200
+msgid "Cache Cleared"
+msgstr "Caché borrada"
 
-#: src/prefs.js:109
-msgid "Language for calendar names"
-msgstr "Idioma para los nombres del calendario"
+#: src/ui/prefs.ui:7
+msgid "Clock"
+msgstr "Reloj"
 
-#: src/prefs.js:132
+#: src/ui/prefs.ui:10
+msgid "Clock Position"
+msgstr "Posición del reloj"
+
+#: src/ui/prefs.ui:13
+msgid "Position in Panel"
+msgstr "Posición en el panel"
+
+#: src/ui/prefs.ui:45
+msgid "Position Offset"
+msgstr "Desplazamiento de posición"
+
+#: src/ui/prefs.ui:59
+msgid "Clock content"
+msgstr "Contenido del reloj"
+
+#: src/ui/prefs.ui:62
 msgid "Include the Text Before the Clock"
 msgstr "Incluir el texto antes del reloj"
 
-#: src/prefs.js:141
+#: src/ui/prefs.ui:67
 msgid "Include the Text After the Clock"
 msgstr "Incluir el texto después del reloj"
 
-#: src/prefs.js:150
+#: src/ui/prefs.ui:72
 msgid "Clock Decoration"
 msgstr "Decoración del reloj"
 
-#: src/prefs.js:160
-msgid "Include Day Name"
-msgstr "Incluir el nombre del día"
+#: src/ui/prefs.ui:80
+msgid "Calendar"
+msgstr "Calendario"
 
-#: src/prefs.js:161
-msgid "Show the day name in the date menu"
-msgstr "Mostrar el nombre del día en el menú de fecha"
+#: src/ui/prefs.ui:83
+msgid "Customizing the Date"
+msgstr "Personalizar la fecha"
 
-#: src/prefs.js:166
+#: src/ui/prefs.ui:86
+msgid "Calendar Language"
+msgstr "Idioma del calendario"
+
+#: src/ui/prefs.ui:91
 msgid "Include Year"
-msgstr "Incluir el año"
+msgstr "Incluir año"
 
-#: src/prefs.js:167
+#: src/ui/prefs.ui:92
 msgid "Show the year in the date menu"
 msgstr "Mostrar el año en el menú de fecha"
 
-#: src/prefs.js:172
+#: src/ui/prefs.ui:97
 msgid "Year as Roman Numerals"
-msgstr "Año en numerales romanos"
+msgstr "Año en números romanos"
 
-#: src/prefs.js:173
-msgid "Display the year in Roman numerals (e.g. CCXXXIV)"
-msgstr "Mostrar el año en numerales romanos (ej. CCXXXIV)"
+#: src/ui/prefs.ui:104
+msgid "Customizing the Day Name"
+msgstr "Personalizar el nombre del día"
 
-#: src/prefs.js:179
+#: src/ui/prefs.ui:107
+msgid "Include Day Name"
+msgstr "Incluir nombre del día"
+
+#: src/ui/prefs.ui:112
 msgid "Day Name Link"
 msgstr "Enlace del nombre del día"
 
-#: src/prefs.js:180
+#: src/ui/prefs.ui:113
 msgid "Make day name clickable when link data is available"
-msgstr "Hacer el nombre del día clicable cuando hay enlace disponible"
+msgstr "Hacer clicable el nombre del día cuando hay datos de enlace"
+
+#: src/ui/prefs.ui:120
+msgid "Customizing the Day Name Image"
+msgstr "Personalizar la imagen del nombre del día"
+
+#: src/ui/prefs.ui:123
+msgid "Include Image"
+msgstr "Incluir imagen"
+
+#: src/ui/prefs.ui:128
+msgid "Day Name Image Link"
+msgstr "Enlace de la imagen del nombre del día"
+
+#: src/ui/prefs.ui:129
+msgid "Make day name image clickable when link data is available"
+msgstr "Hacer clicable la imagen del nombre del día cuando hay datos de enlace"
+
+#: src/ui/prefs.ui:137
+msgid "Cache"
+msgstr "Caché"
+
+#: src/ui/prefs.ui:140
+msgid "Cache Management"
+msgstr "Gestión de caché"
+
+#: src/ui/prefs.ui:141
+msgid "Images from Wikipedia are cached locally to improve performance"
+msgstr "Las imágenes de Wikipedia se almacenan en caché localmente para mejorar el rendimiento"
+
+#: src/ui/prefs.ui:144
+msgid "Cache Status"
+msgstr "Estado de la caché"
+
+#: src/ui/prefs.ui:145
+msgid "Loading..."
+msgstr "Cargando..."
+
+#: src/ui/prefs.ui:150
+msgid "Clear Cache"
+msgstr "Limpiar caché"
+
+#: src/ui/prefs.ui:151
+msgid "Remove all cached images"
+msgstr "Eliminar todas las imágenes en caché"
+
+#: src/ui/prefs.ui:158
+msgid "_Delete"
+msgstr "_Eliminar"
+
+#: src/ui/prefs.ui:175
+msgid "Browse Cache Folder"
+msgstr "Explorar carpeta de caché"
+
+#: src/ui/prefs.ui:176
+msgid "Open cache directory in file manager"
+msgstr "Abrir directorio de caché en el explorador de archivos"
+
+#: src/ui/prefs.ui:183
+msgid "_Open"
+msgstr "_Abrir"
+
+#: src/ui/prefs.ui:199
+msgid "Automatically Delete Images Older Than"
+msgstr "Eliminar automáticamente imágenes más antiguas que"
+
+#: src/ui/prefs.ui:200
+msgid "0 to disable"
+msgstr "0 para desactivar"
+
+#: src/ui/prefs.ui:215
+msgid "About"
+msgstr "Acerca de"
+
+#: src/ui/prefs.ui:225
+msgid "GNOME extensions page"
+msgstr "Página de extensiones de GNOME"
+
+#: src/ui/prefs.ui:251
+msgid "Repository"
+msgstr "Repositorio"
+
+#: src/ui/prefs.ui:282
+msgid "Issues"
+msgstr "Problemas"
+
+#: src/ui/prefs.ui:303
+msgid "License"
+msgstr "Licencia"

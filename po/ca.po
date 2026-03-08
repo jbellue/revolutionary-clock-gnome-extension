@@ -1,81 +1,200 @@
-# Catalan translation of revolutionary-clock
-# Copyright (C) 2024
-# This file is distributed under the same license as the revolutionary-clock package.
+# Traducció al català per Revolutionary Clock
+# Copyright (C) 2026 jbellue
+# This file is distributed under the same license as the Revolutionary Clock package.
+# Julien Bellue <julien@bellue.fr>, 2026.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: revolutionary-clock\n"
+"Project-Id-Version: Revolutionary Clock\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-22 23:36+0100\n"
-"PO-Revision-Date: 2026-02-22 00:00+0000\n"
-"Last-Translator: \n"
-"Language-Team: Catalan\n"
+"POT-Creation-Date: 2026-03-07 22:44+0100\n"
+"PO-Revision-Date: 2026-03-08 13:35+0100\n"
+"Last-Translator: Julien Bellue <julien@bellue.fr>\n"
+"Language-Team: Catalan <>\n"
 "Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: src/prefs.js:81
+#: src/prefs.js:95
 msgid "System Default"
-msgstr "Predeterminat del sistema"
+msgstr "Per defecte del sistema"
 
-#: src/prefs.js:97
-msgid "Customizing the Clock"
-msgstr "Personalitza el rellotge"
+#: src/prefs.js:180
+#, javascript-format
+msgid "%d file, %d MB"
+msgid_plural "%d fitxers, %d MB"
+msgstr[0] "%d fitxer, %d MB"
+msgstr[1] "%d fitxers, %d MB"
 
-#: src/prefs.js:102
-msgid "Customizing the Date"
-msgstr "Personalitza la data"
+#: src/prefs.js:194
+#, javascript-format
+msgid "Deleted %d cached image"
+msgid_plural "Eliminades %d imatges en memòria cau"
+msgstr[0] "Eliminada %d imatge en memòria cau"
+msgstr[1] "Eliminades %d imatges en memòria cau"
 
-#: src/prefs.js:108
-msgid "Calendar Language"
-msgstr "Idioma del calendari"
+#: src/prefs.js:200
+msgid "Cache Cleared"
+msgstr "Memòria cau netejada"
 
-#: src/prefs.js:109
-msgid "Language for calendar names"
-msgstr "Idioma per als noms del calendari"
+#: src/ui/prefs.ui:7
+msgid "Clock"
+msgstr "Rellotge"
 
-#: src/prefs.js:132
+#: src/ui/prefs.ui:10
+msgid "Clock Position"
+msgstr "Posició del rellotge"
+
+#: src/ui/prefs.ui:13
+msgid "Position in Panel"
+msgstr "Posició al panell"
+
+#: src/ui/prefs.ui:45
+msgid "Position Offset"
+msgstr "Desplaçament de posició"
+
+#: src/ui/prefs.ui:59
+msgid "Clock content"
+msgstr "Contingut del rellotge"
+
+#: src/ui/prefs.ui:62
 msgid "Include the Text Before the Clock"
-msgstr "Inclou el text abans del rellotge"
+msgstr "Incloure el text abans del rellotge"
 
-#: src/prefs.js:141
+#: src/ui/prefs.ui:67
 msgid "Include the Text After the Clock"
-msgstr "Inclou el text després del rellotge"
+msgstr "Incloure el text després del rellotge"
 
-#: src/prefs.js:150
+#: src/ui/prefs.ui:72
 msgid "Clock Decoration"
 msgstr "Decoració del rellotge"
 
-#: src/prefs.js:160
-msgid "Include Day Name"
-msgstr "Inclou el nom del dia"
+#: src/ui/prefs.ui:80
+msgid "Calendar"
+msgstr "Calendari"
 
-#: src/prefs.js:161
-msgid "Show the day name in the date menu"
-msgstr "Mostra el nom del dia al menú de data"
+#: src/ui/prefs.ui:83
+msgid "Customizing the Date"
+msgstr "Personalitzar la data"
 
-#: src/prefs.js:166
+#: src/ui/prefs.ui:86
+msgid "Calendar Language"
+msgstr "Llengua del calendari"
+
+#: src/ui/prefs.ui:91
 msgid "Include Year"
-msgstr "Inclou l'any"
+msgstr "Incloure any"
 
-#: src/prefs.js:167
+#: src/ui/prefs.ui:92
 msgid "Show the year in the date menu"
-msgstr "Mostra l'any al menú de data"
+msgstr "Mostrar l'any al menú de data"
 
-#: src/prefs.js:172
+#: src/ui/prefs.ui:97
 msgid "Year as Roman Numerals"
-msgstr "Any en xifres romanes"
+msgstr "Any en numerals romans"
 
-#: src/prefs.js:173
-msgid "Display the year in Roman numerals (e.g. CCXXXIV)"
-msgstr "Mostra l'any en xifres romanes (ex. CCXXXIV)"
+#: src/ui/prefs.ui:104
+msgid "Customizing the Day Name"
+msgstr "Personalitzar el nom del dia"
 
-#: src/prefs.js:179
+#: src/ui/prefs.ui:107
+msgid "Include Day Name"
+msgstr "Incloure nom del dia"
+
+#: src/ui/prefs.ui:112
 msgid "Day Name Link"
 msgstr "Enllaç del nom del dia"
 
-#: src/prefs.js:180
+#: src/ui/prefs.ui:113
 msgid "Make day name clickable when link data is available"
-msgstr "Fes el nom del dia clicable quan hi ha un enllaç disponible"
+msgstr "Fer clicable el nom del dia quan hi hagi dades d'enllaç disponibles"
+
+#: src/ui/prefs.ui:120
+msgid "Customizing the Day Name Image"
+msgstr "Personalitzar la imatge del nom del dia"
+
+#: src/ui/prefs.ui:123
+msgid "Include Image"
+msgstr "Incloure imatge"
+
+#: src/ui/prefs.ui:128
+msgid "Day Name Image Link"
+msgstr "Enllaç de la imatge del nom del dia"
+
+#: src/ui/prefs.ui:129
+msgid "Make day name image clickable when link data is available"
+msgstr "Fer clicable la imatge del nom del dia quan hi hagi dades d'enllaç disponibles"
+
+#: src/ui/prefs.ui:137
+msgid "Cache"
+msgstr "Memòria cau"
+
+#: src/ui/prefs.ui:140
+msgid "Cache Management"
+msgstr "Gestió de la memòria cau"
+
+#: src/ui/prefs.ui:141
+msgid "Images from Wikipedia are cached locally to improve performance"
+msgstr "Les imatges de Wikipedia s'emmagatzemen en memòria cau localment per millorar el rendiment"
+
+#: src/ui/prefs.ui:144
+msgid "Cache Status"
+msgstr "Estat de la memòria cau"
+
+#: src/ui/prefs.ui:145
+msgid "Loading..."
+msgstr "Carregant..."
+
+#: src/ui/prefs.ui:150
+msgid "Clear Cache"
+msgstr "Netejar memòria cau"
+
+#: src/ui/prefs.ui:151
+msgid "Remove all cached images"
+msgstr "Eliminar totes les imatges en memòria cau"
+
+#: src/ui/prefs.ui:158
+msgid "_Delete"
+msgstr "_Suprimir"
+
+#: src/ui/prefs.ui:175
+msgid "Browse Cache Folder"
+msgstr "Explorar carpeta de memòria cau"
+
+#: src/ui/prefs.ui:176
+msgid "Open cache directory in file manager"
+msgstr "Obrir el directori de memòria cau al gestor de fitxers"
+
+#: src/ui/prefs.ui:183
+msgid "_Open"
+msgstr "_Obrir"
+
+#: src/ui/prefs.ui:199
+msgid "Automatically Delete Images Older Than"
+msgstr "Eliminar automàticament les imatges més antigues que"
+
+#: src/ui/prefs.ui:200
+msgid "0 to disable"
+msgstr "0 per desactivar"
+
+#: src/ui/prefs.ui:215
+msgid "About"
+msgstr "Quant a"
+
+#: src/ui/prefs.ui:225
+msgid "GNOME extensions page"
+msgstr "Pàgina d'extensions del GNOME"
+
+#: src/ui/prefs.ui:251
+msgid "Repository"
+msgstr "Repositori"
+
+#: src/ui/prefs.ui:282
+msgid "Issues"
+msgstr "Incidències"
+
+#: src/ui/prefs.ui:303
+msgid "License"
+msgstr "Llicència"

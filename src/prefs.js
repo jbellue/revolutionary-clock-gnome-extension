@@ -25,6 +25,7 @@ import { CACHE_DIR } from './constants.js';
 import { CacheManager } from './cacheManager.js';
 
 const _ = imports.gettext.domain('revolutionary-clock').gettext;
+const ngettext = imports.gettext.domain('revolutionary-clock').ngettext;
 
 /**
  * Retrieves the list of available locales for the calendar formatting.
@@ -175,7 +176,12 @@ export default class RevolutionaryClockPreferences extends ExtensionPreferences 
             cacheStatsRow.set_subtitle('...');
             const stats = await cacheManager.getCacheStats();
             const sizeMB = (stats.totalSize / (1024 * 1024)).toFixed(2);
-            cacheStatsRow.set_subtitle(`${stats.fileCount} file${stats.fileCount !== 1 ? 's' : ''}, ${sizeMB} MB`);
+            const filesText = ngettext(
+                '%d file, %d MB',
+                '%d files, %d MB',
+                stats.fileCount
+            ).format(stats.fileCount, sizeMB);
+            cacheStatsRow.set_subtitle(filesText);
         };
         updateCacheStats();
 
@@ -184,10 +190,15 @@ export default class RevolutionaryClockPreferences extends ExtensionPreferences 
             const filesDeleted = cacheManager.clearAllCacheFiles();
             await updateCacheStats();
             
+            const secondaryText = ngettext(
+                `Deleted %d cached image`,
+                `Deleted %d cached images`,
+                filesDeleted
+            ).format(filesDeleted);
             // Show a toast notification if available
             const dialog = new Gtk.MessageDialog({
                 text: _('Cache Cleared'),
-                secondary_text: _(`Deleted ${filesDeleted} cached image${filesDeleted !== 1 ? 's' : ''}`),
+                secondary_text: secondaryText,
                 buttons: Gtk.ButtonsType.OK,
                 modal: true,
                 transient_for: window,
