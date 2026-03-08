@@ -24,9 +24,6 @@ import {ExtensionPreferences} from 'resource:///org/gnome/Shell/Extensions/js/ex
 import { CACHE_DIR } from './constants.js';
 import { CacheManager } from './cacheManager.js';
 
-const _ = imports.gettext.domain('revolutionary-clock').gettext;
-const ngettext = imports.gettext.domain('revolutionary-clock').ngettext;
-
 /**
  * Retrieves the list of available locales for the calendar formatting.
  * It looks for .js files in the "locales" or "locale" subdirectory of the extension.
@@ -87,12 +84,12 @@ function getAvailableLocales(extensionPath, logger) {
 /**
  * Retrieves the label for a given locale code.
  * @param {string} localeCode - The locale code (e.g., "en", "fr").
- * @param {*} _ - The gettext function for translations.
+ * @param {Function} gettext - The gettext function.
  * @returns {string} - The label for the locale.
  */
-function getLocaleLabel(localeCode, _) {
+function getLocaleLabel(localeCode, gettext) {
     if (localeCode === 'system')
-        return _('System Default');
+        return gettext('System Default');
     return localeCode;
 }
 
@@ -106,8 +103,19 @@ export default class RevolutionaryClockPreferences extends ExtensionPreferences 
         const logger = this.getLogger();
         const cacheManager = new CacheManager(logger);
 
+        // Initialize gettext
+        const domain = 'revolutionary-clock';
+        const localedir = this.dir.get_child('locale').get_path();
+        
+        imports.gettext.bindtextdomain(domain, localedir);
+        imports.gettext.textdomain(domain);
+        
+        const _ = (text) => imports.gettext.dgettext(domain, text);
+        const ngettext = (singular, plural, n) => imports.gettext.dngettext(domain, singular, plural, n);
+
         // Load UI from .ui file
         const builder = new Gtk.Builder();
+        builder.set_translation_domain(domain);
         builder.add_from_file(this.dir.get_path() + '/ui/prefs.ui');
 
         // Clock settings

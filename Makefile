@@ -65,6 +65,22 @@ dbus:
 .PHONY: dev
 dev: reinstall dbus
 
+# Helper target for dev with locale
+dev-with-locale: reinstall
+	LANG=$(LOCALE).UTF-8 LC_ALL=$(LOCALE).UTF-8 dbus-run-session gnome-shell --devkit --wayland
+
+.PHONY: dev-fr
+dev-fr:
+	$(MAKE) dev-with-locale LOCALE=fr_FR
+
+.PHONY: dev-es
+dev-es:
+	$(MAKE) dev-with-locale LOCALE=es_ES
+
+.PHONY: dev-ca
+dev-ca:
+	$(MAKE) dev-with-locale LOCALE=ca_ES
+
 .PHONY: run-prefs
 run-prefs:
 	gnome-extensions prefs $(EXTENSION_ID)
