@@ -1,0 +1,21 @@
+name: Package Extension
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    container:
+      image: alpine:latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: apk add --no-cache gettext make
+      - name: Build package
+        run: make package
+      - name: Upload release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: dist/*.shell-extension.zip
