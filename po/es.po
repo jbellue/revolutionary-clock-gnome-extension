@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Revolutionary Clock\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-07 22:44+0100\n"
-"PO-Revision-Date: 2026-03-08 13:27+0100\n"
+"POT-Creation-Date: 2026-03-11 14:02+0100\n"
+"PO-Revision-Date: 2026-03-11 13:57+0100\n"
 "Last-Translator: Julien Bellue <julien@bellue.fr>\n"
 "Language-Team: Spanish <>\n"
 "Language: es\n"
@@ -16,26 +16,37 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.8\n"
 
-#: src/prefs.js:95
+#: src/prefs.js:91
 msgid "System Default"
 msgstr "Predeterminado del sistema"
 
-#: src/prefs.js:180
+#: src/prefs.js:191
 #, javascript-format
-msgid "%d file, %d MB"
-msgid_plural "%d archivos, %d MB"
-msgstr[0] "%d archivo, %d MB"
-msgstr[1] "%d archivos, %d MB"
+msgid "%s KB"
+msgstr "%s KB"
+
+#: src/prefs.js:192
+#, javascript-format
+msgid "%s MB"
+msgstr "%s MB"
 
 #: src/prefs.js:194
 #, javascript-format
+msgid "%d file, %s"
+msgid_plural "%d files, %s"
+msgstr[0] "%d archivo, %s"
+msgstr[1] "%d archivos, %s"
+
+#: src/prefs.js:208
+#, javascript-format
 msgid "Deleted %d cached image"
-msgid_plural "Eliminadas %d imágenes en caché"
+msgid_plural "Deleted %d cached images"
 msgstr[0] "Eliminada %d imagen en caché"
 msgstr[1] "Eliminadas %d imágenes en caché"
 
-#: src/prefs.js:200
+#: src/prefs.js:214
 msgid "Cache Cleared"
 msgstr "Caché borrada"
 
@@ -137,7 +148,9 @@ msgstr "Gestión de caché"
 
 #: src/ui/prefs.ui:141
 msgid "Images from Wikipedia are cached locally to improve performance"
-msgstr "Las imágenes de Wikipedia se almacenan en caché localmente para mejorar el rendimiento"
+msgstr ""
+"Las imágenes de Wikipedia se almacenan en caché localmente para mejorar el "
+"rendimiento"
 
 #: src/ui/prefs.ui:144
 msgid "Cache Status"

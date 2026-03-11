@@ -26,10 +26,18 @@ pot:
 	xgettext \
 		--language=JavaScript \
 		--keyword=_ \
+		--keyword=ngettext:1,2 \
 		--from-code=UTF-8 \
 		--package-name=$(GETTEXT_DOMAIN) \
 		--output=po/$(GETTEXT_DOMAIN).pot \
 		src/prefs.js
+	xgettext \
+		--language=Glade \
+		--join-existing \
+		--from-code=UTF-8 \
+		--package-name=$(GETTEXT_DOMAIN) \
+		--output=po/$(GETTEXT_DOMAIN).pot \
+		src/ui/prefs.ui
 
 .PHONY: po
 po: pot

@@ -182,12 +182,19 @@ export default class RevolutionaryClockPreferences extends ExtensionPreferences 
         const updateCacheStats = async () => {
             cacheStatsRow.set_subtitle('...');
             const stats = await cacheManager.getCacheStats();
-            const sizeMB = (stats.totalSize / (1024 * 1024)).toFixed(2);
+            const sizeInMB = stats.totalSize / (1024 * 1024);
+            const useKB = sizeInMB < 1;
+            const sizeValue = useKB
+                ? (stats.totalSize / 1024).toFixed(2)
+                : sizeInMB.toFixed(2);
+            const sizeText = useKB
+                ? _('%s KB').format(sizeValue)
+                : _('%s MB').format(sizeValue);
             const filesText = ngettext(
-                '%d file, %d MB',
-                '%d files, %d MB',
+                '%d file, %s',
+                '%d files, %s',
                 stats.fileCount
-            ).format(stats.fileCount, sizeMB);
+            ).format(stats.fileCount, sizeText);
             cacheStatsRow.set_subtitle(filesText);
         };
         updateCacheStats();

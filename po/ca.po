@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Revolutionary Clock\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-07 22:44+0100\n"
-"PO-Revision-Date: 2026-03-08 13:35+0100\n"
+"POT-Creation-Date: 2026-03-11 14:02+0100\n"
+"PO-Revision-Date: 2026-03-11 13:56+0100\n"
 "Last-Translator: Julien Bellue <julien@bellue.fr>\n"
 "Language-Team: Catalan <>\n"
 "Language: ca\n"
@@ -16,26 +16,37 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.8\n"
 
-#: src/prefs.js:95
+#: src/prefs.js:91
 msgid "System Default"
 msgstr "Per defecte del sistema"
 
-#: src/prefs.js:180
+#: src/prefs.js:191
 #, javascript-format
-msgid "%d file, %d MB"
-msgid_plural "%d fitxers, %d MB"
-msgstr[0] "%d fitxer, %d MB"
-msgstr[1] "%d fitxers, %d MB"
+msgid "%s KB"
+msgstr "%s KB"
+
+#: src/prefs.js:192
+#, javascript-format
+msgid "%s MB"
+msgstr "%s MB"
 
 #: src/prefs.js:194
 #, javascript-format
+msgid "%d file, %s"
+msgid_plural "%d files, %s"
+msgstr[0] "%d fitxer, %s"
+msgstr[1] "%d fitxers, %s"
+
+#: src/prefs.js:208
+#, javascript-format
 msgid "Deleted %d cached image"
-msgid_plural "Eliminades %d imatges en memòria cau"
+msgid_plural "Deleted %d cached images"
 msgstr[0] "Eliminada %d imatge en memòria cau"
 msgstr[1] "Eliminades %d imatges en memòria cau"
 
-#: src/prefs.js:200
+#: src/prefs.js:214
 msgid "Cache Cleared"
 msgstr "Memòria cau netejada"
 
@@ -125,7 +136,9 @@ msgstr "Enllaç de la imatge del nom del dia"
 
 #: src/ui/prefs.ui:129
 msgid "Make day name image clickable when link data is available"
-msgstr "Fer clicable la imatge del nom del dia quan hi hagi dades d'enllaç disponibles"
+msgstr ""
+"Fer clicable la imatge del nom del dia quan hi hagi dades d'enllaç "
+"disponibles"
 
 #: src/ui/prefs.ui:137
 msgid "Cache"
@@ -137,7 +150,9 @@ msgstr "Gestió de la memòria cau"
 
 #: src/ui/prefs.ui:141
 msgid "Images from Wikipedia are cached locally to improve performance"
-msgstr "Les imatges de Wikipedia s'emmagatzemen en memòria cau localment per millorar el rendiment"
+msgstr ""
+"Les imatges de Wikipedia s'emmagatzemen en memòria cau localment per "
+"millorar el rendiment"
 
 #: src/ui/prefs.ui:144
 msgid "Cache Status"
