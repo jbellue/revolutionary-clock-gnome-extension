@@ -43,8 +43,8 @@ export default class RevolutionaryClockExtension extends Extension {
                     })
                 })
             });
-
-            this._createClockInMainPanel();
+            this._revolutionaryClock = new RevolutionaryClock(this._settings, this.logger);
+            this._setClockInMainPanel();
         }).catch(e => {
             this.logger.error(`Failed to enable extension: ${e.message}`);
         });
@@ -60,13 +60,12 @@ export default class RevolutionaryClockExtension extends Extension {
     }
 
     /**
-     * Creates the clock indicator in the main panel at the position specified in the settings.
+     * Sets the clock indicator in the main panel at the position specified in the settings.
      */
-    _createClockInMainPanel() {
-            const index = this._settings.get_int('clock-index-in-status-bar');
-            const location = this._settings.get_string('clock-position-in-status-bar');
-            this._revolutionaryClock = new RevolutionaryClock(this._settings, this.logger);
-            Main.panel.addToStatusArea(this.uuid, this._revolutionaryClock, index, location);
+    _setClockInMainPanel() {
+        const index = this._settings.get_int('clock-index-in-status-bar');
+        const location = this._settings.get_string('clock-position-in-status-bar');
+        Main.panel.addToStatusArea(this.uuid, this._revolutionaryClock, index, location);
     }
 
     /**
@@ -75,8 +74,9 @@ export default class RevolutionaryClockExtension extends Extension {
      */
     _updatePosition() {
         if (!this._revolutionaryClock) return;
-        this._revolutionaryClock.destroy();
-        this._createClockInMainPanel();
+        this._revolutionaryClock.container.get_parent()?.remove_child(this._revolutionaryClock.container);
+        delete Main.panel.statusArea[this.uuid];
+        this._setClockInMainPanel();
     }
 
     disable() {
