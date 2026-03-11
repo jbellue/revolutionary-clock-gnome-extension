@@ -19,13 +19,13 @@
 import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 
-import { CACHE_DIR } from './constants.js';
-
 /**
  * Cache management class that handles file operations with logging.
  */
 export class CacheManager {
-    constructor(logger = null) {
+    #cacheDir = `${GLib.get_user_cache_dir()}/revolutionaryclock/`;
+
+    constructor(logger) {
         this._logger = logger;
     }
 
@@ -37,7 +37,7 @@ export class CacheManager {
      */
     _enumerateCacheFiles(callback) {
         try {
-            const cacheDir = Gio.File.new_for_path(CACHE_DIR);
+            const cacheDir = Gio.File.new_for_path(this.#cacheDir);
             if (!cacheDir.query_exists(null))
                 return true;
 
@@ -60,8 +60,7 @@ export class CacheManager {
             enumerator.close(null);
             return true;
         } catch (e) {
-            if (this._logger)
-                this._logger.error(`Error enumerating cache: ${e}`);
+            this._logger.error(`Error enumerating cache: ${e}`);
             return false;
         }
     }
@@ -88,8 +87,7 @@ export class CacheManager {
         try {
             return file.delete(null);
         } catch (e) {
-            if (this._logger)
-                this._logger.error(`Failed to delete ${file.get_basename()}: ${e}`);
+            this._logger.error(`Failed to delete ${file.get_basename()}: ${e}`);
             return false;
         }
     }
@@ -117,14 +115,9 @@ export class CacheManager {
                 if (this._deleteFile(file))
                     deletedCount++;
             }
-
-            if (deletedCount > 0 && this._logger)
-                this._logger.log(`Deleted ${deletedCount} expired cached image${deletedCount !== 1 ? 's' : ''}`);
-
             return deletedCount;
         } catch (e) {
-            if (this._logger)
-                this._logger.error(`Error while cleaning expired cache files: ${e}`);
+            this._logger.error(`Error while cleaning expired cache files: ${e}`);
             return 0;
         }
     }
@@ -137,8 +130,6 @@ export class CacheManager {
         try {
             const files = this._getCacheFiles();
             if (files.length === 0) {
-                if (this._logger)
-                    this._logger.log(`Cache directory is empty`);
                 return 0;
             }
 
@@ -148,12 +139,10 @@ export class CacheManager {
                     filesDeleted++;
             }
 
-            if (this._logger)
-                this._logger.log(`Cleared cache: deleted ${filesDeleted} files`);
+            this._logger.log(`Cleared cache: deleted ${filesDeleted} files`);
             return filesDeleted;
         } catch (e) {
-            if (this._logger)
-                this._logger.error(`Error clearing cache: ${e}`);
+            this._logger.error(`Error clearing cache: ${e}`);
             return 0;
         }
     }
@@ -171,12 +160,10 @@ export class CacheManager {
             }
             return { fileCount: files.length, totalSize };
         } catch (e) {
-            if (this._logger)
-                this._logger.error(`Error getting cache stats: ${e}`);
+            this._logger.error(`Error getting cache stats: ${e}`);
             return { fileCount: 0, totalSize: 0 };
         }
     }
-
 
     /**
      * Gets the cache file path for a given dayLink.
@@ -186,7 +173,15 @@ export class CacheManager {
     getCacheFilePath(dayLink) {
         let hash = new GLib.Checksum(GLib.ChecksumType.MD5);
         hash.update(dayLink);
-        return `${CACHE_DIR}${hash.get_string()}.img`;
+        return `${this.getCacheFolderPath()}${hash.get_string()}.img`;
+    }
+
+    /**
+     * Gets the cache folder path.
+     * @returns {string} - The cache folder path
+     */
+    getCacheFolderPath() {
+        return this.#cacheDir;
     }
 
     /**

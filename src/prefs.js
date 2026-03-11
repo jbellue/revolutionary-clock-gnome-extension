@@ -21,7 +21,6 @@ import GLib from 'gi://GLib';
 import Gtk from 'gi://Gtk';
 
 import {ExtensionPreferences} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
-import { CACHE_DIR } from './constants.js';
 import { CacheManager } from './cacheManager.js';
 
 /**
@@ -217,7 +216,7 @@ export default class RevolutionaryClockPreferences extends ExtensionPreferences 
 
         // Browse cache folder button
         browseCacheButton.connect('clicked', () => {
-            const uri = GLib.filename_to_uri(CACHE_DIR, null);
+            const uri = GLib.filename_to_uri(cacheManager.getCacheFolderPath(), null);
             try {
                 Gio.AppInfo.launch_default_for_uri(uri, null);
             } catch (e) {

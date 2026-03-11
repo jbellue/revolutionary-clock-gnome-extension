@@ -22,18 +22,19 @@ import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 import GdkPixbuf from 'gi://GdkPixbuf';
 
-import { CACHE_DIR, USER_AGENT } from './constants.js';
 import { CacheManager } from './cacheManager.js';
 
 export class WikiImageManager {
-    constructor(settings = null, logger = null) {
+    #userAgent = 'RevolutionaryClock/1.0 (https://github.com/jbellue/revolutionary-clock)';
+
+    constructor(settings, logger) {
         this._settings = settings;
         this._logger = logger;
         this._cacheManager = new CacheManager(logger);
         this._soup = new Soup.Session();
-        this._soup.user_agent = USER_AGENT;
+        this._soup.user_agent = this.#userAgent;
 
-        this._cacheDir = CACHE_DIR;
+        this._cacheDir = this._cacheManager.getCacheFolderPath();
         GLib.mkdir_with_parents(this._cacheDir, 0o755);
         this._imageCache = new Map();  // URL → local path
     }
@@ -73,8 +74,7 @@ export class WikiImageManager {
 
             const url = await this.fetchWikipediaImageUrl(dayLink);
             if (!url) {
-                if (this._logger)
-                    this._logger.warn(`No Wikipedia image URL found for: ${dayLink}`);
+                this._logger.warn(`No Wikipedia image URL found for: ${dayLink}`);
                 return null;
             }
 
@@ -85,21 +85,17 @@ export class WikiImageManager {
                 stream.close(null);
 
                 // After saving the new image, clean up old cache files based on settings
-                const maxAgeDays = this._settings ? this._settings.get_int('delete-cache-older-than-days') : 0;
+                const maxAgeDays = this._settings.get_int('delete-cache-older-than-days');
                 this._cacheManager.cleanupExpiredCacheFiles(maxAgeDays);
-                if (this._logger)
-                    this._logger.log(`Downloaded and saved image for ${dayLink} to ${cacheFile}`);
             } else {
-                if (this._logger)
-                    this._logger.warn(`Failed to download image for ${dayLink}`);
+                this._logger.warn(`Failed to download image for ${dayLink}`);
                 return null;
             }
 
             this._imageCache.set(dayLink, cacheFile);
             return cacheFile;
         } catch (e) {
-            if (this._logger)
-                this._logger.error(`Error in downloadAndCache: ${e}`);
+            this._logger.error(`Error in downloadAndCache: ${e}`);
             return null;
         }
     }
@@ -137,12 +133,10 @@ export class WikiImageManager {
                             }
                         }
                     }
-                    if (this._logger)
-                        this._logger.warn(`No thumbnail found in API response for: ${wikiUrl}`);
+                    this._logger.warn(`No thumbnail found in API response for: ${wikiUrl}`);
                     resolve(null);
                 } catch (e) {
-                    if (this._logger)
-                        this._logger.error(`Error fetching Wikipedia image for: ${wikiUrl}, Error: ${e}`);
+                    this._logger.error(`Error fetching Wikipedia image for: ${wikiUrl}, Error: ${e}`);
                     resolve(null);
                 }
             });
@@ -161,13 +155,11 @@ export class WikiImageManager {
             let filePath = file.get_path();
 
             if (!file.query_exists(null)) {
-                if (this._logger)
-                    this._logger.warn(`Cached file missing: ${filePath}`);
+                this._logger.warn(`Cached file missing: ${filePath}`);
                 return null;
             }
 
-            if (this._logger)
-                this._logger.log(`Set image from file: ${filePath}`);
+            this._logger.log(`Set image from file: ${filePath}`);
 
             let targetHeight = 300;
 
@@ -177,8 +169,7 @@ export class WikiImageManager {
                 const sourceHeight = pixbuf.get_height();
                 targetHeight = Math.max(1, Math.round((sourceHeight * targetWidth) / sourceWidth));
             } catch (e) {
-                if (this._logger)
-                    this._logger.warn(`Pixbuf dimension read failed, using default size fallback: ${e}`);
+                this._logger.warn(`Pixbuf dimension read failed, using default size fallback: ${e}`);
             }
 
             const uri = file.get_uri();
@@ -192,8 +183,7 @@ export class WikiImageManager {
                 style: `background-image: url("${escapedUri}"); background-size: ${targetWidth}px ${targetHeight}px; background-repeat: no-repeat;`,
             });
         } catch (e) {
-            if (this._logger)
-                this._logger.error(`Failed to create image actor: ${e}`);
+            this._logger.error(`Failed to create image actor: ${e}`);
             return null;
         }
     }
@@ -208,7 +198,7 @@ export class WikiImageManager {
         return new Promise((resolve) => {
             let session = this._soup;
             let msg = Soup.Message.new('GET', url);
-            msg.request_headers.replace('User-Agent', USER_AGENT);
+            msg.request_headers.replace('User-Agent', this.#userAgent);
             if (referer) {
                 msg.request_headers.append('Referer', referer);
             }
@@ -220,8 +210,7 @@ export class WikiImageManager {
                     const status = msg.status_code;
                     resolve({ bytes, contentType, status });
                 } catch (e) {
-                    if (this._logger)
-                        this._logger.error(`Failed to download image: ${e}`);
+                    this._logger.error(`Failed to download image: ${e}`);
                     resolve(null);
                 }
             });
