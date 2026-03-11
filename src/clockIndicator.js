@@ -50,11 +50,11 @@ class RevolutionaryClock extends PanelMenu.Button {
         this.menu.actor.add_style_class_name('revolutionary-clock-menu-popup');
         this._updateDateMenuItem();
 
-        this._signals =  [
-            {id: this._settings.connect('changed::clock-decoration', () => this._updateClockLabel())},
-            {id: this._settings.connect('changed::decoration-before-clock', () => this._updateClockLabel())},
-            {id: this._settings.connect('changed::decoration-after-clock', () => this._updateClockLabel())},
-        ];
+        const clockKeys = new Set(['clock-decoration', 'decoration-before-clock', 'decoration-after-clock']);
+        this._signal = this._settings.connect('changed', (_, key) => {
+            if (clockKeys.has(key))
+                this._updateClockLabel();
+        });
 
         this.menu.connect('open-state-changed', (_, isOpen) => {
             if (isOpen)
@@ -124,8 +124,7 @@ class RevolutionaryClock extends PanelMenu.Button {
         this._dateMenuItem?.destroy();
         this._dateMenuItem = null;
 
-        this._signals.forEach(({id}) => this._settings.disconnect(id));
-        this._signals = [];
+        this._settings.disconnect(this._signal);
 
         super.destroy();
     }
