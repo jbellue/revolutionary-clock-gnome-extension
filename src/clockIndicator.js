@@ -51,12 +51,12 @@ class RevolutionaryClock extends PanelMenu.Button {
         this._updateDateMenuItem();
 
         const clockKeys = new Set(['clock-decoration', 'decoration-before-clock', 'decoration-after-clock']);
-        this._signal = this._settings.connect('changed', (_, key) => {
+        this._settingsSignal = this._settings.connect('changed', (_, key) => {
             if (clockKeys.has(key))
                 this._updateClockLabel();
         });
 
-        this.menu.connect('open-state-changed', (_, isOpen) => {
+        this._menuSignal = this.menu.connect('open-state-changed', (_, isOpen) => {
             if (isOpen)
                 this._updateDateMenuItem();
         });
@@ -68,7 +68,7 @@ class RevolutionaryClock extends PanelMenu.Button {
      * and also when the locale changes (to update the date format and translation).
      */
     _updateDateMenuItem() {
-        this._dateMenuItem?.update();
+        this._dateMenuItem.update();
     }
 
     /**
@@ -121,10 +121,10 @@ class RevolutionaryClock extends PanelMenu.Button {
             this._clockTimeout = 0;
         }
 
-        this._dateMenuItem?.destroy();
-        this._dateMenuItem = null;
+        this._dateMenuItem.destroy();
 
-        this._settings.disconnect(this._signal);
+        this._settings.disconnect(this._settingsSignal);
+        this.menu.disconnect(this._menuSignal);
 
         super.destroy();
     }
