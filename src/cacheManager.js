@@ -191,7 +191,17 @@ export class CacheManager {
      * @returns {boolean} - true if cached
      */
     hasCache(cache, dayLink) {
-        return cache.has(dayLink);
+        const cachePath = cache.get(dayLink);
+        if (!cachePath)
+            return false;
+
+        const file = Gio.File.new_for_path(cachePath);
+        if (!file.query_exists(null)) {
+            cache.delete(dayLink);
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -201,6 +211,16 @@ export class CacheManager {
      * @returns {string|undefined} - The cached file path or undefined
      */
     getCachePath(cache, dayLink) {
-        return cache.get(dayLink);
+        const cachePath = cache.get(dayLink);
+        if (!cachePath)
+            return null;
+
+        const file = Gio.File.new_for_path(cachePath);
+        if (!file.query_exists(null)) {
+            cache.delete(dayLink);
+            return null;
+        }
+
+        return cachePath;
     }
 }

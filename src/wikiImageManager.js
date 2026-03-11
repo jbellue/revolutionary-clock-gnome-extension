@@ -121,7 +121,8 @@ export class WikiImageManager {
             this._soup.send_and_read_async(message, 0, null, (soup, res) => {
                 try {
                     const bytes = soup.send_and_read_finish(res);
-                    const response = imports.byteArray.toString(bytes.get_data());
+                    const decoder = new TextDecoder('utf-8');
+                    const response = decoder.decode(bytes.get_data());
                     const data = JSON.parse(response);
                     const pages = data.query && data.query.pages;
                     if (pages) {
