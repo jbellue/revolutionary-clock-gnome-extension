@@ -20,43 +20,6 @@
  */
 
 /**
- * Get translated month names from translations object
- * @param {Object} translations - The translations object
- */
-function getMonthNames(translations) {
-    const months = [];
-    for (let i = 1; i <= 12; i++) { 
-        months.push(translations[`month_${i}`]);
-    }
-    months.push(translations["month_extra"]); // Add the extra month for the complementary days
-    return months;
-}
-
-/**
- * Get translated day names from translations object
- * @param {Object} translations - The translations object
- */
-function getDayNames(translations) {
-    const days = [];
-    for (let i = 1; i <= 366; i++) {
-        days.push(translations[`day_${i}`]);
-    }
-    return days;
-}
-
-/**
- * Get translated weekday names from translations object
- * @param {Object} translations - The translations object
- */
-function getWeekdayNames(translations) {
-    const weekdays = [];
-    for (let i = 1; i <= 10; i++) {
-        weekdays.push(translations[`weekday_${i}`]);
-    }
-    return weekdays;
-}
-
-/**
  * Converts Julian Day to JavaScript Date (UTC)
  */
 function julianDayToDate(julianDay) {
@@ -177,14 +140,10 @@ export function getRepublicanDate(date, translations) {
     // Calculate the number of days since the start of the Republican year
     const yeardays = Math.floor((date.getTime() - firstDayOfRepYear.getTime()) / MS_PER_DAY);
 
-    const monthNames = getMonthNames(translations);
-    const dayNames = getDayNames(translations);
-    const weekdayNames = getWeekdayNames(translations);
-
     const dayOfMonth = (yeardays % 30) + 1; // day of month, 1-based
-    const monthName = monthNames[Math.floor(yeardays / 30)];
-    const dayName = dayNames[yeardays];
-    const dayOfWeek = weekdayNames[dayOfMonth % 10];
+    const monthName = translations.months[Math.floor(yeardays / 30)];
+    const dayName = translations.days[yeardays];
+    const dayOfWeek = translations.weekdays[(dayOfMonth - 1) % 10];
     
     return {
         years: republicanYear,
