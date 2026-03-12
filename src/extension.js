@@ -23,7 +23,15 @@ import { setupLocale } from './translations.js';
 import { RevolutionaryClock } from './clockIndicator.js';
 
 export default class RevolutionaryClockExtension extends Extension {
+    constructor(metadata) {
+        super(metadata);
+
+        this._enabled = false;
+    }
+
     enable() {
+        this._enabled = true;
+
         this._settings = this.getSettings();
         this._signals = [
             { id: this._settings.connect('changed::clock-position-in-status-bar', () => this._updatePosition()) },
@@ -31,23 +39,46 @@ export default class RevolutionaryClockExtension extends Extension {
         ];
         this.logger = this.getLogger();
 
+        void this._enableAsync();
+    }
 
-        this._updateTranslationFunction().then(() => {
-            this._signals.push({ id: 
+    async _enableAsync() {
+        try {
+            // Update the translation function before doing anything else,
+            // so we can fetch the localised image ASAP from the cache, or get it from the wikipedia
+            await this._updateTranslationFunction();
+            if (!this._enabled || !this._settings)
+                return;
+
+            this._signals.push({ id:
                 this._settings.connect('changed::locale', () => {
-                    this._updateTranslationFunction().then(() => {
-                        if (this._revolutionaryClock) {
-                            this._revolutionaryClock._updateClockLabel();
-                            this._revolutionaryClock._updateDateMenuItem();
-                        }
-                    })
+                    void this._onLocaleChanged();
                 })
             });
             this._revolutionaryClock = new RevolutionaryClock(this._settings, this.logger);
             this._setClockInMainPanel();
-        }).catch(e => {
+        } catch (e) {
+            if (!this._enabled)
+                return;
             this.logger.error(`Failed to enable extension: ${e.message}`);
-        });
+        }
+    }
+
+    async _onLocaleChanged() {
+        try {
+            await this._updateTranslationFunction();
+            if (!this._enabled)
+                return;
+
+            if (this._revolutionaryClock) {
+                this._revolutionaryClock._updateClockLabel();
+                this._revolutionaryClock._updateDateMenuItem();
+            }
+        } catch (e) {
+            if (!this._enabled)
+                return;
+            this.logger.error(`Failed to update locale: ${e.message}`);
+        }
     }
 
     /**
@@ -80,7 +111,9 @@ export default class RevolutionaryClockExtension extends Extension {
     }
 
     disable() {
-        this._signals.forEach(({id}) => { if (id) this._settings.disconnect(id); });
+        this._enabled = false;
+
+        this._signals.forEach(({id}) => { if (id && this._settings) this._settings.disconnect(id); });
         this._signals = [];
         
         if (this._revolutionaryClock) {
