@@ -25,6 +25,7 @@ import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
 
 import { getRepublicanClock } from './revdate.js';
 import { DateMenuItem } from './dateMenuItem.js';
+import { setupLocale } from './translations.js';
 
 export const RevolutionaryClock = GObject.registerClass(
 class RevolutionaryClock extends PanelMenu.Button {
@@ -32,6 +33,9 @@ class RevolutionaryClock extends PanelMenu.Button {
         super._init(0.5, 'Revolutionary Clock', false);
 
         this._settings = settings;
+        this._logger = logger;
+
+        this._translations = null;
 
         this._clockLabel = new St.Label({
             text: '',
@@ -42,23 +46,33 @@ class RevolutionaryClock extends PanelMenu.Button {
         this.add_child(this._clockLabel);
 
         this._clockTimeout = 0;
-        this._updateClockLabel();
         this._startClockTimer();
+        this._updateClockLabel();
 
         this._dateMenuItem = new DateMenuItem(settings, logger, () => this.menu.close());
         this.menu.addMenuItem(this._dateMenuItem.item);
         this.menu.actor.add_style_class_name('revolutionary-clock-menu-popup');
+        this._loadTranslations();
         this._updateDateMenuItem();
 
-        const clockKeys = new Set(['clock-decoration', 'decoration-before-clock', 'decoration-after-clock']);
-        this._settingsSignal = this._settings.connect('changed', (_, key) => {
-            if (clockKeys.has(key))
-                this._updateClockLabel();
-        });
+        this._signals = [
+            { target: this._settings, id: this._settings.connect('changed::clock-decoration', () => this._updateClockLabel()) },
+            { target: this._settings, id: this._settings.connect('changed::decoration-before-clock', () => this._updateClockLabel()) },
+            { target: this._settings, id: this._settings.connect('changed::decoration-after-clock', () => this._updateClockLabel()) },
+            { target: this._settings, id: this._settings.connect('changed::locale', () => this._loadTranslations()) },
+            { target: this.menu, id: this.menu.connect('open-state-changed', (_, isOpen) => { 
+                if (isOpen) this._updateDateMenuItem(); 
+            }) }
+        ];
+    }
 
-        this._menuSignal = this.menu.connect('open-state-changed', (_, isOpen) => {
-            if (isOpen)
-                this._updateDateMenuItem();
+    _loadTranslations() {
+        const locale = this._settings?.get_string('locale') || '';
+        setupLocale(locale, this._logger).then((translations) => {
+            this._translations = translations;
+            this._updateDateMenuItem();
+        }).catch(e => {
+            this._logger?.error(`Failed to preload translations: ${e.message}`);
         });
     }
 
@@ -68,6 +82,7 @@ class RevolutionaryClock extends PanelMenu.Button {
      * and also when the locale changes (to update the date format and translation).
      */
     _updateDateMenuItem() {
+        this._dateMenuItem.setTranslations(this._translations);
         this._dateMenuItem.update();
     }
 
@@ -76,7 +91,9 @@ class RevolutionaryClock extends PanelMenu.Button {
      */
     _updateClockLabel() {
         this._clockLabel.set_text(
-            this._formatNow(getRepublicanClock(new Date()))
+            this._formatNow(
+                getRepublicanClock(new Date())
+            )
         );
     }
 
@@ -123,8 +140,11 @@ class RevolutionaryClock extends PanelMenu.Button {
 
         this._dateMenuItem.destroy();
 
-        this._settings.disconnect(this._settingsSignal);
-        this.menu.disconnect(this._menuSignal);
+        this._signals.forEach(({ target, id }) => {
+            if (id && target) {
+                target.disconnect(id);
+            }
+        });
 
         super.destroy();
     }

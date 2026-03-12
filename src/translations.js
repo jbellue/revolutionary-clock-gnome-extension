@@ -37,20 +37,20 @@ export async function setupLocale(locale, logger) {
         logger.info(`Detected system locale: ${targetLocale}`);
     }
     
-    // Load translations for the locale (including French)
     try {
         const module = await import(`./locale/${targetLocale}.js`);
-        localeTranslations = module.translations;
         logger.info(`Loaded calendar translations for ${targetLocale}`);
+        return module.translations;
     } catch (e) {
         logger.warn(`Could not load calendar translations for ${targetLocale}, falling back to French: ${e.message}`);
-        // Fallback to French
+        
         try {
             const module = await import(`./locale/fr.js`);
-            localeTranslations = module.translations;
+            logger.info('Loaded French fallback translations');
+            return module.translations;
         } catch (err) {
             logger.error(`Could not load French fallback: ${err.message}`);
-            localeTranslations = null;
+            return null;
         }
     }
 }
@@ -65,8 +65,9 @@ export function translate(text) {
 
 /**
  * Get the current translations object
+ * @param {Object|null} override - Optional translations object to return instead of the loaded one
  * @returns {Object|null} The translations object or null if not loaded
  */
-export function getTranslations() {
-    return localeTranslations;
+export function getTranslations(override = null) {
+    return override || localeTranslations;
 }

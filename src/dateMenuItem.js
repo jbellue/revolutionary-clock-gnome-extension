@@ -32,6 +32,7 @@ export class DateMenuItem {
         this._settings = settings;
         this._logger = logger;
         this._onLinkClicked = onLinkClicked;
+        this._translations = null;
 
         this.item = new PopupMenu.PopupBaseMenuItem({
             reactive: false,
@@ -120,14 +121,22 @@ export class DateMenuItem {
         this.item.add_child(this._container);
     }
 
+    setTranslations(translations) {
+        this._translations = translations;
+        this.update();
+    }
+
     /**
      * Update the date menu item with the current Republican date, including labels and images based on settings
      * @returns {void}
      */
     async update() {
-        const translations = getTranslations();
+        const translations = getTranslations(this._translations);
         if (!translations) {
-            this._logger.error('Translations not loaded');
+            this._weekdayLabel.text = 'French Republican Calendar';
+            this._dateLabel.text = 'Loading...';
+            this._dayNameLabel.visible = false;
+            this._imageSlot.visible = false;
             return;
         }
         const date = getRepublicanDate(new Date(), translations);
