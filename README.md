@@ -74,7 +74,6 @@ On Fedora/SELinux with Podman, both lint targets automatically use `:Z` on the b
 ## TODO
 
 - [ ] Add a script to load each wikipedia file, look it up in a new language, and dump that into a new locale file. That won't translate the rest, just the day name and the link, but that'll be a start.
-- [ ] Typescript
 - [ ] Manually upload to Gnome shell extensions
 - [ ] Upload to Gnome shell extensions through a pipeline
 
