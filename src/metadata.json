@@ -6,5 +6,6 @@
         "49"
     ],
     "gettext-domain": "revolutionary-clock",
-    "settings-schema": "org.gnome.shell.extensions.revolutionary-clock"
+    "settings-schema": "org.gnome.shell.extensions.revolutionary-clock",
+    "url": "https://github.com/jbellue/revolutionary-clock-gnome-extension"
 }
