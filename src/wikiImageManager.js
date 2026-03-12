@@ -37,6 +37,7 @@ export class WikiImageManager {
         this._cacheDir = this._cacheManager.getCacheFolderPath();
         GLib.mkdir_with_parents(this._cacheDir, 0o755);
         this._imageCache = new Map();  // URL → local path
+        this._destroyed = false;
     }
 
     /**
@@ -73,12 +74,16 @@ export class WikiImageManager {
             }
 
             const url = await this.fetchWikipediaImageUrl(dayLink);
+            if (this._destroyed)
+                return null;
             if (!url) {
                 this._logger.warn(`No Wikipedia image URL found for: ${dayLink}`);
                 return null;
             }
 
             let result = await this._downloadImage(url, dayLink);
+            if (this._destroyed)
+                return null;
             if (result && result.bytes && result.contentType && result.status === 200 && result.contentType.startsWith('image/')) {
                 const stream = file.replace(null, false, Gio.FileCreateFlags.NONE, null);
                 stream.write_all(result.bytes.get_data(), null);
@@ -95,7 +100,8 @@ export class WikiImageManager {
             this._imageCache.set(dayLink, cacheFile);
             return cacheFile;
         } catch (e) {
-            this._logger.error(`Error in downloadAndCache: ${e}`);
+            if (!this._destroyed)
+                this._logger.error(`Error in downloadAndCache: ${e}`);
             return null;
         }
     }
@@ -219,6 +225,8 @@ export class WikiImageManager {
     }
 
     destroy() {
+        this._destroyed = true;
+
         if (this._soup) {
             this._soup.abort();
             this._soup = null;
