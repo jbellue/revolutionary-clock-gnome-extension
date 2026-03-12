@@ -221,7 +221,7 @@
                         <child>
                             <object class="AdwPreferencesGroup" id="details_group">
                                 <child>
-                                    <object class="AdwActionRow">
+                                    <object class="AdwActionRow" id="gnomeExtensionRow">
                                         <property name="title" translatable="yes">GNOME extensions page</property>
                                         <property name="use-underline">True</property>
                                         <property name="activatable">True</property>
@@ -233,8 +233,8 @@
                                         </child>
                                         <child>
                                             <object class="GtkLinkButton" id="gnome-extension-link">
-                                                <property name="uri">https://extensions.gnome.org/extension/TBC</property>
-                                                <property name="label">GNOME Extensions TBC</property>
+                                                <property name="uri">https://extensions.gnome.org/</property>
+                                                <property name="label">Gnome Extensions</property>
                                                 <property name="valign">GTK_ALIGN_CENTER</property>
                                             </object>
                                         </child>
@@ -259,7 +259,7 @@
                                         </child>
                                         <child>
                                             <object class="GtkLinkButton" id="source-link">
-                                                <property name="uri">https://github.com/jbellue/revolutionary-clock-gnome-extension</property>
+                                                <property name="uri"></property>
                                                 <property name="label">GitHub</property>
                                                 <property name="valign">GTK_ALIGN_CENTER</property>
                                             </object>
@@ -285,7 +285,7 @@
                                         <property name="activatable-widget">issues-link</property>
                                         <child>
                                             <object class="GtkLinkButton" id="issues-link">
-                                                <property name="uri">https://github.com/jbellue/revolutionary-clock-gnome-extension/issues</property>
+                                                <property name="uri"></property>
                                                 <property name="label">GitHub</property>
                                                 <property name="valign">GTK_ALIGN_CENTER</property>
                                             </object>
@@ -311,7 +311,7 @@
                                         </child>
                                         <child>
                                             <object class="GtkLinkButton" id="license-link">
-                                                <property name="uri">https://github.com/jbellue/revolutionary-clock-gnome-extension/blob/main/LICENSE</property>
+                                                <property name="uri"></property>
                                                 <property name="label">GNU GPL V2</property>
                                                 <property name="valign">GTK_ALIGN_CENTER</property>
                                             </object>

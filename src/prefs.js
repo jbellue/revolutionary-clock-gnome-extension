@@ -92,6 +92,18 @@ function getLocaleLabel(localeCode, gettext) {
     return localeCode;
 }
 
+/**
+ * Builds a complete URL by appending a suffix to a base URL.
+ * Ensures that there is exactly one '/' between the base URL and the suffix.
+ * @param {string} baseUrl - The base URL.
+ * @param {string} suffix - The suffix to append to the base URL.
+ * @returns {string} - The complete URL.
+ */
+function buildRepoUrl(baseUrl, suffix = '') {
+    const normalizedBaseUrl = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
+    return `${normalizedBaseUrl}${suffix}`;
+}
+
 export default class RevolutionaryClockPreferences extends ExtensionPreferences {
     /**
      * Fills the preferences window with the UI elements and binds them to the settings.
@@ -116,6 +128,19 @@ export default class RevolutionaryClockPreferences extends ExtensionPreferences 
         const builder = new Gtk.Builder();
         builder.set_translation_domain(domain);
         builder.add_from_file(this.dir.get_path() + '/ui/prefs.ui');
+
+        const repoUrl = this.metadata.url;
+        const sourceLink = builder.get_object('source-link');
+        const issuesLink = builder.get_object('issues-link');
+        const licenseLink = builder.get_object('license-link');
+        
+        sourceLink.set_uri(repoUrl);
+        issuesLink.set_uri(buildRepoUrl(repoUrl, 'issues'));
+        licenseLink.set_uri(buildRepoUrl(repoUrl, 'blob/main/LICENSE'));
+
+        // Disable the extension link until we have a real one
+        const gnomeExtensionRow = builder.get_object('gnomeExtensionRow');
+        gnomeExtensionRow.set_visible(false);
 
         // Clock settings
         const clockPositionIndex = builder.get_object('clockPositionIndex');
