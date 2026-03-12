@@ -24,7 +24,7 @@ import Clutter from 'gi://Clutter';
 import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
 
 import { getRepublicanClock } from './revdate.js';
-import { DateMenuItem } from './dateMenuItem.js';
+import { DateMenuItem } from './datePopup.js';
 import { setupLocale } from './translations.js';
 
 export const RevolutionaryClock = GObject.registerClass(
