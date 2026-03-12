@@ -79,38 +79,29 @@ package: mo
 test:
 	npm test
 
-.PHONY: lint-container
-lint-container:
+.PHONY: lint
+lint:
 	$(CONTAINER_RUNTIME) build -f Dockerfile.lint -t revolutionary-clock-lint .
 	$(CONTAINER_RUNTIME) run --rm -v $(PWD):/workspace$(CONTAINER_MOUNT_SUFFIX) -w /workspace revolutionary-clock-lint
 
-.PHONY: lint-container-watch
-lint-container-watch:
+.PHONY: lint-watch
+lint-watch:
 	$(CONTAINER_RUNTIME) build -f Dockerfile.lint -t revolutionary-clock-lint .
 	$(CONTAINER_RUNTIME) run --rm --init -it -e SHELL=/bin/sh -v $(PWD):/workspace$(CONTAINER_MOUNT_SUFFIX) -w /workspace revolutionary-clock-lint sh -lc 'exec chokidar "src/**/*.js" -c "eslint --max-warnings=0 \"src/**/*.js\"" --initial --polling --poll-interval 300'
 
-.PHONY: dbus
-dbus:
+# Single locale helper
+define run_dev_locale
+	$(MAKE) reinstall && \
+	LANG=$(1).UTF-8 LC_ALL=$(1).UTF-8 \
 	dbus-run-session gnome-shell --devkit --wayland
+endef
 
-.PHONY: dev
-dev: reinstall dbus
-
-# Helper target for dev with locale
-dev-with-locale: reinstall
-	LANG=$(LOCALE).UTF-8 LC_ALL=$(LOCALE).UTF-8 dbus-run-session gnome-shell --devkit --wayland
-
-.PHONY: dev-fr
-dev-fr:
-	$(MAKE) dev-with-locale LOCALE=fr_FR
-
-.PHONY: dev-es
-dev-es:
-	$(MAKE) dev-with-locale LOCALE=es_ES
-
-.PHONY: dev-ca
-dev-ca:
-	$(MAKE) dev-with-locale LOCALE=ca_ES
+.PHONY: dev dev-fr dev-es dev-ca dev-en
+dev-fr: ; $(call run_dev_locale,fr_FR)
+dev-es: ; $(call run_dev_locale,es_ES)  
+dev-ca: ; $(call run_dev_locale,ca_ES)
+dev-en: ; $(call run_dev_locale,en_GB)
+dev: ; $(call run_dev_locale,en_GB)
 
 .PHONY: run-prefs
 run-prefs:
