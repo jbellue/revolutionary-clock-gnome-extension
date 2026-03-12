@@ -62,10 +62,14 @@ To add a new locale:
 - `make po` - Update all PO files from the POT template
 - `make mo` - Compile PO files to MO (binary translation files)
 - `make package` - Create a distributable ZIP file in `dist/`
+- `make lint-container` - Build and run a containerized lint check (Podman first, then Docker fallback) for JS syntax and bug-prone logic issues
+- `make lint-container-watch` - Run lint in watch mode (via file watcher) and re-check on file saves
 - `make dev` - Reinstall and launch a development GNOME Shell session
 - `make dev-fr` / `dev-es` / `dev-ca` - Launch dev session with specific locale
 - `make prefs` - Reinstall and open preferences window
 - `make dbus` - Start a development GNOME Shell session with dbus-run-session
+
+On Fedora/SELinux with Podman, both lint targets automatically use `:Z` on the bind mount.
 
 ## TODO
 

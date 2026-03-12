@@ -3,6 +3,19 @@ INSTALL_DIR = $(HOME)/.local/share/gnome-shell/extensions/$(EXTENSION_ID)
 GETTEXT_DOMAIN = revolutionary-clock
 PO_FILES = $(wildcard po/*.po)
 LOCALES = $(basename $(notdir $(PO_FILES)))
+CONTAINER_RUNTIME ?= $(shell \
+	if command -v podman >/dev/null 2>&1; then \
+		echo podman; \
+	elif command -v docker >/dev/null 2>&1; then \
+		echo docker; \
+	else \
+		echo docker; \
+	fi)
+CONTAINER_MOUNT_SUFFIX ?=
+
+ifeq ($(CONTAINER_RUNTIME),podman)
+CONTAINER_MOUNT_SUFFIX := :Z
+endif
 
 .PHONY: install
 install: mo
@@ -65,6 +78,16 @@ package: mo
 .PHONY: test
 test:
 	npm test
+
+.PHONY: lint-container
+lint-container:
+	$(CONTAINER_RUNTIME) build -f Dockerfile.lint -t revolutionary-clock-lint .
+	$(CONTAINER_RUNTIME) run --rm -v $(PWD):/workspace$(CONTAINER_MOUNT_SUFFIX) -w /workspace revolutionary-clock-lint
+
+.PHONY: lint-container-watch
+lint-container-watch:
+	$(CONTAINER_RUNTIME) build -f Dockerfile.lint -t revolutionary-clock-lint .
+	$(CONTAINER_RUNTIME) run --rm --init -it -e SHELL=/bin/sh -v $(PWD):/workspace$(CONTAINER_MOUNT_SUFFIX) -w /workspace revolutionary-clock-lint sh -lc 'exec chokidar "src/**/*.js" -c "eslint --max-warnings=0 \"src/**/*.js\"" --initial --polling --poll-interval 300'
 
 .PHONY: dbus
 dbus:

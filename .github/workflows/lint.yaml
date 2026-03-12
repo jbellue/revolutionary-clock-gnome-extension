@@ -1,0 +1,25 @@
+name: Lint
+
+concurrency:
+  group: lint-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  pull_request:
+    paths:
+      - 'src/**/*.js'
+      - 'eslint.config.mjs'
+      - '.github/workflows/lint.yaml'
+      - '.github/workflows/_lint-action.yaml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/**/*.js'
+      - 'eslint.config.mjs'
+      - '.github/workflows/lint.yaml'
+      - '.github/workflows/_lint-action.yaml'
+
+jobs:
+  eslint:
+    uses: ./.github/workflows/_lint-action.yaml
