@@ -149,9 +149,9 @@ export class CacheManager {
 
     /**
      * Gets cache statistics (file count and total size).
-     * @returns {Promise<Object>} - Promise resolving to object with fileCount and totalSize properties
+     * @returns {Object} - Object containing fileCount and totalSize
      */
-    async getCacheStats() {
+    getCacheStats() {
         try {
             const files = this._getCacheFiles();
             let totalSize = 0;

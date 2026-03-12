@@ -179,9 +179,9 @@ export default class RevolutionaryClockPreferences extends ExtensionPreferences 
         settings.bind('delete-cache-older-than-days', deleteCacheOlderThanRow, 'value', Gio.SettingsBindFlags.DEFAULT);
 
         // Update cache stats
-        const updateCacheStats = async () => {
+        const updateCacheStats = () => {
             cacheStatsRow.set_subtitle('...');
-            const stats = await cacheManager.getCacheStats();
+            const stats = cacheManager.getCacheStats();
             const sizeInMB = stats.totalSize / (1024 * 1024);
             const useKB = sizeInMB < 1;
             const sizeValue = useKB
@@ -200,9 +200,9 @@ export default class RevolutionaryClockPreferences extends ExtensionPreferences 
         updateCacheStats();
 
         // Clear cache button
-        clearCacheButton.connect('clicked', async () => {
+        clearCacheButton.connect('clicked', () => {
             const filesDeleted = cacheManager.clearAllCacheFiles();
-            await updateCacheStats();
+            updateCacheStats();
             
             const secondaryText = ngettext(
                 `Deleted %d cached image`,
