@@ -70,6 +70,7 @@ class RevolutionaryClock extends PanelMenu.Button {
     _loadTranslations() {
         const locale = this._settings.get_string('locale') || '';
         setupLocale(locale, this._logger).then((translations) => {
+            if (!this._dateMenuItem) return;
             this._translations = translations;
             this._updateDateMenuItem();
         }).catch(e => {
@@ -156,6 +157,7 @@ class RevolutionaryClock extends PanelMenu.Button {
         }
 
         this._dateMenuItem.destroy();
+        this._dateMenuItem = null;
 
         this._signals.forEach(({ target, id }) => {
             if (id && target) {
