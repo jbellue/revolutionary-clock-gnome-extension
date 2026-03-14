@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Revolutionary Clock\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-11 14:02+0100\n"
-"PO-Revision-Date: 2026-03-11 13:56+0100\n"
+"POT-Creation-Date: 2026-03-14 14:35+0100\n"
+"PO-Revision-Date: 2026-03-14 14:37+0100\n"
 "Last-Translator: Julien Bellue <julien@bellue.fr>\n"
 "Language-Team: Catalan <>\n"
 "Language: ca\n"
@@ -22,31 +22,31 @@ msgstr ""
 msgid "System Default"
 msgstr "Per defecte del sistema"
 
-#: src/prefs.js:191
+#: src/prefs.js:219
 #, javascript-format
 msgid "%s KB"
 msgstr "%s KB"
 
-#: src/prefs.js:192
+#: src/prefs.js:220
 #, javascript-format
 msgid "%s MB"
 msgstr "%s MB"
 
-#: src/prefs.js:194
+#: src/prefs.js:222
 #, javascript-format
 msgid "%d file, %s"
 msgid_plural "%d files, %s"
 msgstr[0] "%d fitxer, %s"
 msgstr[1] "%d fitxers, %s"
 
-#: src/prefs.js:208
+#: src/prefs.js:236
 #, javascript-format
 msgid "Deleted %d cached image"
 msgid_plural "Deleted %d cached images"
 msgstr[0] "Eliminada %d imatge en memòria cau"
 msgstr[1] "Eliminades %d imatges en memòria cau"
 
-#: src/prefs.js:214
+#: src/prefs.js:242
 msgid "Cache Cleared"
 msgstr "Memòria cau netejada"
 
@@ -71,145 +71,149 @@ msgid "Clock content"
 msgstr "Contingut del rellotge"
 
 #: src/ui/prefs.ui:62
+msgid "Show Seconds"
+msgstr "Mostra els segons"
+
+#: src/ui/prefs.ui:67
 msgid "Include the Text Before the Clock"
 msgstr "Incloure el text abans del rellotge"
 
-#: src/ui/prefs.ui:67
+#: src/ui/prefs.ui:72
 msgid "Include the Text After the Clock"
 msgstr "Incloure el text després del rellotge"
 
-#: src/ui/prefs.ui:72
+#: src/ui/prefs.ui:77
 msgid "Clock Decoration"
 msgstr "Decoració del rellotge"
 
-#: src/ui/prefs.ui:80
+#: src/ui/prefs.ui:85
 msgid "Calendar"
 msgstr "Calendari"
 
-#: src/ui/prefs.ui:83
+#: src/ui/prefs.ui:88
 msgid "Customizing the Date"
 msgstr "Personalitzar la data"
 
-#: src/ui/prefs.ui:86
+#: src/ui/prefs.ui:91
 msgid "Calendar Language"
 msgstr "Llengua del calendari"
 
-#: src/ui/prefs.ui:91
+#: src/ui/prefs.ui:96
 msgid "Include Year"
 msgstr "Incloure any"
 
-#: src/ui/prefs.ui:92
+#: src/ui/prefs.ui:97
 msgid "Show the year in the date menu"
 msgstr "Mostrar l'any al menú de data"
 
-#: src/ui/prefs.ui:97
+#: src/ui/prefs.ui:102
 msgid "Year as Roman Numerals"
 msgstr "Any en numerals romans"
 
-#: src/ui/prefs.ui:104
+#: src/ui/prefs.ui:109
 msgid "Customizing the Day Name"
 msgstr "Personalitzar el nom del dia"
 
-#: src/ui/prefs.ui:107
+#: src/ui/prefs.ui:112
 msgid "Include Day Name"
 msgstr "Incloure nom del dia"
 
-#: src/ui/prefs.ui:112
+#: src/ui/prefs.ui:117
 msgid "Day Name Link"
 msgstr "Enllaç del nom del dia"
 
-#: src/ui/prefs.ui:113
+#: src/ui/prefs.ui:118
 msgid "Make day name clickable when link data is available"
 msgstr "Fer clicable el nom del dia quan hi hagi dades d'enllaç disponibles"
 
-#: src/ui/prefs.ui:120
+#: src/ui/prefs.ui:125
 msgid "Customizing the Day Name Image"
 msgstr "Personalitzar la imatge del nom del dia"
 
-#: src/ui/prefs.ui:123
+#: src/ui/prefs.ui:128
 msgid "Include Image"
 msgstr "Incloure imatge"
 
-#: src/ui/prefs.ui:128
+#: src/ui/prefs.ui:133
 msgid "Day Name Image Link"
 msgstr "Enllaç de la imatge del nom del dia"
 
-#: src/ui/prefs.ui:129
+#: src/ui/prefs.ui:134
 msgid "Make day name image clickable when link data is available"
 msgstr ""
 "Fer clicable la imatge del nom del dia quan hi hagi dades d'enllaç "
 "disponibles"
 
-#: src/ui/prefs.ui:137
+#: src/ui/prefs.ui:142
 msgid "Cache"
 msgstr "Memòria cau"
 
-#: src/ui/prefs.ui:140
+#: src/ui/prefs.ui:145
 msgid "Cache Management"
 msgstr "Gestió de la memòria cau"
 
-#: src/ui/prefs.ui:141
+#: src/ui/prefs.ui:146
 msgid "Images from Wikipedia are cached locally to improve performance"
 msgstr ""
 "Les imatges de Wikipedia s'emmagatzemen en memòria cau localment per "
 "millorar el rendiment"
 
-#: src/ui/prefs.ui:144
+#: src/ui/prefs.ui:149
 msgid "Cache Status"
 msgstr "Estat de la memòria cau"
 
-#: src/ui/prefs.ui:145
+#: src/ui/prefs.ui:150
 msgid "Loading..."
 msgstr "Carregant..."
 
-#: src/ui/prefs.ui:150
+#: src/ui/prefs.ui:155
 msgid "Clear Cache"
 msgstr "Netejar memòria cau"
 
-#: src/ui/prefs.ui:151
+#: src/ui/prefs.ui:156
 msgid "Remove all cached images"
 msgstr "Eliminar totes les imatges en memòria cau"
 
-#: src/ui/prefs.ui:158
+#: src/ui/prefs.ui:163
 msgid "_Delete"
 msgstr "_Suprimir"
 
-#: src/ui/prefs.ui:175
+#: src/ui/prefs.ui:180
 msgid "Browse Cache Folder"
 msgstr "Explorar carpeta de memòria cau"
 
-#: src/ui/prefs.ui:176
+#: src/ui/prefs.ui:181
 msgid "Open cache directory in file manager"
 msgstr "Obrir el directori de memòria cau al gestor de fitxers"
 
-#: src/ui/prefs.ui:183
+#: src/ui/prefs.ui:188
 msgid "_Open"
 msgstr "_Obrir"
 
-#: src/ui/prefs.ui:199
+#: src/ui/prefs.ui:204
 msgid "Automatically Delete Images Older Than"
 msgstr "Eliminar automàticament les imatges més antigues que"
 
-#: src/ui/prefs.ui:200
+#: src/ui/prefs.ui:205
 msgid "0 to disable"
 msgstr "0 per desactivar"
 
-#: src/ui/prefs.ui:215
+#: src/ui/prefs.ui:220
 msgid "About"
 msgstr "Quant a"
 
-#: src/ui/prefs.ui:225
+#: src/ui/prefs.ui:230
 msgid "GNOME extensions page"
 msgstr "Pàgina d'extensions del GNOME"
 
-#: src/ui/prefs.ui:251
+#: src/ui/prefs.ui:256
 msgid "Repository"
 msgstr "Repositori"
 
-#: src/ui/prefs.ui:282
+#: src/ui/prefs.ui:287
 msgid "Issues"
 msgstr "Incidències"
 
-#: src/ui/prefs.ui:303
+#: src/ui/prefs.ui:308
 msgid "License"
 msgstr "Llicència"

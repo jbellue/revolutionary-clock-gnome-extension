@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Revolutionary Clock\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-11 14:02+0100\n"
-"PO-Revision-Date: 2026-03-11 13:57+0100\n"
+"POT-Creation-Date: 2026-03-14 14:35+0100\n"
+"PO-Revision-Date: 2026-03-14 14:38+0100\n"
 "Last-Translator: Julien Bellue <julien@bellue.fr>\n"
 "Language-Team: Spanish <>\n"
 "Language: es\n"
@@ -22,31 +22,31 @@ msgstr ""
 msgid "System Default"
 msgstr "Predeterminado del sistema"
 
-#: src/prefs.js:191
+#: src/prefs.js:219
 #, javascript-format
 msgid "%s KB"
 msgstr "%s KB"
 
-#: src/prefs.js:192
+#: src/prefs.js:220
 #, javascript-format
 msgid "%s MB"
 msgstr "%s MB"
 
-#: src/prefs.js:194
+#: src/prefs.js:222
 #, javascript-format
 msgid "%d file, %s"
 msgid_plural "%d files, %s"
 msgstr[0] "%d archivo, %s"
 msgstr[1] "%d archivos, %s"
 
-#: src/prefs.js:208
+#: src/prefs.js:236
 #, javascript-format
 msgid "Deleted %d cached image"
 msgid_plural "Deleted %d cached images"
 msgstr[0] "Eliminada %d imagen en caché"
 msgstr[1] "Eliminadas %d imágenes en caché"
 
-#: src/prefs.js:214
+#: src/prefs.js:242
 msgid "Cache Cleared"
 msgstr "Caché borrada"
 
@@ -71,143 +71,147 @@ msgid "Clock content"
 msgstr "Contenido del reloj"
 
 #: src/ui/prefs.ui:62
+msgid "Show Seconds"
+msgstr "Mostrar segundos"
+
+#: src/ui/prefs.ui:67
 msgid "Include the Text Before the Clock"
 msgstr "Incluir el texto antes del reloj"
 
-#: src/ui/prefs.ui:67
+#: src/ui/prefs.ui:72
 msgid "Include the Text After the Clock"
 msgstr "Incluir el texto después del reloj"
 
-#: src/ui/prefs.ui:72
+#: src/ui/prefs.ui:77
 msgid "Clock Decoration"
 msgstr "Decoración del reloj"
 
-#: src/ui/prefs.ui:80
+#: src/ui/prefs.ui:85
 msgid "Calendar"
 msgstr "Calendario"
 
-#: src/ui/prefs.ui:83
+#: src/ui/prefs.ui:88
 msgid "Customizing the Date"
 msgstr "Personalizar la fecha"
 
-#: src/ui/prefs.ui:86
+#: src/ui/prefs.ui:91
 msgid "Calendar Language"
 msgstr "Idioma del calendario"
 
-#: src/ui/prefs.ui:91
+#: src/ui/prefs.ui:96
 msgid "Include Year"
 msgstr "Incluir año"
 
-#: src/ui/prefs.ui:92
+#: src/ui/prefs.ui:97
 msgid "Show the year in the date menu"
 msgstr "Mostrar el año en el menú de fecha"
 
-#: src/ui/prefs.ui:97
+#: src/ui/prefs.ui:102
 msgid "Year as Roman Numerals"
 msgstr "Año en números romanos"
 
-#: src/ui/prefs.ui:104
+#: src/ui/prefs.ui:109
 msgid "Customizing the Day Name"
 msgstr "Personalizar el nombre del día"
 
-#: src/ui/prefs.ui:107
+#: src/ui/prefs.ui:112
 msgid "Include Day Name"
 msgstr "Incluir nombre del día"
 
-#: src/ui/prefs.ui:112
+#: src/ui/prefs.ui:117
 msgid "Day Name Link"
 msgstr "Enlace del nombre del día"
 
-#: src/ui/prefs.ui:113
+#: src/ui/prefs.ui:118
 msgid "Make day name clickable when link data is available"
 msgstr "Hacer clicable el nombre del día cuando hay datos de enlace"
 
-#: src/ui/prefs.ui:120
+#: src/ui/prefs.ui:125
 msgid "Customizing the Day Name Image"
 msgstr "Personalizar la imagen del nombre del día"
 
-#: src/ui/prefs.ui:123
+#: src/ui/prefs.ui:128
 msgid "Include Image"
 msgstr "Incluir imagen"
 
-#: src/ui/prefs.ui:128
+#: src/ui/prefs.ui:133
 msgid "Day Name Image Link"
 msgstr "Enlace de la imagen del nombre del día"
 
-#: src/ui/prefs.ui:129
+#: src/ui/prefs.ui:134
 msgid "Make day name image clickable when link data is available"
 msgstr "Hacer clicable la imagen del nombre del día cuando hay datos de enlace"
 
-#: src/ui/prefs.ui:137
+#: src/ui/prefs.ui:142
 msgid "Cache"
 msgstr "Caché"
 
-#: src/ui/prefs.ui:140
+#: src/ui/prefs.ui:145
 msgid "Cache Management"
 msgstr "Gestión de caché"
 
-#: src/ui/prefs.ui:141
+#: src/ui/prefs.ui:146
 msgid "Images from Wikipedia are cached locally to improve performance"
 msgstr ""
 "Las imágenes de Wikipedia se almacenan en caché localmente para mejorar el "
 "rendimiento"
 
-#: src/ui/prefs.ui:144
+#: src/ui/prefs.ui:149
 msgid "Cache Status"
 msgstr "Estado de la caché"
 
-#: src/ui/prefs.ui:145
+#: src/ui/prefs.ui:150
 msgid "Loading..."
 msgstr "Cargando..."
 
-#: src/ui/prefs.ui:150
+#: src/ui/prefs.ui:155
 msgid "Clear Cache"
 msgstr "Limpiar caché"
 
-#: src/ui/prefs.ui:151
+#: src/ui/prefs.ui:156
 msgid "Remove all cached images"
 msgstr "Eliminar todas las imágenes en caché"
 
-#: src/ui/prefs.ui:158
+#: src/ui/prefs.ui:163
 msgid "_Delete"
 msgstr "_Eliminar"
 
-#: src/ui/prefs.ui:175
+#: src/ui/prefs.ui:180
 msgid "Browse Cache Folder"
 msgstr "Explorar carpeta de caché"
 
-#: src/ui/prefs.ui:176
+#: src/ui/prefs.ui:181
 msgid "Open cache directory in file manager"
 msgstr "Abrir directorio de caché en el explorador de archivos"
 
-#: src/ui/prefs.ui:183
+#: src/ui/prefs.ui:188
 msgid "_Open"
 msgstr "_Abrir"
 
-#: src/ui/prefs.ui:199
+#: src/ui/prefs.ui:204
 msgid "Automatically Delete Images Older Than"
 msgstr "Eliminar automáticamente imágenes más antiguas que"
 
-#: src/ui/prefs.ui:200
+#: src/ui/prefs.ui:205
 msgid "0 to disable"
 msgstr "0 para desactivar"
 
-#: src/ui/prefs.ui:215
+#: src/ui/prefs.ui:220
 msgid "About"
 msgstr "Acerca de"
 
-#: src/ui/prefs.ui:225
+#: src/ui/prefs.ui:230
 msgid "GNOME extensions page"
 msgstr "Página de extensiones de GNOME"
 
-#: src/ui/prefs.ui:251
+#: src/ui/prefs.ui:256
 msgid "Repository"
 msgstr "Repositorio"
 
-#: src/ui/prefs.ui:282
+#: src/ui/prefs.ui:287
 msgid "Issues"
 msgstr "Problemas"
 
-#: src/ui/prefs.ui:303
+#: src/ui/prefs.ui:308
 msgid "License"
 msgstr "Licencia"

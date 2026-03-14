@@ -58,6 +58,11 @@
             <object class="AdwPreferencesGroup">
                 <property name="title" translatable="yes">Clock content</property>
                 <child>
+                    <object class="AdwSwitchRow" id="showSecondsRow">
+                        <property name="title" translatable="yes">Show Seconds</property>
+                    </object>
+                </child>
+                <child>
                     <object class="AdwSwitchRow" id="decorationBeforeClockRow">
                         <property name="title" translatable="yes">Include the Text Before the Clock</property>
                     </object>

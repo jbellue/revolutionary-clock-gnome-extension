@@ -9,6 +9,13 @@
         Options: "fr" (French), "en" (English), or "system" (use system locale)
       </description>
     </key>
+    <key name="clock-show-seconds" type="b">
+      <default>false</default>
+      <summary>Show seconds in the clock</summary>
+      <description>
+        Whether to display seconds in the clock time.
+      </description>
+    </key>
     <key name="clock-decoration" type="s">
       <default>"🇫🇷"</default>
       <summary>Text displayed around the clock</summary>

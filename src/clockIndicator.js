@@ -59,6 +59,7 @@ class RevolutionaryClock extends PanelMenu.Button {
             { target: this._settings, id: this._settings.connect('changed::clock-decoration', () => this._updateClockLabel()) },
             { target: this._settings, id: this._settings.connect('changed::decoration-before-clock', () => this._updateClockLabel()) },
             { target: this._settings, id: this._settings.connect('changed::decoration-after-clock', () => this._updateClockLabel()) },
+            { target: this._settings, id: this._settings.connect('changed::clock-show-seconds', () => this._startClockTimer()) },
             { target: this._settings, id: this._settings.connect('changed::locale', () => this._loadTranslations()) },
             { target: this.menu, id: this.menu.connect('open-state-changed', (_, isOpen) => { 
                 if (isOpen) this._updateDateMenuItem(); 
@@ -90,18 +91,30 @@ class RevolutionaryClock extends PanelMenu.Button {
      * Updates the clock label with the current time in the French Republican Calendar.
      */
     _updateClockLabel() {
-        this._clockLabel.set_text(
-            this._formatNow(
-                getRepublicanTime(new Date())
-            )
-        );
+        const now = Date.now();
+        const clock = getRepublicanTime(new Date(now));
+        const newText = this._formatNow(clock);
+        
+        // Update only if the text has changed
+        if (this._clockLabel.get_text() !== newText) {
+            this._clockLabel.set_text(newText);
+        }
     }
 
     /**
-     * Starts a timer that updates the clock label every second.
+     * Starts a timer that updates the clock label.
+     * 
+     * If showing the decimal seconds, update every 0.1s.
+     * This will give us <14 ms max jitter, which shouldn't be perceptible.
+     * Otherwise, updating the decimal minute every second will be enough
      */
     _startClockTimer() {
-        this._clockTimeout = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 1000, () => {
+        if (this._clockTimeout) {
+            GLib.Source.remove(this._clockTimeout);
+        }
+        const showSeconds = this._settings.get_boolean('clock-show-seconds');
+        const interval = showSeconds ? 100 : 1000;
+        this._clockTimeout = GLib.timeout_add(GLib.PRIORITY_DEFAULT, interval, () => {
             this._updateClockLabel();
             return GLib.SOURCE_CONTINUE;
         });
@@ -113,12 +126,16 @@ class RevolutionaryClock extends PanelMenu.Button {
      * @returns {string} - The formatted time string.
      */
     _formatNow(clock) {
-        const pad2 = n => String(Math.floor(n)).padStart(2, '0');
+        const pad2 = n => (n < 10 ? '0' + n : String(n));
         const clockDecoration = this._settings.get_string('clock-decoration');
         const decorationBefore = this._settings.get_boolean('decoration-before-clock');
         const decorationAfter = this._settings.get_boolean('decoration-after-clock');
+        const showSeconds = this._settings.get_boolean('clock-show-seconds');
 
-        const timeStr = `${pad2(clock.hours)}:${pad2(clock.minutes)}`;
+        let timeStr = `${pad2(clock.hours)}:${pad2(clock.minutes)}`;
+        if (showSeconds) {
+            timeStr += `:${pad2(clock.seconds)}`;
+        }
         if (!clockDecoration)
             return timeStr;
 

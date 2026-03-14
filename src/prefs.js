@@ -152,6 +152,9 @@ export default class RevolutionaryClockPreferences extends ExtensionPreferences 
             settings.set_string('clock-position-in-status-bar', w.get_active_name());
         });
 
+        const showSecondsRow = builder.get_object('showSecondsRow');
+        settings.bind('clock-show-seconds', showSecondsRow, 'active', Gio.SettingsBindFlags.DEFAULT);
+
         const decorationBeforeClockRow = builder.get_object('decorationBeforeClockRow');
         settings.bind('decoration-before-clock', decorationBeforeClockRow, 'active', Gio.SettingsBindFlags.DEFAULT);
 
