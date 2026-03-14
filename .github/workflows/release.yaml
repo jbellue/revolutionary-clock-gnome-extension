@@ -20,9 +20,7 @@ jobs:
         uses: murar8/gnome-extensions-action@0.1.0
         with:
           source-dir: src
-          podir: ../po
           schema: ../schemas/org.gnome.shell.extensions.revolutionary-clock.gschema.xml
-          gettext-domain: revolutionary-clock
           # username: ${{ secrets.GNOME_USERNAME }}
           # password: ${{ secrets.GNOME_PASSWORD }}
           # accept-tos: true
