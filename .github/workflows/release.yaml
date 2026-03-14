@@ -16,7 +16,7 @@ jobs:
     container:
       image: alpine:latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Install dependencies
         run: apk add --no-cache gettext make zip
       - name: Build package
