@@ -22,7 +22,6 @@ jobs:
           source-dir: src
           output-dir: dist
           gettext-domain: revolutionary-clock
-          podir: src/po
           extra-source: |
             cacheManager.js
             clockIndicator.js
