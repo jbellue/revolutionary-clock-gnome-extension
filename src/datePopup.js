@@ -23,7 +23,7 @@ import Meta from 'gi://Meta';
 
 import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 
-import { getRepublicanDate } from './revdate.js';
+import { getRepublicanDate } from './republicanCalendar.js';
 import { getTranslations } from './translations.js';
 import { WikiImageManager } from './wikiImageManager.js';
 

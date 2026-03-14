@@ -23,7 +23,7 @@ import Clutter from 'gi://Clutter';
 
 import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
 
-import { getRepublicanClock } from './revdate.js';
+import { getRepublicanTime } from './republicanClock.js';
 import { DateMenuItem } from './datePopup.js';
 import { setupLocale } from './translations.js';
 
@@ -92,7 +92,7 @@ class RevolutionaryClock extends PanelMenu.Button {
     _updateClockLabel() {
         this._clockLabel.set_text(
             this._formatNow(
-                getRepublicanClock(new Date())
+                getRepublicanTime(new Date())
             )
         );
     }
@@ -109,7 +109,7 @@ class RevolutionaryClock extends PanelMenu.Button {
 
     /**
      * Formats the current time in the French Republican Calendar.
-     * @param {*} clock - The clock object containing hours and minutes.
+     * @param {*} clock - The clock object containing hours, minutes, and seconds.
      * @returns {string} - The formatted time string.
      */
     _formatNow(clock) {
