@@ -27,6 +27,7 @@ export default [
             'no-unused-private-class-members': 'error',
             'no-unused-vars': ['error', {argsIgnorePattern: '^_'}],
             'valid-typeof': 'error',
+            'semi': ['warn', 'always'],
         },
     },
 ];
