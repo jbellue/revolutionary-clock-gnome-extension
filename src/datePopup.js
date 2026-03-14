@@ -266,7 +266,7 @@ export class DateMenuItem {
 
         // Download and cache
         const cacheFile = await this._wikiImageManager.downloadAndCache(dayLink);
-        if (cacheFile) {
+        if (cacheFile && this._wikiImageManager) {
             this._setWikiImageFromCache(dayLink);
         }
     }
@@ -277,6 +277,7 @@ export class DateMenuItem {
      * @returns {void}
      */
     _setWikiImageFromCache(dayLink) {
+        if (!this._wikiImageManager) return;
         const cacheFile = this._wikiImageManager.getCachePath(dayLink);
         if (!cacheFile) {
             this._logger.info(`No cached image for dayLink: ${dayLink}`);
