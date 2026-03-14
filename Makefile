@@ -1,7 +1,7 @@
 EXTENSION_ID = revolutionary@jbellue.github.io
 INSTALL_DIR = $(HOME)/.local/share/gnome-shell/extensions/$(EXTENSION_ID)
 GETTEXT_DOMAIN = revolutionary-clock
-PO_FILES = $(wildcard po/*.po)
+PO_FILES = $(wildcard src/po/*.po)
 LOCALES = $(basename $(notdir $(PO_FILES)))
 CONTAINER_RUNTIME ?= $(shell \
 	if command -v podman >/dev/null 2>&1; then \
@@ -18,21 +18,12 @@ CONTAINER_MOUNT_SUFFIX := :Z
 endif
 
 .PHONY: install
-install: mo
-	mkdir -p $(INSTALL_DIR)
-	cp src/*.js src/*.json src/*.css $(INSTALL_DIR)/
-	cp -r src/locale $(INSTALL_DIR)/
-	cp -r src/ui $(INSTALL_DIR)/
-	mkdir -p $(INSTALL_DIR)/schemas
-	cp schemas/*.xml $(INSTALL_DIR)/schemas/
-	glib-compile-schemas $(INSTALL_DIR)/schemas/
+install: package
+	gnome-extensions install --force dist/$(EXTENSION_ID).shell-extension.zip
 
 .PHONY: uninstall
 uninstall:
-	rm -rf $(INSTALL_DIR)
-
-.PHONY: reinstall
-reinstall: uninstall install
+	gnome-extensions uninstall $(EXTENSION_ID)
 
 .PHONY: pot
 pot:
@@ -42,42 +33,43 @@ pot:
 		--keyword=ngettext:1,2 \
 		--from-code=UTF-8 \
 		--package-name=$(GETTEXT_DOMAIN) \
-		--output=po/$(GETTEXT_DOMAIN).pot \
+		--output=src/po/$(GETTEXT_DOMAIN).pot \
 		src/prefs.js
 	xgettext \
 		--language=Glade \
 		--join-existing \
 		--from-code=UTF-8 \
 		--package-name=$(GETTEXT_DOMAIN) \
-		--output=po/$(GETTEXT_DOMAIN).pot \
+		--output=src/po/$(GETTEXT_DOMAIN).pot \
 		src/ui/prefs.ui
 
 .PHONY: po
 po: pot
 	for lang in $(LOCALES); do \
-		msgmerge --update --backup=none po/$$lang.po po/$(GETTEXT_DOMAIN).pot; \
-	done
-
-.PHONY: mo
-mo:
-	for lang in $(LOCALES); do \
-		mkdir -p src/locale/$$lang/LC_MESSAGES; \
-		msgfmt --output-file=src/locale/$$lang/LC_MESSAGES/$(GETTEXT_DOMAIN).mo po/$$lang.po; \
+		msgmerge --update --backup=none src/po/$$lang.po src/po/$(GETTEXT_DOMAIN).pot; \
 	done
 
 .PHONY: package
-package: mo
+package:
 	mkdir -p dist
-	mkdir -p src/schemas
-	cp schemas/*.xml src/schemas/
-	cd src && zip -r ../dist/$(EXTENSION_ID).shell-extension.zip \
-		metadata.json *.js *.css \
-		locale/ ui/ schemas/
-	rm -rf src/schemas
-
-.PHONY: test
-test:
-	npm test
+	gnome-extensions pack \
+		--out-dir=dist \
+		--force \
+		--gettext-domain=$(GETTEXT_DOMAIN) \
+		--extra-source=cacheManager.js \
+		--extra-source=clockIndicator.js \
+		--extra-source=datePopup.js \
+		--extra-source=republicanCalendar.js \
+		--extra-source=republicanClock.js \
+		--extra-source=translations.js \
+		--extra-source=wikiImageManager.js \
+		--extra-source=locale-ca.js \
+		--extra-source=locale-en.js \
+		--extra-source=locale-es.js \
+		--extra-source=locale-fr.js \
+		--extra-source=locale \
+		--extra-source=ui \
+		src/
 
 .PHONY: lint
 lint:
@@ -91,7 +83,7 @@ lint-watch:
 
 # Single locale helper
 define run_dev_locale
-	$(MAKE) reinstall && \
+	$(MAKE) install && \
 	LANG=$(1).UTF-8 LC_ALL=$(1).UTF-8 \
 	dbus-run-session gnome-shell --devkit --wayland
 endef
@@ -108,4 +100,4 @@ run-prefs:
 	gnome-extensions prefs $(EXTENSION_ID)
 
 .PHONY: prefs
-prefs: reinstall run-prefs
+prefs: install run-prefs

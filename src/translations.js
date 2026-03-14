@@ -37,13 +37,13 @@ export async function setupLocale(locale, logger) {
     }
     
     try {
-        const module = await import(`./locale/${targetLocale}.js`);
+        const module = await import(`./locale-${targetLocale}.js`);
         return module.translations;
     } catch (e) {
         logger.warn(`Could not load calendar translations for ${targetLocale}, falling back to French: ${e.message}`);
         
         try {
-            const module = await import(`./locale/fr.js`);
+            const module = await import(`./locale-fr.js`);
             return module.translations;
         } catch (err) {
             logger.error(`Could not load French fallback: ${err.message}`);

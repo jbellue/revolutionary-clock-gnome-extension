@@ -25,55 +25,37 @@ import { CacheManager } from './cacheManager.js';
 
 /**
  * Retrieves the list of available locales for the calendar formatting.
- * It looks for .js files in the "locales" or "locale" subdirectory of the extension.
- * The locale code is derived from the filename (e.g. "en.js" -> "en").
+ * It looks for locale-XX.js files in the extension directory.
+ * The locale code is derived from the filename (e.g. "locale-en.js" -> "en").
  * The "system" locale is also added as an option to use the system default locale.
  * @param {*} extensionPath - The path to the extension directory.
  * @returns {string[]} - An array of available locale codes.
  */
 function getAvailableLocales(extensionPath, logger) {
     const locales = [];
-    const candidateDirs = ['locales', 'locale'];
-
-    let localeDirPath = null;
-    let localeDir = null;
-    for (const dirName of candidateDirs) {
-        const dirPath = GLib.build_filenamev([extensionPath, dirName]);
-        const dirFile = Gio.File.new_for_path(dirPath);
-        if (dirFile.query_exists(null)) {
-            localeDirPath = dirPath;
-            localeDir = dirFile;
-            break;
-        }
-    }
-
-    if (!localeDir)
-        return locales;
+    const dirFile = Gio.File.new_for_path(extensionPath);
 
     try {
-        const enumerator = localeDir.enumerate_children(
+        const enumerator = dirFile.enumerate_children(
             'standard::name,standard::type',
             Gio.FileQueryInfoFlags.NONE,
             null
         );
 
         let info;
+        const localeFilePattern = /^locale-([a-zA-Z]{2,3})\.js$/;
         while ((info = enumerator.next_file(null)) !== null) {
             if (info.get_file_type() !== Gio.FileType.REGULAR)
                 continue;
 
-            const fileName = info.get_name();
-            if (!fileName.endsWith('.js'))
-                continue;
-
-            const localeCode = fileName.slice(0, -3);
-            if (localeCode)
-                locales.push(localeCode);
+            const match = localeFilePattern.exec(info.get_name());
+            if (match)
+                locales.push(match[1]);
         }
 
         enumerator.close(null);
     } catch (e) {
-        logger.warn(`Could not list locales in ${localeDirPath}: ${e.message}`);
+        logger.warn(`Could not list locales in ${extensionPath}: ${e.message}`);
     }
 
     locales.sort();
