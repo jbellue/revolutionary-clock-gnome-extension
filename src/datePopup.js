@@ -34,13 +34,13 @@ export class DateMenuItem {
         this._onLinkClicked = onLinkClicked;
         this._translations = null;
 
-        this.item = new PopupMenu.PopupBaseMenuItem({
+        this._popupMenu = new PopupMenu.PopupBaseMenuItem({
             reactive: false,
             activate: false,
             can_focus: false,
         });
-        this.item.track_hover = false;
-        this.item.add_style_class_name('revolutionary-clock-menu-item');
+        this._popupMenu.track_hover = false;
+        this._popupMenu.add_style_class_name('revolutionary-clock-menu-item');
 
         this._container = new St.BoxLayout({
             vertical: true,
@@ -118,7 +118,7 @@ export class DateMenuItem {
         this._wikiImageManager = new WikiImageManager(this._settings, this._logger);
         this._wikiImage = null;
 
-        this.item.add_child(this._container);
+        this._popupMenu.add_child(this._container);
     }
 
     setTranslations(translations) {
@@ -311,6 +311,6 @@ export class DateMenuItem {
             this._wikiImageManager = null;
         }
 
-        this.item.destroy();
+        this._popupMenu.destroy();
     }
 }
