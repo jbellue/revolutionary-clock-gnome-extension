@@ -14,29 +14,22 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
-      - name: Package and publish extension
-        id: package
-        uses: murar8/gnome-extensions-action@0.1.0
-        with:
-          source-dir: src
-          schema: ../schemas/org.gnome.shell.extensions.revolutionary-clock.gschema.xml
-          extra-source: |
-            cacheManager.js
-            clockIndicator.js
-            datePopup.js
-            republicanCalendar.js
-            republicanClock.js
-            translations.js
-            wikiImageManager.js
-            locale
-            ui
-          # username: ${{ secrets.GNOME_USERNAME }}
-          # password: ${{ secrets.GNOME_PASSWORD }}
-          # accept-tos: true
-      - name: Upload release asset
+      - uses: actions/checkout@v6
+      - name: Install dependencies
+        run: sudo apt-get install -y gettext make gnome-shell
+      - name: Build package
+        run: make package
+      - name: Upload to GitHub release
         uses: softprops/action-gh-release@v2
         with:
-          files: ${{ steps.package.outputs.zip-file }}
+          files: dist/*.shell-extension.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # Uncomment when ready to publish to extensions.gnome.org
+      # - name: Upload to GNOME Extensions
+      #   uses: murar8/gnome-extensions-action@0.1.0
+      #   with:
+      #     source-dir: src
+      #     username: ${{ secrets.GNOME_USERNAME }}
+      #     password: ${{ secrets.GNOME_PASSWORD }}
+      #     accept-tos: true
