@@ -67,12 +67,12 @@ class RevolutionaryClock extends PanelMenu.Button {
     }
 
     _loadTranslations() {
-        const locale = this._settings?.get_string('locale') || '';
+        const locale = this._settings.get_string('locale') || '';
         setupLocale(locale, this._logger).then((translations) => {
             this._translations = translations;
             this._updateDateMenuItem();
         }).catch(e => {
-            this._logger?.error(`Failed to preload translations: ${e.message}`);
+            this._logger.error(`Failed to preload translations: ${e.message}`);
         });
     }
 
