@@ -166,8 +166,6 @@ export class WikiImageManager {
                 return null;
             }
 
-            this._logger.log(`Set image from file: ${filePath}`);
-
             let targetHeight = 300;
 
             try {

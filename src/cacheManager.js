@@ -138,8 +138,6 @@ export class CacheManager {
                 if (this._deleteFile(file))
                     filesDeleted++;
             }
-
-            this._logger.log(`Cleared cache: deleted ${filesDeleted} files`);
             return filesDeleted;
         } catch (e) {
             this._logger.error(`Error clearing cache: ${e}`);

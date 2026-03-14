@@ -34,19 +34,16 @@ export async function setupLocale(locale, logger) {
     
     if (locale === 'system') {
         targetLocale = getSystemLocale();
-        logger.info(`Detected system locale: ${targetLocale}`);
     }
     
     try {
         const module = await import(`./locale/${targetLocale}.js`);
-        logger.info(`Loaded calendar translations for ${targetLocale}`);
         return module.translations;
     } catch (e) {
         logger.warn(`Could not load calendar translations for ${targetLocale}, falling back to French: ${e.message}`);
         
         try {
             const module = await import(`./locale/fr.js`);
-            logger.info('Loaded French fallback translations');
             return module.translations;
         } catch (err) {
             logger.error(`Could not load French fallback: ${err.message}`);
