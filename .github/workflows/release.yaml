@@ -21,6 +21,16 @@ jobs:
         with:
           source-dir: src
           schema: ../schemas/org.gnome.shell.extensions.revolutionary-clock.gschema.xml
+          extra-source: |
+            cacheManager.js
+            clockIndicator.js
+            datePopup.js
+            republicanCalendar.js
+            republicanClock.js
+            translations.js
+            wikiImageManager.js
+            locale
+            ui
           # username: ${{ secrets.GNOME_USERNAME }}
           # password: ${{ secrets.GNOME_PASSWORD }}
           # accept-tos: true
