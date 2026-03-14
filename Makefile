@@ -87,7 +87,7 @@ lint:
 .PHONY: lint-watch
 lint-watch:
 	$(CONTAINER_RUNTIME) build -f Dockerfile.lint -t revolutionary-clock-lint .
-	$(CONTAINER_RUNTIME) run --rm --init -it -e SHELL=/bin/sh -v $(PWD):/workspace$(CONTAINER_MOUNT_SUFFIX) -w /workspace revolutionary-clock-lint sh -lc 'exec chokidar "src/**/*.js" -c "eslint --max-warnings=0 \"src/**/*.js\"" --initial --polling --poll-interval 300'
+	$(CONTAINER_RUNTIME) run --rm --init -it -e SHELL=/bin/sh -v $(PWD):/workspace$(CONTAINER_MOUNT_SUFFIX) -w /workspace revolutionary-clock-lint watch
 
 # Single locale helper
 define run_dev_locale
