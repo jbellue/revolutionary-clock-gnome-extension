@@ -16,6 +16,7 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
+import GObject from 'gi://GObject';
 import St from 'gi://St';
 import Clutter from 'gi://Clutter';
 import Gio from 'gi://Gio';
@@ -27,20 +28,21 @@ import { getRepublicanDate } from './republicanCalendar.js';
 import { getTranslations } from './translations.js';
 import { WikiImageManager } from './wikiImageManager.js';
 
-export class DateMenuItem {
-    constructor(settings, logger, onLinkClicked = null) {
-        this._settings = settings;
-        this._logger = logger;
-        this._onLinkClicked = onLinkClicked;
-        this._translations = null;
-
-        this._popupMenu = new PopupMenu.PopupBaseMenuItem({
+export const DateMenuItem = GObject.registerClass(
+class DateMenuItem extends PopupMenu.PopupBaseMenuItem {
+    _init(settings, logger, onLinkClicked = null) {
+        super._init({
             reactive: false,
             activate: false,
             can_focus: false,
         });
-        this._popupMenu.track_hover = false;
-        this._popupMenu.add_style_class_name('revolutionary-clock-menu-item');
+        this.track_hover = false;
+        this.add_style_class_name('revolutionary-clock-menu-item');
+
+        this._settings = settings;
+        this._logger = logger;
+        this._onLinkClicked = onLinkClicked;
+        this._translations = null;
 
         this._container = new St.BoxLayout({
             vertical: true,
@@ -118,7 +120,7 @@ export class DateMenuItem {
         this._wikiImageManager = new WikiImageManager(this._settings, this._logger);
         this._wikiImage = null;
 
-        this._popupMenu.add_child(this._container);
+        this.add_child(this._container);
     }
 
     setTranslations(translations) {
@@ -312,6 +314,6 @@ export class DateMenuItem {
             this._wikiImageManager = null;
         }
 
-        this._popupMenu.destroy();
+        super.destroy();
     }
-}
+});
