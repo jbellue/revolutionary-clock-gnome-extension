@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@v6
       - name: Package and Upload Extension
         id: package
-        uses: murar8/gnome-extensions-action@0.1.0
+        uses: jbellue/gnome-extensions-action@gettext
         with:
           source-dir: src
           output-dir: dist
