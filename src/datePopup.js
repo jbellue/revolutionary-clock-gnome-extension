@@ -132,68 +132,74 @@ class DateMenuItem extends PopupMenu.PopupBaseMenuItem {
      * Update the date menu item with the current Republican date, including labels and images based on settings
      * @returns {void}
      */
-    async update() {
-        const translations = getTranslations(this._translations);
-        if (!translations) {
-            this._weekdayLabel.text = 'French Republican Calendar';
-            this._dateLabel.text = 'Loading...';
-            this._dayNameLabel.visible = false;
-            this._imageSlot.visible = false;
-            return;
-        }
-        const date = getRepublicanDate(new Date(), translations);
-        const includeDayName = this._settings.get_boolean('include-day-name');
-        const includeDayNameLink = this._settings.get_boolean('include-day-name-link');
-        const includeDayNameImage = this._settings.get_boolean('include-day-name-image');
-        const includeDayNameImageLink = this._settings.get_boolean('include-day-name-image-link');
-        const includeYear = this._settings.get_boolean('include-date-year');
-        const yearAsRoman = this._settings.get_boolean('year-as-roman-numerals');
-
-        const yearText = includeYear ? ` ${yearAsRoman ? date.yearsRoman : date.years}` : '';
-
-        const dayText = date.dayName?.name || date.dayName || '';
-        const dayLink = date.dayName?.link || null;
-        const showDayText = includeDayName && dayText;
-        const showLink = includeDayNameLink && dayLink;
-        const showImage = includeDayNameImage && dayLink;
-        const showImageLink = includeDayNameImageLink && dayLink;
-
-        this._currentDayLink = showLink ? dayLink : null;
-        this._currentImageLink = showImageLink ? dayLink : null;
-
-        this._weekdayLabel.text = `${date.dayOfWeek}`;
-        this._dateLabel.text = `${date.dayOfMonth} ${date.monthName}${yearText}`;
-
-        this._dayNameLabel.text = dayText;
-        this._dayNameLabel.visible = showDayText;
-
-        // Handle image visibility and updates
-        if (!showImage || dayLink !== this._currentImageDayLink) {
-            // Remove image if we don't want to show it anymore, or if the dayLink changed
-            if (this._wikiImage && this._wikiImage.get_parent()) {
-                this._imageSlot.remove_child(this._wikiImage);
-                this._wikiImage.destroy();
-                this._wikiImage = null;
+    update() {
+        try {
+            const translations = getTranslations(this._translations);
+            if (!translations) {
+                this._weekdayLabel.text = 'French Republican Calendar';
+                this._dateLabel.text = 'Loading...';
+                this._dayNameLabel.visible = false;
+                this._imageSlot.visible = false;
+                return;
             }
-            this._currentImageDayLink = null;
-        }
+            const date = getRepublicanDate(new Date(), translations);
+            const includeDayName = this._settings.get_boolean('include-day-name');
+            const includeDayNameLink = this._settings.get_boolean('include-day-name-link');
+            const includeDayNameImage = this._settings.get_boolean('include-day-name-image');
+            const includeDayNameImageLink = this._settings.get_boolean('include-day-name-image-link');
+            const includeYear = this._settings.get_boolean('include-date-year');
+            const yearAsRoman = this._settings.get_boolean('year-as-roman-numerals');
 
-        this._imageSlot.visible = showImage;
+            const yearText = includeYear ? ` ${yearAsRoman ? date.yearsRoman : date.years}` : '';
 
-        if (showLink) {
-            this._dayNameLabel.add_style_class_name('link-text');
-        } else {
-            this._dayNameLabel.remove_style_class_name('link-text');
-        }
+            const dayText = date.dayName?.name || date.dayName || '';
+            const dayLink = date.dayName?.link || null;
+            const showDayText = !!(includeDayName && dayText);
+            const showLink = !!(includeDayNameLink && dayLink);
+            const showImage = !!(includeDayNameImage && dayLink);
+            const showImageLink = !!(includeDayNameImageLink && dayLink);
 
-        if (!showLink && !showImageLink) {
-            this._setDefaultCursor();
-        }
+            this._currentDayLink = showLink ? dayLink : null;
+            this._currentImageLink = showImageLink ? dayLink : null;
 
-        // Load image only if it changed
-        if (showImage && dayLink !== this._currentImageDayLink) {
-            this._currentImageDayLink = dayLink;
-            this._showWikiImageForDay(dayLink);
+            this._weekdayLabel.text = `${date.dayOfWeek}`;
+            this._dateLabel.text = `${date.dayOfMonth} ${date.monthName}${yearText}`;
+
+            this._dayNameLabel.text = dayText;
+            this._dayNameLabel.visible = showDayText;
+
+            // Handle image visibility and updates
+            if (!showImage || dayLink !== this._currentImageDayLink) {
+                // Remove image if we don't want to show it anymore, or if the dayLink changed
+                if (this._wikiImage && this._wikiImage.get_parent()) {
+                    this._imageSlot.remove_child(this._wikiImage);
+                    this._wikiImage.destroy();
+                    this._wikiImage = null;
+                }
+                this._currentImageDayLink = null;
+            }
+
+            this._imageSlot.visible = showImage;
+
+            if (showLink) {
+                this._dayNameLabel.add_style_class_name('link-text');
+            } else {
+                this._dayNameLabel.remove_style_class_name('link-text');
+            }
+
+            if (!showLink && !showImageLink)
+                this._setDefaultCursor();
+
+            // Load image only if it changed
+            if (showImage && dayLink !== this._currentImageDayLink) {
+                this._currentImageDayLink = dayLink;
+                this._showWikiImageForDay(dayLink).catch(e => {
+                    this._logger.error(`Failed to load wiki image for ${dayLink}: ${e.message}`);
+                });
+            }
+        } catch (e) {
+            this._logger.error(`Failed to update date popup: ${e.message}`);
+            this._imageSlot.visible = false;
         }
     }
 
@@ -260,16 +266,20 @@ class DateMenuItem extends PopupMenu.PopupBaseMenuItem {
      * @returns {Promise<void>} - A promise that resolves when the image is shown.
      */
     async _showWikiImageForDay(dayLink) {
-        // Check if already cached
-        if (this._wikiImageManager.hasCache(dayLink)) {
-            this._setWikiImageFromCache(dayLink);
-            return;
-        }
+        try {
+            // Check if already cached
+            if (this._wikiImageManager.hasCache(dayLink)) {
+                this._setWikiImageFromCache(dayLink);
+                return;
+            }
 
-        // Download and cache
-        const cacheFile = await this._wikiImageManager.downloadAndCache(dayLink);
-        if (cacheFile && this._wikiImageManager) {
-            this._setWikiImageFromCache(dayLink);
+            // Download and cache
+            const cacheFile = await this._wikiImageManager.downloadAndCache(dayLink);
+            if (cacheFile && this._wikiImageManager)
+                this._setWikiImageFromCache(dayLink);
+        } catch (e) {
+            this._logger.error(`Failed to fetch wiki image for ${dayLink}: ${e.message}`);
+            throw e;
         }
     }
 
