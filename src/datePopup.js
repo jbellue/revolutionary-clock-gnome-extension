@@ -127,19 +127,23 @@ class DateMenuItem extends PopupMenu.PopupBaseMenuItem {
         this._pointerCursor = Meta.Cursor?.POINTER ?? null;
         this._defaultCursor = Meta.Cursor?.DEFAULT ?? null;
 
-        this._signals = [
-            {actor: this._dayNameRow, id: this._dayNameRow.connect('button-press-event', () => this._handleClick(this._currentDayLink))},
-            {actor: this._dayNameRow, id: this._dayNameRow.connect('enter-event', () => this._setPointerCursor(this._currentDayLink))},
-            {actor: this._dayNameRow, id: this._dayNameRow.connect('leave-event', () => this._setDefaultCursor())},
-            {actor: this._imageSlot, id: this._imageSlot.connect('button-press-event', () => this._handleClick(this._currentImageLink))},
-            {actor: this._imageSlot, id: this._imageSlot.connect('enter-event', () => this._setPointerCursor(this._currentImageLink))},
-            {actor: this._imageSlot, id: this._imageSlot.connect('leave-event', () => this._setDefaultCursor())},
-            {actor: this._settings, id: this._settings.connect('changed::include-day-name', () => this.update())},
-            {actor: this._settings, id: this._settings.connect('changed::include-day-name-link', () => this.update())},
-            {actor: this._settings, id: this._settings.connect('changed::include-day-name-image', () => this.update())},
-            {actor: this._settings, id: this._settings.connect('changed::include-date-year', () => this.update())},
-            {actor: this._settings, id: this._settings.connect('changed::year-as-roman-numerals', () => this.update())},
-        ];
+        this._signals = [];
+
+        this._connectSignal(this._dayNameRow, 'button-press-event', () => this._handleClick(this._currentDayLink));
+        this._connectSignal(this._dayNameRow, 'enter-event', () => this._setPointerCursor(this._currentDayLink));
+        this._connectSignal(this._dayNameRow, 'leave-event', () => this._setDefaultCursor());
+        this._connectSignal(this._imageSlot, 'button-press-event', () => this._handleClick(this._currentImageLink));
+        this._connectSignal(this._imageSlot, 'enter-event', () => this._setPointerCursor(this._currentImageLink));
+        this._connectSignal(this._imageSlot, 'leave-event', () => this._setDefaultCursor());
+        [
+            'include-day-name',
+            'include-day-name-link',
+            'include-day-name-image',
+            'include-date-year',
+            'year-as-roman-numerals',
+        ].forEach(key => {
+            this._connectSignal(this._settings, `changed::${key}`, () => this.update());
+        });
 
         // Wikipedia image management
         this._wikiImageManager = new WikiImageManager(this._settings, this._logger);
@@ -222,6 +226,10 @@ class DateMenuItem extends PopupMenu.PopupBaseMenuItem {
             this._logger.error(`Failed to update date popup: ${e.message}`);
             this._imageSlot.visible = false;
         }
+    }
+
+    _connectSignal(actor, signal, handler) {
+        this._signals.push({actor, id: actor.connect(signal, handler)});
     }
 
     /**
