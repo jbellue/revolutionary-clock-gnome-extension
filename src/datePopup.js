@@ -227,7 +227,7 @@ class DateMenuItem extends PopupMenu.PopupBaseMenuItem {
     /**
      * Set the cursor to pointer if the link is valid, otherwise do nothing.
      * @param {*} link - The link to check.
-     * @returns {number} Clutter.EVENT_PROPAGATE to allow event to continue, or Clutter.EVENT_STOP if we handled it.
+     * @returns {number} Clutter.EVENT_PROPAGATE
      */
     _setPointerCursor(link) {
         if (!link) return Clutter.EVENT_PROPAGATE;
@@ -236,8 +236,8 @@ class DateMenuItem extends PopupMenu.PopupBaseMenuItem {
     }
 
     /**
-     * Set the cursor to default if no link is valid.
-     * @returns {number} Clutter.EVENT_PROPAGATE to allow event to continue.
+     * Set the cursor to default
+     * @returns {number} Clutter.EVENT_PROPAGATE
      */
     _setDefaultCursor() {
         this._setCursor(this._defaultCursor);
