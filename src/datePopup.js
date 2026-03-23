@@ -123,8 +123,9 @@ class DateMenuItem extends PopupMenu.PopupBaseMenuItem {
         this._currentDayLink = null;
         this._currentImageLink = null;
         this._currentImageDayLink = null; // Track which dayLink the current image is for
-        this._pointerCursor = this._resolveCursor(['POINTING_HAND', 'POINTER', 'HAND']);
-        this._defaultCursor = this._resolveCursor(['DEFAULT', 'ARROW']);
+
+        this._pointerCursor = Meta.Cursor?.POINTER ?? null;
+        this._defaultCursor = Meta.Cursor?.DEFAULT ?? null;
 
         this._signals = [
             {actor: this._dayNameRow, id: this._dayNameRow.connect('button-press-event', () => this._handleClick(this._currentDayLink))},
@@ -221,23 +222,6 @@ class DateMenuItem extends PopupMenu.PopupBaseMenuItem {
             this._logger.error(`Failed to update date popup: ${e.message}`);
             this._imageSlot.visible = false;
         }
-    }
-
-    /**
-     * Resolves the cursor constant value for a given set of possible cursor names.
-     * @param {string[]} names - The possible cursor names to resolve (e.g., ['POINTING_HAND', 'POINTER', 'HAND'])
-     * @returns {string} - The cursor constant value if found, or null if none of the names could be resolved.
-     */
-    _resolveCursor(names) {
-        if (!Meta?.Cursor)
-            return null;
-
-        for (const name of names) {
-            if (name in Meta.Cursor && typeof Meta.Cursor[name] === 'number' &&
-                (!('INVALID' in Meta.Cursor) || Meta.Cursor[name] !== Meta.Cursor.INVALID))
-                return Meta.Cursor[name];
-        }
-        return null;
     }
 
     /**
