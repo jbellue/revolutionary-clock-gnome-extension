@@ -124,8 +124,8 @@ class DateMenuItem extends PopupMenu.PopupBaseMenuItem {
         this._currentImageLink = null;
         this._currentImageDayLink = null; // Track which dayLink the current image is for
 
-        this._pointerCursor = Meta.Cursor?.POINTER ?? null;
-        this._defaultCursor = Meta.Cursor?.DEFAULT ?? null;
+        this._pointerCursor = this._resolveCursor('POINTER');
+        this._defaultCursor = this._resolveCursor('DEFAULT');
 
         this._signals = [];
 
@@ -226,6 +226,10 @@ class DateMenuItem extends PopupMenu.PopupBaseMenuItem {
 
     _connectSignal(actor, signal, handler) {
         this._signals.push({actor, id: actor.connect(signal, handler)});
+    }
+
+    _resolveCursor(name) {
+        return Meta.Cursor?.[name] ?? null;
     }
 
     /**
