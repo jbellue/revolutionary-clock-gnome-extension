@@ -21,6 +21,7 @@ import St from 'gi://St';
 import Clutter from 'gi://Clutter';
 import Gio from 'gi://Gio';
 import Meta from 'gi://Meta';
+import Graphene from 'gi://Graphene';
 
 import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 
@@ -73,13 +74,36 @@ class DateMenuItem extends PopupMenu.PopupBaseMenuItem {
         });
 
         this._dayNameLabel = new St.Label({
-            y_align: Clutter.ActorAlign.START,
+            y_align: Clutter.ActorAlign.CENTER,
             x_align: Clutter.ActorAlign.CENTER,
-            x_expand: true,
-            reactive: true,
+            x_expand: false,
             style_class: 'revolutionary-clock-day-name-label',
+        });
+
+        this._externalLinkIcon = new St.Label({
+            text: '⎋',
+            scale_x: -1,
+            pivot_point: new Graphene.Point({ x: 0.5, y: 0.5 }),
+        });
+
+        this._externalLinkIconContainer = new St.Bin({
+            x_expand: false,
+            y_align: Clutter.ActorAlign.CENTER,
+            x_align: Clutter.ActorAlign.START,
+            style_class: 'revolutionary-clock-external-link-icon-container',
+            child: this._externalLinkIcon,
+            visible: false
+        });
+
+        this._dayNameRow = new St.BoxLayout({
+            vertical: false,
+            x_expand: true,
+            x_align: Clutter.ActorAlign.CENTER,
+            reactive: true,
             visible: false,
         });
+        this._dayNameRow.add_child(this._dayNameLabel);
+        this._dayNameRow.add_child(this._externalLinkIconContainer);
 
         this._imageSlot = new St.BoxLayout({
             vertical: false,
@@ -92,7 +116,7 @@ class DateMenuItem extends PopupMenu.PopupBaseMenuItem {
         this._contentColumn.add_child(this._weekdayLabel);
         this._contentColumn.add_child(this._dateLabel);
         this._contentColumn.add_child(this._imageSlot);
-        this._contentColumn.add_child(this._dayNameLabel);
+        this._contentColumn.add_child(this._dayNameRow);
 
         this._container.add_child(this._contentColumn);
 
@@ -103,9 +127,9 @@ class DateMenuItem extends PopupMenu.PopupBaseMenuItem {
         this._defaultCursor = this._resolveCursor(['DEFAULT', 'ARROW']);
 
         this._signals = [
-            {actor: this._dayNameLabel, id: this._dayNameLabel.connect('button-press-event', () => this._handleClick(this._currentDayLink))},
-            {actor: this._dayNameLabel, id: this._dayNameLabel.connect('enter-event', () => this._setPointerCursor(this._currentDayLink))},
-            {actor: this._dayNameLabel, id: this._dayNameLabel.connect('leave-event', () => this._setDefaultCursor())},
+            {actor: this._dayNameRow, id: this._dayNameRow.connect('button-press-event', () => this._handleClick(this._currentDayLink))},
+            {actor: this._dayNameRow, id: this._dayNameRow.connect('enter-event', () => this._setPointerCursor(this._currentDayLink))},
+            {actor: this._dayNameRow, id: this._dayNameRow.connect('leave-event', () => this._setDefaultCursor())},
             {actor: this._imageSlot, id: this._imageSlot.connect('button-press-event', () => this._handleClick(this._currentImageLink))},
             {actor: this._imageSlot, id: this._imageSlot.connect('enter-event', () => this._setPointerCursor(this._currentImageLink))},
             {actor: this._imageSlot, id: this._imageSlot.connect('leave-event', () => this._setDefaultCursor())},
@@ -138,7 +162,7 @@ class DateMenuItem extends PopupMenu.PopupBaseMenuItem {
             if (!translations) {
                 this._weekdayLabel.text = 'French Republican Calendar';
                 this._dateLabel.text = 'Loading...';
-                this._dayNameLabel.visible = false;
+                this._dayNameRow.visible = false;
                 this._imageSlot.visible = false;
                 return;
             }
@@ -166,7 +190,8 @@ class DateMenuItem extends PopupMenu.PopupBaseMenuItem {
             this._dateLabel.text = `${date.dayOfMonth} ${date.monthName}${yearText}`;
 
             this._dayNameLabel.text = dayText;
-            this._dayNameLabel.visible = showDayText;
+            this._dayNameRow.visible = showDayText;
+            this._externalLinkIconContainer.visible = !!(showLink && showDayText);
 
             // Handle image visibility and updates
             if (!showImage || dayLink !== this._currentImageDayLink) {
@@ -181,11 +206,6 @@ class DateMenuItem extends PopupMenu.PopupBaseMenuItem {
 
             this._imageSlot.visible = showImage;
 
-            if (showLink) {
-                this._dayNameLabel.add_style_class_name('link-text');
-            } else {
-                this._dayNameLabel.remove_style_class_name('link-text');
-            }
 
             if (!showLink && !showImageLink)
                 this._setDefaultCursor();
