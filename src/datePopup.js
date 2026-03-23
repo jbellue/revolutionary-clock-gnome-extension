@@ -230,11 +230,8 @@ class DateMenuItem extends PopupMenu.PopupBaseMenuItem {
      * @returns {number} Clutter.EVENT_PROPAGATE to allow event to continue, or Clutter.EVENT_STOP if we handled it.
      */
     _setPointerCursor(link) {
-        if (!link)
-            return Clutter.EVENT_PROPAGATE;
-
-        if (this._pointerCursor !== null && global.display?.set_cursor)
-            global.display.set_cursor(this._pointerCursor);
+        if (!link) return Clutter.EVENT_PROPAGATE;
+        this._setCursor(this._pointerCursor);
         return Clutter.EVENT_PROPAGATE;
     }
 
@@ -243,9 +240,13 @@ class DateMenuItem extends PopupMenu.PopupBaseMenuItem {
      * @returns {number} Clutter.EVENT_PROPAGATE to allow event to continue.
      */
     _setDefaultCursor() {
-        if (this._defaultCursor !== null && global.display?.set_cursor)
-            global.display.set_cursor(this._defaultCursor);
+        this._setCursor(this._defaultCursor);
         return Clutter.EVENT_PROPAGATE;
+    }
+
+    _setCursor(cursor) {
+        if (cursor !== null && global.display?.set_cursor)
+            global.display.set_cursor(cursor);
     }
 
     /**
