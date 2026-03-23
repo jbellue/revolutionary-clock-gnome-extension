@@ -238,7 +238,8 @@ class DateMenuItem extends PopupMenu.PopupBaseMenuItem {
      * @returns {number} Clutter.EVENT_PROPAGATE
      */
     _setPointerCursor(link) {
-        if (!link) return Clutter.EVENT_PROPAGATE;
+        if (!link)
+            return Clutter.EVENT_PROPAGATE;
         this._setCursor(this._pointerCursor);
         return Clutter.EVENT_PROPAGATE;
     }
@@ -264,7 +265,7 @@ class DateMenuItem extends PopupMenu.PopupBaseMenuItem {
      * Also calls the onLinkClicked callback if provided.
      */
     _handleClick(link) {
-        if (!link)
+        if (!link) 
             return Clutter.EVENT_PROPAGATE;
 
         Gio.AppInfo.launch_default_for_uri(link, null);
@@ -302,7 +303,8 @@ class DateMenuItem extends PopupMenu.PopupBaseMenuItem {
      * @returns {void}
      */
     _setWikiImageFromCache(dayLink) {
-        if (!this._wikiImageManager) return;
+        if (!this._wikiImageManager)
+            return;
         const cacheFile = this._wikiImageManager.getCachePath(dayLink);
         if (!cacheFile) {
             this._logger.info(`No cached image for dayLink: ${dayLink}`);
