@@ -201,11 +201,7 @@ class DateMenuItem extends PopupMenu.PopupBaseMenuItem {
             // Handle image visibility and updates
             if (!showImage || dayLink !== this._currentImageDayLink) {
                 // Remove image if we don't want to show it anymore, or if the dayLink changed
-                if (this._wikiImage && this._wikiImage.get_parent()) {
-                    this._imageSlot.remove_child(this._wikiImage);
-                    this._wikiImage.destroy();
-                    this._wikiImage = null;
-                }
+                this._clearWikiImage();
                 this._currentImageDayLink = null;
             }
 
@@ -318,6 +314,16 @@ class DateMenuItem extends PopupMenu.PopupBaseMenuItem {
         this._imageSlot.add_child(this._wikiImage);
     }
 
+    _clearWikiImage() {
+        if (!this._wikiImage)
+            return;
+
+        if (this._wikiImage.get_parent())
+            this._imageSlot.remove_child(this._wikiImage);
+        this._wikiImage.destroy();
+        this._wikiImage = null;
+    }
+
     destroy() {
         // Disconnect all signals
         this._signals.forEach(({actor, id}) => actor.disconnect(id));
@@ -325,12 +331,7 @@ class DateMenuItem extends PopupMenu.PopupBaseMenuItem {
 
         this._setDefaultCursor();
 
-        if (this._wikiImage) {
-            if (this._wikiImage.get_parent())
-                this._imageSlot.remove_child(this._wikiImage);
-            this._wikiImage.destroy();
-            this._wikiImage = null;
-        }
+        this._clearWikiImage();
 
         if (this._wikiImageManager) {
             this._wikiImageManager.destroy();
