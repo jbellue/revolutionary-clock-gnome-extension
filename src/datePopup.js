@@ -54,9 +54,9 @@ class DateMenuItem extends PopupMenu.PopupBaseMenuItem {
 
         this._contentColumn = new St.BoxLayout({
             vertical: true,
-            x_expand: false,
-            x_align: Clutter.ActorAlign.CENTER,
-            width: 320,
+            x_expand: true,
+            x_align: Clutter.ActorAlign.FILL,
+            style_class: 'revolutionary-clock-content-column',
         });
 
         this._weekdayLabel = new St.Label({
@@ -108,7 +108,7 @@ class DateMenuItem extends PopupMenu.PopupBaseMenuItem {
         this._imageSlot = new St.BoxLayout({
             vertical: false,
             x_expand: true,
-            x_align: Clutter.ActorAlign.START,
+            x_align: Clutter.ActorAlign.CENTER,
             reactive: true,
             style_class: 'revolutionary-clock-image-slot',
         });

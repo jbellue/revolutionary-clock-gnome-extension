@@ -1,6 +1,6 @@
 /* Revolutionary Clock extension stylesheet */
 
-.panel-label {
+.revolutionary-clock-panel-label {
     padding: 0 0.45em;
 }
 
@@ -10,6 +10,10 @@
 
 .revolutionary-clock-menu-item {
     padding: 0;
+}
+
+.revolutionary-clock-content-column {
+    min-width: 320px;
 }
 
 .revolutionary-clock-card {

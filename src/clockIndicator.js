@@ -39,7 +39,7 @@ class RevolutionaryClock extends PanelMenu.Button {
 
         this._clockLabel = new St.Label({
             text: '',
-            style_class: 'panel-label',
+            style_class: 'panel-label revolutionary-clock-panel-label',
             y_align: Clutter.ActorAlign.CENTER,
             y_expand: true,
         });
