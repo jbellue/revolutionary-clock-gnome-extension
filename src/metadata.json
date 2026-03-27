@@ -3,6 +3,7 @@
     "description": "Shows a decimal clock and revolutionary calendar",
     "uuid": "revolutionary@jbellue.github.io",
     "shell-version": [
+        "48",
         "49",
         "50"
     ],
