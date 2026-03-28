@@ -120,10 +120,6 @@ export default class RevolutionaryClockPreferences extends ExtensionPreferences 
         issuesLink.set_uri(buildRepoUrl(repoUrl, 'issues'));
         licenseLink.set_uri(buildRepoUrl(repoUrl, 'blob/main/LICENSE'));
 
-        // Disable the extension link until we have a real one
-        const gnomeExtensionRow = builder.get_object('gnomeExtensionRow');
-        gnomeExtensionRow.set_visible(false);
-
         // Clock settings
         const clockPositionIndex = builder.get_object('clockPositionIndex');
         settings.bind('clock-index-in-status-bar', clockPositionIndex, 'value', Gio.SettingsBindFlags.DEFAULT);

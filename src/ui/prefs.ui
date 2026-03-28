@@ -238,7 +238,7 @@
                                         </child>
                                         <child>
                                             <object class="GtkLinkButton" id="gnome-extension-link">
-                                                <property name="uri">https://extensions.gnome.org/</property>
+                                                <property name="uri">https://extensions.gnome.org/extension/9588/revolutionary-clock/</property>
                                                 <property name="label">Gnome Extensions</property>
                                                 <property name="valign">GTK_ALIGN_CENTER</property>
                                             </object>
