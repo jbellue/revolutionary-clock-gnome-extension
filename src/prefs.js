@@ -19,6 +19,7 @@
 import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 import Gtk from 'gi://Gtk';
+import GdkPixbuf from 'gi://GdkPixbuf';
 
 import {ExtensionPreferences} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 import { CacheManager } from './cacheManager.js';
@@ -29,6 +30,7 @@ import { CacheManager } from './cacheManager.js';
  * The locale code is derived from the filename (e.g. "locale-en.js" -> "en").
  * The "system" locale is also added as an option to use the system default locale.
  * @param {*} extensionPath - The path to the extension directory.
+ * @param {*} logger - A logger instance for logging any errors that occur while reading the directory.
  * @returns {string[]} - An array of available locale codes.
  */
 function getAvailableLocales(extensionPath, logger) {
@@ -119,6 +121,18 @@ export default class RevolutionaryClockPreferences extends ExtensionPreferences 
         sourceLink.set_uri(repoUrl);
         issuesLink.set_uri(buildRepoUrl(repoUrl, 'issues'));
         licenseLink.set_uri(buildRepoUrl(repoUrl, 'blob/main/LICENSE'));
+
+        const aboutIcon = builder.get_object('about-icon');
+        const pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
+            this.dir.get_path() + '/icon.svg',
+            96, 96,
+            true // preserve aspect ratio
+        );
+        aboutIcon.set_from_pixbuf(pixbuf);
+
+        const versionLabel = builder.get_object('version-label');
+        const versionName = this.metadata['version-name'] ?? this.metadata.version.toString() ?? 'Pigeon';
+        versionLabel.set_label(`Version: ${versionName}`);
 
         // Clock settings
         const clockPositionIndex = builder.get_object('clockPositionIndex');

@@ -219,6 +219,44 @@
         <property name="icon-name">dialog-question-symbolic</property>
         <property name="title" translatable="yes">About</property>
         <child>
+            <object class="AdwPreferencesGroup">
+                <child>
+                    <object class="GtkBox" id="about_header">
+                        <property name="orientation">vertical</property>
+                        <property name="spacing">12</property>
+                        <property name="margin-top">24</property>
+                        <property name="margin-bottom">12</property>
+                        <property name="halign">center</property>
+                        <child>
+                            <object class="GtkImage" id="about-icon">
+                                <property name="pixel-size">96</property>
+                                <property name="halign">center</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkLabel">
+                                <property name="label" translatable="yes">Revolutionary Clock</property>
+                                <property name="halign">center</property>
+                                <attributes>
+                                    <attribute name="weight" value="bold"/>
+                                    <attribute name="scale" value="1.4"/>
+                                </attributes>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkLabel" id="version-label">
+                                <property name="label">…</property>
+                                <property name="halign">center</property>
+                                <style>
+                                    <class name="dim-label"/>
+                                </style>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+            </object>
+        </child>
+        <child>
             <object class="AdwPreferencesGroup" id="about_details_group">
                 <child>
                     <object class="GtkBox">

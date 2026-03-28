@@ -69,6 +69,7 @@ package:
 		--extra-source=locale-fr.js \
 		--extra-source=locale \
 		--extra-source=ui \
+		--extra-source=icon.svg \
 		src/
 
 .PHONY: lint
