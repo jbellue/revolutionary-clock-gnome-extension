@@ -34,20 +34,6 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - name: Extract version from tag
-        id: version
-        run: |
-          TAG_NAME="${{ github.ref_name }}"
-          VERSION="${TAG_NAME#v}"
-          echo "version-name=$VERSION" >> "$GITHUB_OUTPUT"
-
-      - name: Update version-name with jq
-        run: |
-          VERSION_NAME="${{ steps.version.outputs['version-name'] }}"
-          jq --arg v "$VERSION_NAME" '.["version-name"] = $v' \
-            src/metadata.json > src/metadata.json.tmp && \
-          mv src/metadata.json.tmp src/metadata.json
-
       - name: Package and Upload Extension
         id: package
         uses: murar8/gnome-extensions-action@0.1.1
