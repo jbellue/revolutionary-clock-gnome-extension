@@ -76,7 +76,7 @@ On Fedora/SELinux with Podman, both lint targets automatically use `:Z` on the b
 - [ ] Add a script to load each wikipedia file, look it up in a new language, and dump that into a new locale file. That won't translate the rest, just the day name and the link, but that'll be a start - not sure how to make the Wikipedia not hate me for spamming them. I mean, I guess they can handle the load, but still.
 - [X] Use https://github.com/murar8/gnome-extensions-action to package and upload
 - [X] Manually upload to Gnome shell extensions
-- [ ] Upload to Gnome shell extensions through a pipeline
+- [X] Upload to Gnome shell extensions through a pipeline (merge to `release` branch triggers semantic versioning, packaging, and upload)
 
 ## License
 

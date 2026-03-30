@@ -33,7 +33,7 @@ Updates `version-name` after switching branches or checking out:
 3. When the PR merges to `release`, the CI workflow automatically:
    - Scans commits since the last release
    - Calculates the new semantic version
-   - Updates `versions-name` in metadata.json
+   - Updates `version-name` in metadata.json
    - Creates a git tag with the version
-   - Triggers the packaging and release workflow
+   - Packages the extension and uploads to GitHub release
 
