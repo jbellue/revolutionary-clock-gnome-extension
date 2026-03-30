@@ -1,14 +1,10 @@
 #!/bin/bash
-# Post-checkout hook to update version-name in metadata.json
+# Post-checkout hook to update version-name in metadata.json for development
 
 set -e
 
 # Determine version-name based on current git state
-if git describe --tags --exact-match HEAD &>/dev/null; then
-    # On a tag
-    TAG=$(git describe --tags --exact-match HEAD)
-    VERSION="${TAG#v}"
-elif [ -n "$(git symbolic-ref -q HEAD)" ]; then
+if [ -n "$(git symbolic-ref -q HEAD)" ]; then
     # On a branch
     BRANCH=$(git symbolic-ref -q --short HEAD)
     SHORT_HASH=$(git rev-parse --short HEAD)
