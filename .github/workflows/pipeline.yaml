@@ -55,9 +55,9 @@ jobs:
             locale-fr.js
             locale
             ui
-          # username: ${{ secrets.GNOME_USERNAME }}
-          # password: ${{ secrets.GNOME_PASSWORD }}
-          # accept-tos: true
+          username: ${{ secrets.GNOME_USERNAME }}
+          password: ${{ secrets.GNOME_PASSWORD }}
+          accept-tos: true
       - name: Upload to GitHub release
         uses: softprops/action-gh-release@v2
         with:
