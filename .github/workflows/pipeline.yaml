@@ -42,8 +42,9 @@ jobs:
       - name: Calculate semantic version
         id: semver
         run: |
-          # Get last tag or start from v0.0.0
-          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+          # Get latest version tag by version number, or start from v0.0.0
+          LAST_TAG=$(git tag --list 'v*' --sort=-version:refname | head -n1)
+          LAST_TAG="${LAST_TAG:-v0.0.0}"
           
           # Count commit types since last tag
           BREAKING=$(git log "${LAST_TAG}..HEAD" --oneline | grep -c "^.*BREAKING" || true)
