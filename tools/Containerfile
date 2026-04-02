@@ -1,0 +1,10 @@
+FROM node:24-alpine
+
+WORKDIR /tooling
+
+COPY tools/package.json ./
+RUN npm install --include=dev
+
+ENV PATH="/tooling/node_modules/.bin:${PATH}"
+
+WORKDIR /workspace

@@ -1,0 +1,15 @@
+{
+  "name": "revolutionary-clock-tooling",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Tooling scripts for linting and testing the revolutionary clock extension",
+  "scripts": {
+    "lint": "cd .. && eslint --config tools/eslint.config.mjs --max-warnings=0 \"src/**/*.js\"",
+    "lint:watch": "cd .. && chokidar \"src/**/*.js\" -c \"eslint --config tools/eslint.config.mjs --max-warnings=0 \\\"src/**/*.js\\\"\" --initial --polling --poll-interval 300",
+    "test": "node --test --test-reporter=spec ../test/*.test.mjs"
+  },
+  "devDependencies": {
+    "chokidar-cli": "^3.0.0",
+    "eslint": "^10.0.0"
+  }
+}

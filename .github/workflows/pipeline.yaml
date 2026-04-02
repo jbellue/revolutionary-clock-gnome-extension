@@ -23,7 +23,7 @@ jobs:
         run: npm install --global eslint@10
 
       - name: Run lint
-        run: eslint --max-warnings=0 "src/**/*.js"
+        run: eslint --config tools/eslint.config.mjs --max-warnings=0 "src/**/*.js"
 
   release:
     if: github.ref == 'refs/heads/release' && github.event_name == 'push'
