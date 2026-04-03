@@ -3,6 +3,7 @@ INSTALL_DIR = $(HOME)/.local/share/gnome-shell/extensions/$(EXTENSION_ID)
 GETTEXT_DOMAIN = revolutionary-clock
 PO_FILES = $(wildcard src/po/*.po)
 LOCALES = $(basename $(notdir $(PO_FILES)))
+TOOLING_IMAGE = revolutionary-clock-tooling
 CONTAINER_RUNTIME ?= $(shell \
 	if command -v podman >/dev/null 2>&1; then \
 		echo podman; \
@@ -13,9 +14,13 @@ CONTAINER_RUNTIME ?= $(shell \
 	fi)
 CONTAINER_MOUNT_SUFFIX ?=
 
-ifeq ($(CONTAINER_RUNTIME),podman)
+ifneq ($(findstring podman,$(CONTAINER_RUNTIME)),)
 CONTAINER_MOUNT_SUFFIX := :Z
 endif
+
+.PHONY: tooling-image
+tooling-image:
+	$(CONTAINER_RUNTIME) build -f tools/Containerfile -t $(TOOLING_IMAGE) .
 
 .PHONY: install
 install: package
@@ -73,14 +78,21 @@ package:
 		src/
 
 .PHONY: lint
-lint:
-	$(CONTAINER_RUNTIME) build -f Dockerfile.lint -t revolutionary-clock-lint .
-	$(CONTAINER_RUNTIME) run --rm -v $(PWD):/workspace$(CONTAINER_MOUNT_SUFFIX) -w /workspace revolutionary-clock-lint
+lint: tooling-image
+	$(CONTAINER_RUNTIME) run --rm -v $(PWD):/workspace$(CONTAINER_MOUNT_SUFFIX) -w /workspace --entrypoint sh $(TOOLING_IMAGE) -lc 'PATH="/tooling/node_modules/.bin:$$PATH" eslint --config tools/eslint.config.mjs --max-warnings=0 "src/**/*.js"'
 
 .PHONY: lint-watch
-lint-watch:
-	$(CONTAINER_RUNTIME) build -f Dockerfile.lint -t revolutionary-clock-lint .
-	$(CONTAINER_RUNTIME) run --rm --init -it -e SHELL=/bin/sh -v $(PWD):/workspace$(CONTAINER_MOUNT_SUFFIX) -w /workspace revolutionary-clock-lint watch
+lint-watch: tooling-image
+	$(CONTAINER_RUNTIME) run --rm --init -it -e SHELL=/bin/sh -v $(PWD):/workspace$(CONTAINER_MOUNT_SUFFIX) -w /workspace --entrypoint sh $(TOOLING_IMAGE) -lc 'PATH="/tooling/node_modules/.bin:$$PATH" chokidar "src/**/*.js" -c "eslint --config tools/eslint.config.mjs --max-warnings=0 \"src/**/*.js\"" --initial --polling --poll-interval 300'
+
+.PHONY: test-container test
+test-container: tooling-image
+	$(CONTAINER_RUNTIME) run --rm -v $(PWD):/workspace$(CONTAINER_MOUNT_SUFFIX) -w /workspace --entrypoint sh $(TOOLING_IMAGE) -lc 'cd tools && PATH="/tooling/node_modules/.bin:$$PATH" npm run --silent test'
+
+test: test-container
+
+.PHONY: check
+check: lint test
 
 # Single locale helper
 define run_dev_locale

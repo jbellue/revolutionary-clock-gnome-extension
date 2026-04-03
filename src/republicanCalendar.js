@@ -95,27 +95,44 @@ function toRomanNumerals(num) {
  */
 export function getRepublicanDate(date, translations) {
     const currentYear = date.getFullYear();
-    
+
+    // Use local midnight so the Republican date advances at local midnight,
+    // not at UTC midnight (which would be 01:00 or 02:00 in France).
+    const localMidnight = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
     // Get equinox dates for current and previous year
     const currentEquinox = getAutumnEquinoxDate(currentYear);
-    
+
+    // Convert the UTC-midnight equinox date to a local-midnight date using the
+    // UTC calendar coordinates, so comparisons are in local-day space.
+    const currentEquinoxLocal = new Date(
+        currentEquinox.getUTCFullYear(),
+        currentEquinox.getUTCMonth(),
+        currentEquinox.getUTCDate()
+    );
+
     // Determine which Republican year we're in
     let firstDayOfRepYear;
     let republicanYear = currentYear - 1792; // Base year for Republican calendar
-    if (date >= currentEquinox) {
+    if (localMidnight >= currentEquinoxLocal) {
         // On or after this year's equinox
-        firstDayOfRepYear = currentEquinox;
+        firstDayOfRepYear = currentEquinoxLocal;
         republicanYear += 1;
     } else {
         // Before this year's equinox, use previous year
-        firstDayOfRepYear = getAutumnEquinoxDate(currentYear - 1);
+        const prevEquinox = getAutumnEquinoxDate(currentYear - 1);
+        firstDayOfRepYear = new Date(
+            prevEquinox.getUTCFullYear(),
+            prevEquinox.getUTCMonth(),
+            prevEquinox.getUTCDate()
+        );
     }
-    
-    // Calculate days since start of Republican year
+
+    // Calculate days since start of Republican year.
+    // Use Math.round (not floor) to stay correct across DST transitions where
+    // a local "day" can be 23 h or 25 h long.
     const MS_PER_DAY = 86400000;
-    
-    // Calculate the number of days since the start of the Republican year
-    const yeardays = Math.floor((date.getTime() - firstDayOfRepYear.getTime()) / MS_PER_DAY);
+    const yeardays = Math.round((localMidnight.getTime() - firstDayOfRepYear.getTime()) / MS_PER_DAY);
 
     const dayOfMonth = (yeardays % 30) + 1; // day of month, 1-based
     const monthName = translations.months[Math.floor(yeardays / 30)];

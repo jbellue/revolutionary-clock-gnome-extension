@@ -55,6 +55,8 @@ To add a new locale:
 
 ### Make Targets
 
+Tooling dependencies and commands are defined in `tools/package.json`; Make targets execute those npm scripts inside the tooling container.
+
 - `make install` - Compile translations and install extension to `~/.local/share/gnome-shell/extensions/`
 - `make uninstall` - Remove the installed extension
 - `make reinstall` - Uninstall and reinstall the extension
@@ -62,8 +64,10 @@ To add a new locale:
 - `make po` - Update all PO files from the POT template
 - `make mo` - Compile PO files to MO (binary translation files)
 - `make package` - Create a distributable ZIP file in `dist/`
-- `make lint` - Build and run a containerized lint check (Podman first, then Docker fallback) for JS syntax and bug-prone logic issues
+- `make tooling-image` - Build the reusable container image used for linting and tests
+- `make lint` - Run a containerized lint check (Podman first, then Docker fallback) for JS syntax and bug-prone logic issues
 - `make lint-watch` - Run lint in watch mode (via file watcher) and re-check on file saves
+- `make test` / `make test-container` - Run containerized Node unit tests, including calendar checks across multiple timezones
 - `make dev` - Reinstall and launch a development GNOME Shell session
 - `make dev-fr` / `dev-es` / `dev-ca` - Launch dev session with specific locale
 - `make prefs` - Reinstall and open preferences window
@@ -76,7 +80,7 @@ On Fedora/SELinux with Podman, both lint targets automatically use `:Z` on the b
 - [ ] Add a script to load each wikipedia file, look it up in a new language, and dump that into a new locale file. That won't translate the rest, just the day name and the link, but that'll be a start - not sure how to make the Wikipedia not hate me for spamming them. I mean, I guess they can handle the load, but still.
 - [X] Use https://github.com/murar8/gnome-extensions-action to package and upload
 - [X] Manually upload to Gnome shell extensions
-- [ ] Upload to Gnome shell extensions through a pipeline
+- [X] Upload to Gnome shell extensions through a pipeline (merge to `release` branch triggers semantic versioning, packaging, and upload)
 
 ## License
 
