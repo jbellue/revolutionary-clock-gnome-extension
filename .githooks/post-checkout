@@ -3,6 +3,11 @@
 
 set -e
 
+# post-checkout passes $3=1 for a branch checkout and $3=0 when only files
+# are checked out/restored. Only rewrite version-name on branch checkouts,
+# otherwise `git restore src/metadata.json` would immediately dirty it again.
+[ "${3:-0}" = "1" ] || exit 0
+
 # Determine version-name based on current git state
 if [ -n "$(git symbolic-ref -q HEAD)" ]; then
     # On a branch
