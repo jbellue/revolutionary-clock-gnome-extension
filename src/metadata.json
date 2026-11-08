@@ -5,10 +5,11 @@
   "shell-version": [
     "48",
     "49",
-    "50"
+    "50",
+    "51"
   ],
   "gettext-domain": "revolutionary-clock",
   "settings-schema": "org.gnome.shell.extensions.revolutionary-clock",
   "url": "https://github.com/jbellue/revolutionary-clock-gnome-extension",
-  "version-name": "dev-main-781b528"
+  "version-name": "dev-main-e1b056a"
 }

@@ -29,6 +29,10 @@ import { getRepublicanDate } from './republicanCalendar.js';
 import { getTranslations } from './translations.js';
 import { WikiImageManager } from './wikiImageManager.js';
 
+// GNOME Shell 50 replaced the Meta.Cursor enum with Clutter.CursorType.
+// Keep the fallback so the extension still supports GNOME Shell 48 and 49.
+const CursorType = Clutter.CursorType ?? Meta.Cursor;
+
 export const DateMenuItem = GObject.registerClass(
 class DateMenuItem extends PopupMenu.PopupBaseMenuItem {
     _init(settings, logger, onLinkClicked = null) {
@@ -46,14 +50,14 @@ class DateMenuItem extends PopupMenu.PopupBaseMenuItem {
         this._translations = null;
 
         this._container = new St.BoxLayout({
-            vertical: true,
+            orientation: Clutter.Orientation.VERTICAL,
             x_expand: true,
             y_align: Clutter.ActorAlign.START,
             style_class: 'revolutionary-clock-card',
         });
 
         this._contentColumn = new St.BoxLayout({
-            vertical: true,
+            orientation: Clutter.Orientation.VERTICAL,
             x_expand: true,
             x_align: Clutter.ActorAlign.FILL,
             style_class: 'revolutionary-clock-content-column',
@@ -96,7 +100,7 @@ class DateMenuItem extends PopupMenu.PopupBaseMenuItem {
         });
 
         this._dayNameRow = new St.BoxLayout({
-            vertical: false,
+            orientation: Clutter.Orientation.HORIZONTAL,
             x_expand: true,
             x_align: Clutter.ActorAlign.CENTER,
             reactive: true,
@@ -106,7 +110,7 @@ class DateMenuItem extends PopupMenu.PopupBaseMenuItem {
         this._dayNameRow.add_child(this._externalLinkIconContainer);
 
         this._imageSlot = new St.BoxLayout({
-            vertical: false,
+            orientation: Clutter.Orientation.HORIZONTAL,
             x_expand: true,
             x_align: Clutter.ActorAlign.CENTER,
             reactive: true,
@@ -124,17 +128,14 @@ class DateMenuItem extends PopupMenu.PopupBaseMenuItem {
         this._currentImageLink = null;
         this._currentImageDayLink = null; // Track which dayLink the current image is for
 
-        this._pointerCursor = this._resolveCursor('POINTER');
-        this._defaultCursor = this._resolveCursor('DEFAULT');
-
         this._signals = [];
 
         this._connectSignal(this._dayNameRow, 'button-press-event', () => this._handleClick(this._currentDayLink));
-        this._connectSignal(this._dayNameRow, 'enter-event', () => this._setPointerCursor(this._currentDayLink));
-        this._connectSignal(this._dayNameRow, 'leave-event', () => this._setDefaultCursor());
+        this._connectSignal(this._dayNameRow, 'enter-event', () => this._setPointerCursor(this._dayNameRow, this._currentDayLink));
+        this._connectSignal(this._dayNameRow, 'leave-event', () => this._setDefaultCursor(this._dayNameRow));
         this._connectSignal(this._imageSlot, 'button-press-event', () => this._handleClick(this._currentImageLink));
-        this._connectSignal(this._imageSlot, 'enter-event', () => this._setPointerCursor(this._currentImageLink));
-        this._connectSignal(this._imageSlot, 'leave-event', () => this._setDefaultCursor());
+        this._connectSignal(this._imageSlot, 'enter-event', () => this._setPointerCursor(this._imageSlot, this._currentImageLink));
+        this._connectSignal(this._imageSlot, 'leave-event', () => this._setDefaultCursor(this._imageSlot));
         [
             'include-day-name',
             'include-day-name-link',
@@ -207,9 +208,9 @@ class DateMenuItem extends PopupMenu.PopupBaseMenuItem {
 
             this._imageSlot.visible = showImage;
 
-
-            if (!showLink && !showImageLink)
-                this._setDefaultCursor();
+            // Keep each clickable row's cursor in sync with its current link.
+            this._setCursor(this._dayNameRow, this._currentDayLink ? 'POINTER' : 'DEFAULT');
+            this._setCursor(this._imageSlot, this._currentImageLink ? 'POINTER' : 'DEFAULT');
 
             // Load image only if it changed
             if (showImage && dayLink !== this._currentImageDayLink) {
@@ -228,33 +229,47 @@ class DateMenuItem extends PopupMenu.PopupBaseMenuItem {
         this._signals.push({actor, id: actor.connect(signal, handler)});
     }
 
-    _resolveCursor(name) {
-        return Meta.Cursor?.[name] ?? null;
-    }
-
     /**
-     * Set the cursor to pointer if the link is valid, otherwise do nothing.
+     * Set the actor's cursor to a pointer if the link is valid.
+     * @param {St.Widget} actor - The actor under the pointer.
      * @param {*} link - The link to check.
      * @returns {number} Clutter.EVENT_PROPAGATE
      */
-    _setPointerCursor(link) {
-        if (!link)
-            return Clutter.EVENT_PROPAGATE;
-        this._setCursor(this._pointerCursor);
+    _setPointerCursor(actor, link) {
+        if (link)
+            this._setCursor(actor, 'POINTER');
         return Clutter.EVENT_PROPAGATE;
     }
 
     /**
-     * Set the cursor to default
+     * Restore the default cursor on an actor, or on both clickable rows.
+     * @param {St.Widget|null} actor - The actor to reset, defaults to both rows.
      * @returns {number} Clutter.EVENT_PROPAGATE
      */
-    _setDefaultCursor() {
-        this._setCursor(this._defaultCursor);
+    _setDefaultCursor(actor = null) {
+        if (actor) {
+            this._setCursor(actor, 'DEFAULT');
+        } else {
+            this._setCursor(this._dayNameRow, 'DEFAULT');
+            this._setCursor(this._imageSlot, 'DEFAULT');
+        }
         return Clutter.EVENT_PROPAGATE;
     }
 
-    _setCursor(cursor) {
-        if (cursor !== null && global.display?.set_cursor)
+    /**
+     * Apply a cursor type to an actor, preferring the per-actor API and
+     * falling back to the display-wide API used by older shell releases.
+     * @param {St.Widget} actor - The actor to change the cursor for.
+     * @param {string} name - The cursor name, e.g. 'POINTER' or 'DEFAULT'.
+     */
+    _setCursor(actor, name) {
+        const cursor = CursorType?.[name];
+        if (cursor === undefined)
+            return;
+
+        if (typeof actor?.set_cursor_type === 'function')
+            actor.set_cursor_type(cursor);
+        else if (global.display?.set_cursor)
             global.display.set_cursor(cursor);
     }
 

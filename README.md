@@ -51,7 +51,7 @@ To add a new locale:
 
 - **Logs**: View logs with `journalctl /usr/bin/gnome-shell -f`
 - **Cache**: Wikipedia images are cached in `~/.cache/revolutionaryclock/`
-- **Requirements**: GNOME Shell 49
+- **Requirements**: GNOME Shell 48-51 (tested on GNOME Shell 51)
 
 ### Make Targets
 
